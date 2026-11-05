@@ -1,101 +1,213 @@
-<div class="login-wrapper">
-  <div class="login-container">
-    
-    <!-- Hero / Header -->
-    <div class="login-header">
-      <div class="logo-shield">⚔️</div>
-      <h1>D&D Group</h1>
-      <p class="subtitle">Plataforma de Gestão de Jornada Internacional</p>
-      <div class="global-badge">
-        <span>🇧🇷 Brasil (UTC-3)</span>
-        <span class="dot">•</span>
-        <span>🇵🇹 Europa (UTC+0 / UTC+1)</span>
-      </div>
-    </div>
+<div class="login-split-page">
+  
+  <!-- LADO ESQUERDO: Formulário Corporativo & Acesso de Avaliação -->
+  <div class="login-pane-form">
+    <div class="form-scrollable-content">
 
-    <!-- Success Alert -->
-    @if (successMessage()) {
-      <div class="alert alert-success">
-        ✅ {{ successMessage() }}
-      </div>
-    }
-
-    <!-- Error Alert -->
-    @if (errorMessage()) {
-      <div class="alert alert-danger">
-        ⚠️ {{ errorMessage() }}
-      </div>
-    }
-
-    <!-- Formulário de Login Tradicional -->
-    <div class="card login-card">
-      <form (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label class="form-label" for="email">E-mail Corporativo</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            [(ngModel)]="email"
-            placeholder="nome@dndgroup.com"
-            class="form-control"
-            required
-          />
+      <!-- Marca e Topo -->
+      <div class="brand-row">
+        <div class="brand-identity">
+          <div class="logo-shield-box">
+            <span class="dnd-symbol">⚔️</span>
+          </div>
+          <div>
+            <h1 class="brand-name">
+              <span class="brand-red">D&D</span> GROUP
+            </h1>
+            <span class="brand-sub">ENTERPRISE HR PLATFORM</span>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="password">Senha</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            [(ngModel)]="password"
-            placeholder="••••••••"
-            class="form-control"
-            required
-          />
+        <div class="badge-global-live" title="Operação simultânea Brasil e Europa">
+          <span class="pulse-indicator"></span>
+          <span>🇧🇷 Brasil • 🇪🇺 Europa</span>
+        </div>
+      </div>
+
+      <!-- Título de Boas-Vindas -->
+      <div class="welcome-block">
+        <h2 class="welcome-title">Acesse sua conta</h2>
+        <p class="welcome-desc">
+          Plataforma de gestão de jornada de trabalho e banco de horas internacional.
+        </p>
+      </div>
+
+      <!-- Alertas de Feedback -->
+      @if (successMessage()) {
+        <div class="alert-box alert-success">
+          <span class="alert-icon">✅</span>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <div class="alert-box alert-danger">
+          <span class="alert-icon">⚠️</span>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Formulário de Credenciais -->
+      <form (ngSubmit)="onSubmit()" class="auth-form">
+        <div class="form-group-custom">
+          <label class="input-label" for="email">E-mail Corporativo</label>
+          <div class="input-wrapper">
+            <span class="field-icon">✉️</span>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="seu.email@dndgroup.com"
+              class="form-input-styled"
+              required
+            />
+          </div>
         </div>
 
-        <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-block">
+        <div class="form-group-custom">
+          <div class="label-with-hint">
+            <label class="input-label" for="password">Senha</label>
+            <span class="helper-hint">Padrão: <code>Password123!</code></span>
+          </div>
+          <div class="input-wrapper">
+            <span class="field-icon">🔒</span>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="••••••••••••"
+              class="form-input-styled"
+              required
+            />
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="isLoading()" class="btn-primary-purple">
           @if (isLoading()) {
-            <span>Entrando...</span>
+            <span class="btn-spinner"></span>
+            <span>Autenticando...</span>
           } @else {
-            <span>Entrar na Plataforma →</span>
+            <span>Entrar na Plataforma</span>
+            <span class="btn-arrow">→</span>
           }
         </button>
       </form>
-    </div>
 
-    <!-- Seletor Rápido para Avaliação (Recrutador) -->
-    <div class="demo-section">
-      <div class="demo-header">
-        <span class="demo-title">🎯 Acesso Rápido para Avaliação do Desafio</span>
-        <p class="demo-desc">Clique em qualquer perfil abaixo para preencher e testar instantaneamente os cenários:</p>
+      <!-- Divisor com Estilo -->
+      <div class="auth-divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">OU ACESSO RÁPIDO PARA AVALIAÇÃO</span>
+        <span class="divider-line"></span>
       </div>
 
-      <div class="demo-grid">
-        @for (acc of demoAccounts(); track acc.email) {
-          <button (click)="quickLogin(acc)" type="button" class="demo-card">
-            <div class="demo-badge-row">
-              <span class="badge badge-info">{{ acc.role }}</span>
-            </div>
-            <span class="demo-email">{{ acc.email }}</span>
-            <span class="demo-notes">{{ acc.description }}</span>
+      <!-- Seletor Rápido de Perfis (Recrutadores / Banca Avaliadora) -->
+      <div class="evaluator-card">
+        <div class="evaluator-header">
+          <div class="eval-title-row">
+            <span class="eval-icon">🎯</span>
+            <strong>Perfis de Simulação do Desafio (1 Clique)</strong>
+          </div>
+          <span class="eval-desc">Selecione para preencher e testar o sistema instantaneamente:</span>
+        </div>
+
+        <div class="accounts-grid">
+          @for (acc of demoAccounts(); track acc.email) {
+            <button 
+              (click)="quickLogin(acc)" 
+              type="button" 
+              class="account-chip-btn"
+              [class.chip-hr]="acc.role.includes('RH')"
+              [class.chip-mgr]="acc.role.includes('Gestor')"
+              [class.chip-travel]="acc.role.includes('Viajante')"
+              [title]="'Fazer login como ' + acc.name">
+              <div class="chip-top">
+                <span class="chip-role">{{ acc.role }}</span>
+                <span class="chip-action">Entrar ⚡</span>
+              </div>
+              <strong class="chip-name">{{ acc.name }}</strong>
+              <span class="chip-desc">{{ acc.description }}</span>
+            </button>
+          }
+        </div>
+
+        <div class="reset-db-container">
+          <button 
+            (click)="onResetDatabase()" 
+            [disabled]="isResetting()" 
+            type="button" 
+            class="btn-reset-factory"
+            title="Apaga batidas de teste e restaura colaboradores para o padrão original">
+            🔄 {{ isResetting() ? 'Restaurando banco...' : 'Zerar Banco de Dados e Restaurar Padrão de Fábrica' }}
           </button>
-        }
+        </div>
       </div>
 
-      <div class="demo-footer">
-        <button 
-          (click)="onResetDatabase()" 
-          [disabled]="isResetting()" 
-          type="button" 
-          class="btn-reset-db">
-          🔄 {{ isResetting() ? 'Restaurando...' : 'Zerar Banco de Dados e Restaurar Padrão de Fábrica' }}
-        </button>
-      </div>
     </div>
-
   </div>
-</div>
 
+  <!-- LADO DIREITO: Painel Showcase Imersivo (Tema D&D + Operação Global) -->
+  <div class="login-pane-showcase">
+    <div class="showcase-content-wrapper">
+      
+      <!-- Top Brand Tag -->
+      <div class="showcase-top-tag">
+        <span class="tag-pill">⚔️ DUNGEONS & DRAGONS GROUP • TECH</span>
+      </div>
+
+      <!-- Cards Flutuantes em Glassmorphism com Efeitos de Luz -->
+      <div class="showcase-feature-cards">
+        
+        <div class="glass-card">
+          <div class="glass-pill-header">
+            <span class="pill-badge pill-purple">🌐 MULTI-TIMEZONE IANA</span>
+            <span class="pill-meta">Brasil (UTC-3) ⇄ Europa (UTC+0/+1)</span>
+          </div>
+          <h3 class="glass-card-title">Arquitetura de Precisão Absoluta</h3>
+          <p class="glass-card-text">
+            Persistência 100% imutável em UTC no banco de dados, conversão automática para o fuso local do navegador e rastreabilidade total para colaboradores remotos e em viagens corporativas.
+          </p>
+          <div class="timezone-chips-row">
+            <div class="tz-chip">
+              <span class="tz-flag">🇧🇷</span>
+              <div>
+                <strong>São Paulo</strong>
+                <small>America/Sao_Paulo (UTC-3)</small>
+              </div>
+            </div>
+            <div class="tz-chip">
+              <span class="tz-flag">🇵🇹</span>
+              <div>
+                <strong>Lisboa</strong>
+                <small>Europe/Lisbon (UTC+0/+1)</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="glass-pill-header">
+            <span class="pill-badge pill-green">📊 GOVERNANÇA DE FOLHA</span>
+            <span class="pill-meta">Meta Contratual 160h/mês</span>
+          </div>
+          <h3 class="glass-card-title">Painel de Fechamento Executivo para o RH</h3>
+          <p class="glass-card-text">
+            Balanço consolidado de horas trabalhadas, apuração de banco de horas sobre dias decorridos, tratamento de inconsistências e emissão oficial de relatórios em PDF com assinatura.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Rodapé / Citação com Estilo de RPG Corporativo -->
+      <div class="showcase-bottom-quote">
+        <p class="quote-phrase">
+          “Gerencie o tempo dos seus heróis e colaboradores entre reinos e continentes com transparência e eficiência.”
+        </p>
+        <span class="quote-author">D&D Group • Operações Globais de Recursos Humanos</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>

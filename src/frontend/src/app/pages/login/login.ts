@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
-interface DemoAccount {
+export interface DemoAccount {
+  name: string;
   role: string;
   email: string;
   password: string;
@@ -13,40 +14,46 @@ interface DemoAccount {
 
 const DEFAULT_DEMO_ACCOUNTS: DemoAccount[] = [
   {
+    name: 'Beatriz Alencar',
     role: 'RH Geral',
     email: 'admin@dndgroup.com',
     password: 'Password123!',
-    description: 'Acesso total, relatórios e fechamentos'
+    description: 'Acesso total, relatórios executivos e fechamentos'
   },
   {
+    name: 'Carlos Mendes',
     role: 'Gestor (Brasil)',
     email: 'gestor.brasil@dndgroup.com',
     password: 'Password123!',
-    description: 'Gestão da equipe BR e aprovações'
+    description: 'Gestão da equipe BR e aprovação de ajustes'
   },
   {
+    name: 'Tiago Silva',
     role: 'Gestor (Europa)',
     email: 'gestor.europa@dndgroup.com',
     password: 'Password123!',
-    description: 'Gestão da equipe EU e aprovações'
+    description: 'Gestão da equipe EU e aprovação de ajustes'
   },
   {
+    name: 'Lucas Andrade',
     role: 'Colaborador (Brasil)',
     email: 'colab.brasil@dndgroup.com',
     password: 'Password123!',
-    description: 'Horário de Brasília (UTC-3)'
+    description: 'Horário de Brasília (America/Sao_Paulo - UTC-3)'
   },
   {
+    name: 'Mariana Costa',
     role: 'Colaborador (Viajante)',
     email: 'colab.viajante@dndgroup.com',
     password: 'Password123!',
-    description: 'Viagens frequentes entre BR e Portugal (UTC-3 / UTC+0)'
+    description: 'Viagens frequentes entre Brasil e Portugal'
   },
   {
+    name: 'Elena Dubois',
     role: 'Colaborador (Europa)',
     email: 'colab.europa@dndgroup.com',
     password: 'Password123!',
-    description: 'Horário de Lisboa (UTC+0 / UTC+1)'
+    description: 'Horário de Lisboa (Europe/Lisbon - UTC+0 / UTC+1)'
   }
 ];
 
@@ -79,7 +86,17 @@ export class LoginComponent implements OnInit {
     this.authService.getDemoAccounts().subscribe({
       next: (accounts) => {
         if (accounts && accounts.length > 0) {
-          this.demoAccounts.set(accounts);
+          const merged = accounts.map(a => {
+            const def = DEFAULT_DEMO_ACCOUNTS.find(d => d.email === a.email);
+            return {
+              name: def ? def.name : a.role,
+              role: a.role,
+              email: a.email,
+              password: a.password,
+              description: a.description
+            };
+          });
+          this.demoAccounts.set(merged);
         }
       },
       error: () => {
