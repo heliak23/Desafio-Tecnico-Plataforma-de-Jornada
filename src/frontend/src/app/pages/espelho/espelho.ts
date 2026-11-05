@@ -83,6 +83,14 @@ export class EspelhoComponent implements OnInit {
     });
   }
 
+  printTimesheet(): void {
+    window.print();
+  }
+
+  get currentDateString(): string {
+    return new Date().toLocaleDateString('pt-BR');
+  }
+
   getPunchIcon(type: TimeRecordType): string {
     switch (type) {
       case TimeRecordType.ClockIn: return '🟢 Ent:';

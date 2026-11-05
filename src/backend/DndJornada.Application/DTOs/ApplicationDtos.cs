@@ -100,3 +100,29 @@ public record AdjustmentResponse(
     DateTime CreatedAtUtc
 );
 
+public record TeamMonthlySummaryItemDto(
+    Guid UserId,
+    string Name,
+    string Email,
+    string Department,
+    string DefaultTimezoneId,
+    decimal DailyWorkHours,
+    string FormattedTotalWorked,
+    string FormattedTotalExpected,
+    string FormattedTotalBalance,
+    bool IsPositiveTotalBalance,
+    int IrregularitiesCount,
+    int ActiveDaysCount
+);
+
+public record TeamMonthlySummaryReportDto(
+    int Year,
+    int Month,
+    int TotalEmployees,
+    string FormattedTotalWorkedCompany,
+    string FormattedTotalBalanceCompany,
+    bool IsPositiveTotalBalanceCompany,
+    int TotalIrregularitiesCompany,
+    List<TeamMonthlySummaryItemDto> Items
+);
+

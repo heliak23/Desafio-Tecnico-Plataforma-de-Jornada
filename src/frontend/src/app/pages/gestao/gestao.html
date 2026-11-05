@@ -1,31 +1,195 @@
 <div class="container gestao-container">
   
-  <div class="page-title-row">
+  <!-- Cabeçalho Oficial visível apenas na Impressão/PDF -->
+  <div class="print-only print-official-header">
+    <div class="print-brand-row">
+      <div>
+        <h1 class="print-brand-title">⚔️ DUNGEONS & DRAGONS GROUP</h1>
+        <p class="print-brand-sub">Gestão Global de Ponto & Banco de Horas • Brasil & Europa</p>
+      </div>
+      <div class="print-meta-box">
+        <strong>FECHAMENTO MENSAL DA EQUIPE</strong>
+        <span>Competência: {{ months[selectedMonth - 1].name }} / {{ selectedYear }}</span>
+        <span>Emissão: {{ currentDateString }}</span>
+      </div>
+    </div>
+    <div class="print-divider"></div>
+  </div>
+
+  <div class="page-title-row no-print">
     <div>
-      <h2>👥 Painel de Gestão e Monitoramento de Equipe</h2>
+      <h2>👥 Painel de Gestão e Fechamento de Equipe</h2>
       <p class="subtitle">
-        Visão de líderes e RH para controle de jornada, aprovação de ocorrências e supervisão internacional.
+        Visão consolidada para RH e líderes: acompanhamento mensal, banco de horas, aprovação de ocorrências e relatórios oficiais.
       </p>
     </div>
-    <button (click)="onResetDatabase()" [disabled]="isProcessing()" class="btn btn-secondary btn-sm" title="Zerar todas as batidas e restaurar para o estado inicial de fábrica">
-      🔄 Zerar Banco de Dados
-    </button>
+    <div class="top-actions">
+      <button (click)="printTeamReport()" class="btn btn-outline-primary btn-sm" title="Gerar PDF ou imprimir relatório consolidado da equipe">
+        🖨️ Imprimir Fechamento da Equipe (PDF)
+      </button>
+      <button (click)="onResetDatabase()" [disabled]="isProcessing()" class="btn btn-secondary btn-sm" title="Zerar todas as batidas e restaurar para o estado inicial de fábrica">
+        🔄 Zerar Banco de Dados
+      </button>
+    </div>
   </div>
 
   @if (successMessage()) {
-    <div class="alert alert-success">
+    <div class="alert alert-success no-print">
       ✅ {{ successMessage() }}
     </div>
   }
 
   @if (errorMessage()) {
-    <div class="alert alert-danger">
+    <div class="alert alert-danger no-print">
       ⚠️ {{ errorMessage() }}
     </div>
   }
 
-  <!-- Seção 1: Solicitações de Ajuste Pendentes -->
-  <div class="card section-card">
+  <!-- SEÇÃO EM DESTAQUE: FECHAMENTO MENSAL CONSOLIDADO DA EQUIPE -->
+  <div class="card section-card highlight-card">
+    <div class="section-header-flex">
+      <div>
+        <div class="title-with-badge">
+          <h3>📊 Fechamento Mensal Consolidado da Equipe</h3>
+          <span class="badge badge-primary">Competência: {{ months[selectedMonth - 1].name }} / {{ selectedYear }}</span>
+        </div>
+        <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e ocorrências de toda a equipe.</p>
+      </div>
+
+      <!-- Filtros de Mês e Ano -->
+      <div class="filter-controls no-print">
+        <select 
+          [(ngModel)]="selectedMonth" 
+          (change)="onFilterSummaryChange()" 
+          class="form-control select-compact">
+          @for (m of months; track m.value) {
+            <option [value]="m.value">{{ m.name }}</option>
+          }
+        </select>
+
+        <select 
+          [(ngModel)]="selectedYear" 
+          (change)="onFilterSummaryChange()" 
+          class="form-control select-compact">
+          @for (y of years; track y) {
+            <option [value]="y">{{ y }}</option>
+          }
+        </select>
+
+        <button (click)="loadTeamSummary()" class="btn btn-secondary btn-sm">
+          🔄 Atualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards Executivos do Mês -->
+    <div class="metrics-summary-grid">
+      <div class="card metric-summary-card">
+        <span class="m-icon">👥</span>
+        <div>
+          <span class="m-label">Colaboradores</span>
+          <span class="m-val">{{ teamSummary()?.totalEmployees || employees().length }}</span>
+          <span class="m-sub">Sob sua gestão</span>
+        </div>
+      </div>
+
+      <div class="card metric-summary-card">
+        <span class="m-icon">⏱️</span>
+        <div>
+          <span class="m-label">Total Horas Trabalhadas</span>
+          <span class="m-val">{{ teamSummary()?.formattedTotalWorkedCompany || '00h 00m' }}</span>
+          <span class="m-sub">Consolidado no mês</span>
+        </div>
+      </div>
+
+      <div class="card metric-summary-card" [class.border-positive]="teamSummary()?.isPositiveTotalBalanceCompany" [class.border-negative]="!teamSummary()?.isPositiveTotalBalanceCompany">
+        <span class="m-icon">⚖️</span>
+        <div>
+          <span class="m-label">Saldo Banco de Horas</span>
+          <span class="m-val" [class.text-success]="teamSummary()?.isPositiveTotalBalanceCompany" [class.text-danger]="!teamSummary()?.isPositiveTotalBalanceCompany">
+            {{ teamSummary()?.formattedTotalBalanceCompany || '00h 00m' }}
+          </span>
+          <span class="m-sub">Crédito / Débito total</span>
+        </div>
+      </div>
+
+      <div class="card metric-summary-card">
+        <span class="m-icon">⚠️</span>
+        <div>
+          <span class="m-label">Inconsistências no Mês</span>
+          <span class="m-val" [class.text-danger]="(teamSummary()?.totalIrregularitiesCompany || 0) > 0">
+            {{ teamSummary()?.totalIrregularitiesCompany || 0 }}
+          </span>
+          <span class="m-sub">Batidas ímpares / pendências</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela Consolidada de Colaboradores -->
+    @if (isLoadingSummary()) {
+      <div class="loading-state">
+        <p>Calculando fechamento mensal da equipe...</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Colaborador</th>
+              <th>Departamento & Fuso</th>
+              <th>Dias Ativos</th>
+              <th>Horas Trabalhadas</th>
+              <th>Carga Prevista</th>
+              <th>Saldo de Horas</th>
+              <th>Status / Alertas</th>
+              <th class="no-print">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of teamSummary()?.items; track item.userId) {
+              <tr>
+                <td>
+                  <strong>{{ item.name }}</strong>
+                  <div class="sub-email">{{ item.email }}</div>
+                </td>
+                <td>
+                  <div>{{ item.department }}</div>
+                  <span class="badge badge-neutral badge-tiny">
+                    {{ item.defaultTimezoneId.includes('Sao_Paulo') ? '🇧🇷 Brasil' : '🇵🇹 Europa' }}
+                  </span>
+                </td>
+                <td class="col-mono">{{ item.activeDaysCount }} dias</td>
+                <td class="col-mono"><strong>{{ item.formattedTotalWorked }}</strong></td>
+                <td class="col-mono text-muted">{{ item.formattedTotalExpected }}</td>
+                <td class="col-mono" [class.text-success]="item.isPositiveTotalBalance" [class.text-danger]="!item.isPositiveTotalBalance">
+                  <strong>{{ item.formattedTotalBalance }}</strong>
+                </td>
+                <td>
+                  @if (item.irregularitiesCount > 0) {
+                    <span class="badge badge-warning" title="Possui batidas incompletas neste mês">
+                      ⚠️ {{ item.irregularitiesCount }} inconsistência(s)
+                    </span>
+                  } @else {
+                    <span class="badge badge-success">
+                      ✓ Regular
+                    </span>
+                  }
+                </td>
+                <td class="no-print">
+                  <button (click)="viewEmployeeById(item.userId)" class="btn btn-secondary btn-xs" title="Visualizar espelho detalhado do colaborador">
+                    👁️ Ver Espelho
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- SEÇÃO 2: SOLICITAÇÕES DE AJUSTE PENDENTES -->
+  <div class="card section-card no-print">
     <div class="section-header">
       <div class="title-with-badge">
         <h3>⏳ Solicitações Pendentes de Avaliação</h3>
@@ -33,7 +197,7 @@
           {{ pendingAdjustments().length }} pendente(s)
         </span>
       </div>
-      <p class="section-desc">Ajustes de ponto solicitados por colaboradores que aguardam seu parecer.</p>
+      <p class="section-desc">Ocorrências de ponto solicitadas pelos colaboradores que aguardam seu parecer formal.</p>
     </div>
 
     @if (pendingAdjustments().length === 0) {
@@ -78,55 +242,9 @@
     }
   </div>
 
-  <!-- Seção 2: Equipe Monitorada -->
-  <div class="card section-card">
-    <div class="section-header">
-      <div class="title-with-badge">
-        <h3>🌍 Colaboradores sob Gestão</h3>
-        <span class="badge badge-info">{{ employees().length }} colaboradores</span>
-      </div>
-      <p class="section-desc">Acompanhe a distribuição geográfica, fusos horários e espelhos de ponto da equipe.</p>
-    </div>
-
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Departamento</th>
-            <th>Fuso de Contratação</th>
-            <th>Carga Horária</th>
-            <th>Espelho</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (emp of employees(); track emp.id) {
-            <tr>
-              <td><strong>{{ emp.name }}</strong></td>
-              <td class="col-mono">{{ emp.email }}</td>
-              <td>{{ emp.department }}</td>
-              <td>
-                <span class="badge badge-neutral">
-                  {{ emp.defaultTimezoneId.includes('Sao_Paulo') ? '🇧🇷 Brasil' : '🇵🇹 Europa' }} ({{ emp.defaultTimezoneId }})
-                </span>
-              </td>
-              <td>{{ emp.dailyWorkHours }}h / dia</td>
-              <td>
-                <button (click)="viewEmployeeTimesheet(emp)" class="btn btn-secondary btn-xs">
-                  👁️ Ver Espelho
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </div>
-
   <!-- Modal de Avaliação de Ajuste -->
   @if (selectedAdjustment) {
-    <div class="modal-overlay">
+    <div class="modal-overlay no-print">
       <div class="modal-content card">
         <div class="modal-header">
           <h3>Avaliar Solicitação de Ajuste</h3>
@@ -163,7 +281,7 @@
               id="reviewNotes"
               [(ngModel)]="reviewNotes"
               rows="2"
-              placeholder="Ex: Aprovado conforme alinhado em reunião com a liderança."
+              placeholder="Ex: Aprovado conforme alinhado com a liderança."
               class="form-control">
             </textarea>
           </div>
@@ -184,16 +302,38 @@
     </div>
   }
 
-  <!-- Modal de Espelho do Colaborador -->
+  <!-- Modal de Espelho do Colaborador (com Suporte Oficial a Impressão / PDF) -->
   @if (selectedEmployeeReport) {
-    <div class="modal-overlay">
-      <div class="modal-content modal-large card">
+    <div class="modal-overlay printable-modal-overlay">
+      <div class="modal-content modal-large card printable-modal-content">
+        
+        <!-- Cabeçalho Oficial para Impressão da Folha Individual -->
+        <div class="print-only print-timesheet-header">
+          <div class="print-brand-row">
+            <div>
+              <h2 class="print-brand-title">⚔️ DUNGEONS & DRAGONS GROUP</h2>
+              <p class="print-brand-sub">Relatório de Espelho de Ponto Individual • Validação Mensal</p>
+            </div>
+            <div class="print-meta-box">
+              <strong>COMPETÊNCIA: {{ selectedEmployeeReport.month }}/{{ selectedEmployeeReport.year }}</strong>
+              <span>Colaborador: {{ selectedEmployeeReport.userName }}</span>
+              <span>Departamento: {{ selectedEmployeeReport.department }}</span>
+            </div>
+          </div>
+          <div class="print-divider"></div>
+        </div>
+
         <div class="modal-header">
           <div>
             <h3>Espelho Mensal: {{ selectedEmployeeReport.userName }}</h3>
             <span class="text-sub">{{ selectedEmployeeReport.department }} • Mês: {{ selectedEmployeeReport.month }}/{{ selectedEmployeeReport.year }}</span>
           </div>
-          <button (click)="closeEmployeeTimesheetModal()" class="close-btn">✖</button>
+          <div class="modal-header-actions no-print">
+            <button (click)="printEmployeeReport()" class="btn btn-outline-primary btn-sm">
+              🖨️ Imprimir Espelho (PDF)
+            </button>
+            <button (click)="closeEmployeeTimesheetModal()" class="close-btn">✖</button>
+          </div>
         </div>
 
         <div class="modal-body">
@@ -205,7 +345,7 @@
               <span>Esperado: <strong>{{ selectedEmployeeReport.formattedTotalExpected }}</strong></span>
             </div>
             <div class="metric-pill" [class.text-success]="selectedEmployeeReport.isPositiveTotalBalance" [class.text-danger]="!selectedEmployeeReport.isPositiveTotalBalance">
-              <span>Saldo: <strong>{{ selectedEmployeeReport.formattedTotalBalance }}</strong></span>
+              <span>Saldo Banco: <strong>{{ selectedEmployeeReport.formattedTotalBalance }}</strong></span>
             </div>
           </div>
 
@@ -214,8 +354,9 @@
               <thead>
                 <tr>
                   <th>Data</th>
-                  <th>Batidas</th>
+                  <th>Marcações Realizadas (Horário & Fuso)</th>
                   <th>Trabalhado</th>
+                  <th>Intervalo</th>
                   <th>Saldo</th>
                 </tr>
               </thead>
@@ -223,13 +364,18 @@
                 @for (d of selectedEmployeeReport.days; track d.date) {
                   @if (d.records.length > 0) {
                     <tr>
-                      <td>{{ d.formattedDate }}</td>
+                      <td><strong>{{ d.formattedDate }}</strong></td>
                       <td>
-                        @for (r of d.records; track r.id) {
-                          <span class="badge badge-neutral">{{ r.localTimestamp | date:'HH:mm' }}</span>
-                        }
+                        <div class="punches-wrap-compact">
+                          @for (r of d.records; track r.id) {
+                            <span class="badge badge-neutral badge-tiny" [title]="'Registrado em ' + r.timezoneId">
+                              {{ getPunchTypeName(r.type) }}: {{ formatTimeInOrigin(r) }}
+                            </span>
+                          }
+                        </div>
                       </td>
                       <td class="col-mono">{{ d.formattedTotalWorked }}</td>
+                      <td class="col-mono">{{ d.formattedTotalBreak }}</td>
                       <td class="col-mono" [class.text-success]="d.isPositiveBalance" [class.text-danger]="!d.isPositiveBalance">
                         {{ d.formattedBalance }}
                       </td>
@@ -239,9 +385,32 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Campos Oficiais de Assinatura no Rodapé do PDF -->
+          <div class="print-only print-signatures-row">
+            <div class="sig-box">
+              <div class="sig-line"></div>
+              <strong>Assinatura do Colaborador</strong>
+              <span>{{ selectedEmployeeReport.userName }}</span>
+            </div>
+            <div class="sig-box">
+              <div class="sig-line"></div>
+              <strong>Visto do Gestor / RH</strong>
+              <span>D&D Group HR Operations</span>
+            </div>
+            <div class="sig-box">
+              <div class="sig-line"></div>
+              <strong>Data da Homologação</strong>
+              <span>____ / ____ / ________</span>
+            </div>
+          </div>
+
         </div>
 
-        <div class="modal-footer">
+        <div class="modal-footer no-print">
+          <button (click)="printEmployeeReport()" class="btn btn-outline-primary">
+            🖨️ Imprimir / Salvar em PDF
+          </button>
           <button (click)="closeEmployeeTimesheetModal()" class="btn btn-secondary">
             Fechar
           </button>
@@ -251,4 +420,3 @@
   }
 
 </div>
-

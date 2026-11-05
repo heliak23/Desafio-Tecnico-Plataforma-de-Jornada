@@ -181,3 +181,267 @@
   max-height: 400px;
 }
 
+/* =========================================================
+   FECHAMENTO MENSAL DA EQUIPE & RELATÓRIOS
+   ========================================================= */
+.highlight-card {
+  border: 1.5px solid var(--primary-subtle);
+  background: linear-gradient(180deg, #fafcff 0%, #ffffff 100%);
+}
+
+.section-header-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.select-compact {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  width: auto;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.metrics-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.m-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.m-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+}
+
+.m-val {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--slate-800);
+  line-height: 1.2;
+}
+
+.m-sub {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--slate-400);
+}
+
+.border-positive {
+  border-left: 4px solid var(--success);
+}
+
+.border-negative {
+  border-left: 4px solid var(--danger);
+}
+
+.sub-email {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+  font-family: var(--font-mono);
+}
+
+.badge-tiny {
+  font-size: 0.6875rem;
+  padding: 0.15rem 0.4rem;
+}
+
+.punches-wrap-compact {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* =========================================================
+   ESTILOS DE IMPRESSÃO PROFISSIONAL (PDF / A4)
+   ========================================================= */
+.print-only {
+  display: none !important;
+}
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  .no-print,
+  .navbar,
+  header,
+  footer,
+  .btn,
+  .top-actions,
+  .filter-controls,
+  .modal-overlay:not(.printable-modal-overlay) {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .gestao-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  /* Cabeçalho Oficial */
+  .print-official-header,
+  .print-timesheet-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #0f172a;
+  }
+
+  .print-brand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .print-brand-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .print-brand-sub {
+    font-size: 0.75rem;
+    color: #475569;
+    margin: 0.2rem 0 0 0;
+  }
+
+  .print-meta-box {
+    text-align: right;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: #1e293b;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 1rem 0 !important;
+  }
+
+  th, td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 8px !important;
+    font-size: 9pt !important;
+  }
+
+  th {
+    background-color: #f1f5f9 !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+  }
+
+  /* Campos de Assinatura */
+  .print-signatures-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 2rem !important;
+    margin-top: 3rem !important;
+    padding-top: 1rem !important;
+    page-break-inside: avoid;
+  }
+
+  .sig-box {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .sig-line {
+    border-top: 1px solid #000000;
+    margin-bottom: 0.4rem;
+  }
+
+  .sig-box strong {
+    font-size: 8pt;
+    text-transform: uppercase;
+  }
+
+  .sig-box span {
+    font-size: 8pt;
+    color: #475569;
+  }
+
+  /* Quando imprimindo o modal aberto de espelho */
+  .printable-modal-overlay {
+    position: static !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .printable-modal-content {
+    max-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    max-height: none !important;
+  }
+
+  .max-h-modal {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+

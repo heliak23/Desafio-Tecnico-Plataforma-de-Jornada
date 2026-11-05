@@ -130,3 +130,29 @@ export interface ClockPunchRequest {
   simulatedTimestampUtc?: string;
 }
 
+export interface TeamMonthlySummaryItem {
+  userId: string;
+  name: string;
+  email: string;
+  department: string;
+  defaultTimezoneId: string;
+  dailyWorkHours: number;
+  formattedTotalWorked: string;
+  formattedTotalExpected: string;
+  formattedTotalBalance: string;
+  isPositiveTotalBalance: boolean;
+  irregularitiesCount: number;
+  activeDaysCount: number;
+}
+
+export interface TeamMonthlySummaryReport {
+  year: number;
+  month: number;
+  totalEmployees: number;
+  formattedTotalWorkedCompany: string;
+  formattedTotalBalanceCompany: string;
+  isPositiveTotalBalanceCompany: boolean;
+  totalIrregularitiesCompany: number;
+  items: TeamMonthlySummaryItem[];
+}
+

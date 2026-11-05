@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AdjustmentService } from '../../services/adjustment.service';
 import { EmployeeService } from '../../services/employee.service';
 import { AuthService } from '../../services/auth.service';
-import { AdjustmentResponse, AdjustmentStatus, User, TimeRecordType, MonthlyTimesheetReport } from '../../models/types';
+import { AdjustmentResponse, AdjustmentStatus, User, TimeRecordType, MonthlyTimesheetReport, TeamMonthlySummaryReport } from '../../models/types';
 
 @Component({
   selector: 'app-gestao',
@@ -17,6 +17,29 @@ export class GestaoComponent implements OnInit {
   pendingAdjustments = signal<AdjustmentResponse[]>([]);
   employees = signal<User[]>([]);
   isLoading = signal(false);
+
+  // Resumo de Fechamento Mensal da Equipe (RH / Gestor)
+  teamSummary = signal<TeamMonthlySummaryReport | null>(null);
+  isLoadingSummary = signal(false);
+  selectedYear: number = new Date().getFullYear();
+  selectedMonth: number = new Date().getMonth() + 1;
+
+  months = [
+    { value: 1, name: 'Janeiro' },
+    { value: 2, name: 'Fevereiro' },
+    { value: 3, name: 'Março' },
+    { value: 4, name: 'Abril' },
+    { value: 5, name: 'Maio' },
+    { value: 6, name: 'Junho' },
+    { value: 7, name: 'Julho' },
+    { value: 8, name: 'Agosto' },
+    { value: 9, name: 'Setembro' },
+    { value: 10, name: 'Outubro' },
+    { value: 11, name: 'Novembro' },
+    { value: 12, name: 'Dezembro' }
+  ];
+
+  years: number[] = [2025, 2026, 2027];
 
   // Modal / Review state
   selectedAdjustment: AdjustmentResponse | null = null;
@@ -58,6 +81,32 @@ export class GestaoComponent implements OnInit {
       },
       error: () => this.isLoading.set(false)
     });
+
+    // Carrega o fechamento consolidado da equipe
+    this.loadTeamSummary();
+  }
+
+  loadTeamSummary(): void {
+    this.isLoadingSummary.set(true);
+    this.employeeService.getTeamMonthlySummary(this.selectedYear, this.selectedMonth).subscribe({
+      next: (summary) => {
+        this.teamSummary.set(summary);
+        this.isLoadingSummary.set(false);
+      },
+      error: () => this.isLoadingSummary.set(false)
+    });
+  }
+
+  onFilterSummaryChange(): void {
+    this.loadTeamSummary();
+  }
+
+  printTeamReport(): void {
+    window.print();
+  }
+
+  printEmployeeReport(): void {
+    window.print();
   }
 
   openReviewModal(adjustment: AdjustmentResponse): void {
@@ -112,6 +161,22 @@ export class GestaoComponent implements OnInit {
     });
   }
 
+  viewEmployeeById(userId: string): void {
+    const emp = this.employees().find(e => e.id === userId);
+    if (emp) {
+      this.viewEmployeeTimesheet(emp);
+    } else {
+      this.isLoadingEmployeeReport.set(true);
+      this.employeeService.getEmployeeMonthly(userId, this.selectedYear, this.selectedMonth).subscribe({
+        next: (report) => {
+          this.selectedEmployeeReport = report;
+          this.isLoadingEmployeeReport.set(false);
+        },
+        error: () => this.isLoadingEmployeeReport.set(false)
+      });
+    }
+  }
+
   closeEmployeeTimesheetModal(): void {
     this.selectedEmployeeReport = null;
   }
@@ -148,5 +213,37 @@ export class GestaoComponent implements OnInit {
       default: return 'Batida';
     }
   }
-}
 
+  getPunchTypeName(type: TimeRecordType): string {
+    switch (type) {
+      case TimeRecordType.ClockIn: return 'Entrada';
+      case TimeRecordType.LunchStart: return 'Almoço';
+      case TimeRecordType.LunchEnd: return 'Retorno';
+      case TimeRecordType.ClockOut: return 'Saída';
+      default: return 'Ponto';
+    }
+  }
+
+  get currentDateString(): string {
+    return new Date().toLocaleDateString('pt-BR');
+  }
+
+  formatTimeInOrigin(record: any): string {
+    try {
+      const date = new Date(record.timestampUtc);
+      return date.toLocaleTimeString('pt-BR', {
+        timeZone: record.timezoneId || 'UTC',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    } catch {
+      const date = new Date(record.timestampUtc);
+      return date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    }
+  }
+}

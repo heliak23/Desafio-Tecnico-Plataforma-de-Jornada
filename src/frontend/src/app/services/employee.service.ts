@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User, MonthlyTimesheetReport } from '../models/types';
+import { User, MonthlyTimesheetReport, TeamMonthlySummaryReport } from '../models/types';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,14 @@ export class EmployeeService {
     if (timezoneId) params = params.set('timezoneId', timezoneId);
 
     return this.http.get<MonthlyTimesheetReport>(`${this.apiUrl}/${id}/monthly`, { params });
+  }
+
+  getTeamMonthlySummary(year?: number, month?: number): Observable<TeamMonthlySummaryReport> {
+    let params = new HttpParams();
+    if (year) params = params.set('year', year.toString());
+    if (month) params = params.set('month', month.toString());
+
+    return this.http.get<TeamMonthlySummaryReport>(`${this.apiUrl}/monthly-summary`, { params });
   }
 }
 

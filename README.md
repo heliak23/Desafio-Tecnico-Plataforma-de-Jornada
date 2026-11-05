@@ -31,6 +31,10 @@
    * Solicitação de inclusão de batida esquecida com justificativa obrigatória.
    * Fluxo de aprovação pelo Gestor/RH que insere automaticamente a marcação no espelho mensal (`RecordSource.ManualAdjustment`).
 
+6. **Fechamento Mensal da Equipe & Exportação em PDF / Impressão:**
+   * **Balanço Consolidado da Empresa:** Painel de fechamento do mês para RH e gestores com total de horas trabalhadas, saldo geral de banco de horas e total de inconsistências.
+   * **Exportação Oficial em PDF:** Layout A4 de impressão (`@media print`) tanto do **Espelho Individual de Ponto** quanto do **Relatório Consolidado de Fechamento da Equipe**, acompanhado de cabeçalho da *Dungeons & Dragons Group* e campos formais de assinatura do colaborador e visto do RH para homologação trabalhista.
+
 ---
 
 ## 🛠️ Stack Tecnológica

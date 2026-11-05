@@ -72,5 +72,82 @@ public class EmployeesController : BaseApiController
         var report = await _timeRecordService.GetMonthlyReportAsync(id, targetYear, targetMonth, timezoneId, ct);
         return Ok(report);
     }
+
+    /// <summary>
+    /// Retorna o resumo consolidado de fechamento mensal de todos os funcionários acessíveis (Gestor / RH).
+    /// </summary>
+    [HttpGet("monthly-summary")]
+    public async Task<ActionResult<TeamMonthlySummaryReportDto>> GetTeamMonthlySummary(
+        [FromQuery] int? year,
+        [FromQuery] int? month,
+        CancellationToken ct)
+    {
+        IReadOnlyList<Domain.Entities.User> employees;
+
+        if (CurrentUserRole == UserRole.HR)
+        {
+            employees = await _userRepository.GetAllAsync(ct);
+        }
+        else
+        {
+            employees = await _userRepository.GetSubordinatesAsync(CurrentUserId, ct);
+        }
+
+        var now = DateTime.UtcNow;
+        var targetYear = year ?? now.Year;
+        var targetMonth = month ?? now.Month;
+
+        var items = new List<TeamMonthlySummaryItemDto>();
+        TimeSpan totalWorkedCompany = TimeSpan.Zero;
+        TimeSpan totalExpectedCompany = TimeSpan.Zero;
+        int totalIrregularities = 0;
+
+        foreach (var emp in employees)
+        {
+            var report = await _timeRecordService.GetMonthlyReportAsync(emp.Id, targetYear, targetMonth, emp.DefaultTimezoneId, ct);
+            
+            var irregularities = report.Days.Count(d => d.HasIrregularity);
+            var activeDays = report.Days.Count(d => d.Records.Any());
+
+            totalWorkedCompany += report.TotalWorked;
+            totalExpectedCompany += report.TotalExpected;
+            totalIrregularities += irregularities;
+
+            items.Add(new TeamMonthlySummaryItemDto(
+                emp.Id,
+                emp.Name,
+                emp.Email,
+                emp.Department,
+                emp.DefaultTimezoneId,
+                emp.DailyWorkHours,
+                report.FormattedTotalWorked,
+                report.FormattedTotalExpected,
+                report.FormattedTotalBalance,
+                report.IsPositiveTotalBalance,
+                irregularities,
+                activeDays
+            ));
+        }
+
+        var totalBalanceCompany = totalWorkedCompany - totalExpectedCompany;
+        var isPositiveBalance = totalBalanceCompany >= TimeSpan.Zero;
+        var sign = isPositiveBalance ? "+" : "-";
+        var absBalance = totalBalanceCompany.Duration();
+        var formattedBalanceCompany = $"{sign}{(int)absBalance.TotalHours:D2}h {absBalance.Minutes:D2}m";
+        var formattedWorkedCompany = $"{(int)totalWorkedCompany.TotalHours:D2}h {totalWorkedCompany.Minutes:D2}m";
+
+        var summary = new TeamMonthlySummaryReportDto(
+            targetYear,
+            targetMonth,
+            employees.Count,
+            formattedWorkedCompany,
+            formattedBalanceCompany,
+            isPositiveBalance,
+            totalIrregularities,
+            items
+        );
+
+        return Ok(summary);
+    }
 }
 

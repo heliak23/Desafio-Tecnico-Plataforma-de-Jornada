@@ -1,7 +1,24 @@
 <div class="container espelho-container">
   
+  <!-- Cabeçalho Oficial visível apenas na Impressão/PDF -->
+  <div class="print-only print-official-header">
+    <div class="print-brand-row">
+      <div>
+        <h1 class="print-brand-title">⚔️ DUNGEONS & DRAGONS GROUP</h1>
+        <p class="print-brand-sub">Espelho Mensal de Ponto • Registro Eletrônico de Ponto</p>
+      </div>
+      <div class="print-meta-box">
+        <strong>COMPETÊNCIA: {{ months[selectedMonth - 1].name }} / {{ selectedYear }}</strong>
+        <span>Colaborador: {{ report()?.userName }}</span>
+        <span>Departamento: {{ report()?.department }}</span>
+        <span>Emissão: {{ currentDateString }}</span>
+      </div>
+    </div>
+    <div class="print-divider"></div>
+  </div>
+
   <!-- Header & Filtros -->
-  <div class="espelho-header card">
+  <div class="espelho-header card no-print">
     <div class="header-titles">
       <h2>📅 Espelho de Ponto Mensal</h2>
       <p class="subtitle">
@@ -9,33 +26,39 @@
       </p>
     </div>
 
-    <div class="filters-bar">
-      <div class="filter-item">
-        <label class="filter-label">Mês:</label>
-        <select [(ngModel)]="selectedMonth" (change)="onFilterChange()" class="form-control filter-select">
-          @for (m of months; track m.value) {
-            <option [value]="m.value">{{ m.name }}</option>
-          }
-        </select>
+    <div class="header-action-row">
+      <div class="filters-bar">
+        <div class="filter-item">
+          <label class="filter-label">Mês:</label>
+          <select [(ngModel)]="selectedMonth" (change)="onFilterChange()" class="form-control filter-select">
+            @for (m of months; track m.value) {
+              <option [value]="m.value">{{ m.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label class="filter-label">Ano:</label>
+          <select [(ngModel)]="selectedYear" (change)="onFilterChange()" class="form-control filter-select">
+            @for (y of years; track y) {
+              <option [value]="y">{{ y }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filter-item timezone-filter">
+          <label class="filter-label">Perspectiva de Fuso Horário:</label>
+          <select [(ngModel)]="selectedTimezone" (change)="onFilterChange()" class="form-control filter-select">
+            @for (tz of availableTimezones; track tz.id) {
+              <option [value]="tz.id">{{ tz.label }}</option>
+            }
+          </select>
+        </div>
       </div>
 
-      <div class="filter-item">
-        <label class="filter-label">Ano:</label>
-        <select [(ngModel)]="selectedYear" (change)="onFilterChange()" class="form-control filter-select">
-          @for (y of years; track y) {
-            <option [value]="y">{{ y }}</option>
-          }
-        </select>
-      </div>
-
-      <div class="filter-item timezone-filter">
-        <label class="filter-label">Perspectiva de Fuso Horário:</label>
-        <select [(ngModel)]="selectedTimezone" (change)="onFilterChange()" class="form-control filter-select">
-          @for (tz of availableTimezones; track tz.id) {
-            <option [value]="tz.id">{{ tz.label }}</option>
-          }
-        </select>
-      </div>
+      <button (click)="printTimesheet()" class="btn btn-outline-primary btn-sm" title="Imprimir ou salvar este espelho de ponto em PDF">
+        🖨️ Imprimir Espelho (PDF)
+      </button>
     </div>
   </div>
 
@@ -44,7 +67,7 @@
     <div class="card summary-card">
       <span class="summary-label">Total Trabalhado</span>
       <span class="summary-val">{{ report()?.formattedTotalWorked || '00h 00m' }}</span>
-      <span class="summary-sub">Horas computadas no período</span>
+      <span class="summary-sub">Horas efetivamente apuradas</span>
     </div>
 
     <div class="card summary-card">
@@ -132,7 +155,7 @@
                     <span class="badge badge-warning" [title]="day.irregularityReason || 'Inconsistência'">
                       ⚠️ {{ day.irregularityReason || 'Inconsistência' }}
                     </span>
-                    <button (click)="goToAdjustment(day)" class="btn btn-secondary btn-xs">
+                    <button (click)="goToAdjustment(day)" class="btn btn-secondary btn-xs no-print">
                       Corrigir
                     </button>
                   </div>
@@ -148,7 +171,26 @@
         </tbody>
       </table>
     }
+
+    <!-- Campos Oficiais de Assinatura para Impressão -->
+    <div class="print-only print-signatures-row">
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <strong>Assinatura do Colaborador</strong>
+        <span>{{ report()?.userName }}</span>
+      </div>
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <strong>Visto do Gestor / Recursos Humanos</strong>
+        <span>D&D Group Operations</span>
+      </div>
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <strong>Data da Homologação</strong>
+        <span>____ / ____ / ________</span>
+      </div>
+    </div>
+
   </div>
 
 </div>
-
