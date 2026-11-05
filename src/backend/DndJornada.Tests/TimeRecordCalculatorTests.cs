@@ -123,5 +123,31 @@ public class TimeRecordCalculatorTests
 
         next.Should().Be(expectedNext);
     }
+
+    [Fact]
+    public void CalculateDailyReport_ShouldCalculate8Hours_WhenSimulatedFastForwardWorkday()
+    {
+        // Cenário: Simulação de avanço de tempo rápida de uma jornada inteira de 8 horas
+        var date = new DateOnly(2026, 11, 5);
+        var baseUtc = new DateTime(2026, 11, 5, 8, 0, 0, DateTimeKind.Utc);
+        var userId = Guid.NewGuid();
+
+        // 08:00 Entrada, +4h -> 12:00 Início Almoço, +1h -> 13:00 Retorno, +4h -> 17:00 Saída
+        var records = new List<TimeRecord>
+        {
+            new() { Id = Guid.NewGuid(), UserId = userId, TimestampUtc = baseUtc, Type = TimeRecordType.ClockIn },
+            new() { Id = Guid.NewGuid(), UserId = userId, TimestampUtc = baseUtc.AddHours(4), Type = TimeRecordType.LunchStart },
+            new() { Id = Guid.NewGuid(), UserId = userId, TimestampUtc = baseUtc.AddHours(5), Type = TimeRecordType.LunchEnd },
+            new() { Id = Guid.NewGuid(), UserId = userId, TimestampUtc = baseUtc.AddHours(9), Type = TimeRecordType.ClockOut }
+        };
+
+        var report = _calculator.CalculateDailyReport(date, "Europe/Lisbon", 8.0m, records);
+
+        report.TotalWorkedTime.Should().Be(TimeSpan.FromHours(8));
+        report.TotalBreakTime.Should().Be(TimeSpan.FromHours(1));
+        report.Balance.Should().Be(TimeSpan.Zero);
+        report.FormattedTotalWorked.Should().Be("08h 00m");
+        report.HasIrregularity.Should().BeFalse();
+    }
 }
 

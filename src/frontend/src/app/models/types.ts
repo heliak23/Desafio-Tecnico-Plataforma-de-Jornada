@@ -127,5 +127,6 @@ export interface ClockPunchRequest {
   timezoneId?: string;
   offsetMinutes?: number;
   locationNotes?: string;
+  simulatedTimestampUtc?: string;
 }
 

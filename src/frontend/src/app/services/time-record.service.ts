@@ -36,14 +36,22 @@ export class TimeRecordService {
   }
 
   /**
-   * Bate ponto enviando os metadados de fuso e horário local (automático ou selecionado)
+   * Bate ponto enviando os metadados de fuso e horário local (automático ou selecionado),
+   * além do horário simulado opcional para modo de testes/avaliação.
    */
-  punch(locationNotes?: string, type?: TimeRecordType, timezoneId?: string, offsetMinutes?: number): Observable<TimeRecordResponse> {
+  punch(
+    locationNotes?: string,
+    type?: TimeRecordType,
+    timezoneId?: string,
+    offsetMinutes?: number,
+    simulatedTimestampUtc?: string
+  ): Observable<TimeRecordResponse> {
     const request: ClockPunchRequest = {
       type: type,
       timezoneId: timezoneId || this.getBrowserTimezone(),
       offsetMinutes: offsetMinutes !== undefined ? offsetMinutes : this.getBrowserOffsetMinutes(),
-      locationNotes: locationNotes
+      locationNotes: locationNotes,
+      simulatedTimestampUtc: simulatedTimestampUtc
     };
 
     return this.http.post<TimeRecordResponse>(`${this.apiUrl}/punch`, request);
@@ -66,8 +74,12 @@ export class TimeRecordService {
     return this.http.get<MonthlyTimesheetReport>(`${this.apiUrl}/monthly`, { params });
   }
 
-  getNextExpected(): Observable<{ type: TimeRecordType; description: string }> {
-    return this.http.get<{ type: TimeRecordType; description: string }>(`${this.apiUrl}/next-expected`);
+  getNextExpected(simulatedTimeUtc?: string, timezoneId?: string): Observable<{ type: TimeRecordType; description: string }> {
+    let params = new HttpParams();
+    if (simulatedTimeUtc) params = params.set('simulatedTimeUtc', simulatedTimeUtc);
+    if (timezoneId) params = params.set('timezoneId', timezoneId);
+
+    return this.http.get<{ type: TimeRecordType; description: string }>(`${this.apiUrl}/next-expected`, { params });
   }
 
   getLastPunch(): Observable<TimeRecordResponse | null> {

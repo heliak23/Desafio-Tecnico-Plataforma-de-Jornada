@@ -25,6 +25,9 @@ export class PontoComponent implements OnInit, OnDestroy {
   readonly timezone = signal('');
   readonly offsetString = signal('');
 
+  // Simulador de Avanço de Horário (Time Travel)
+  readonly simulatedOffsetMinutes = signal<number>(0);
+
   dailyReport = signal<DailyTimeReport | null>(null);
   nextPunchType = signal<TimeRecordType>(TimeRecordType.ClockIn);
   nextPunchDescription = signal<string>('Entrada');
@@ -96,14 +99,14 @@ export class PontoComponent implements OnInit, OnDestroy {
   }
 
   private updateClock(): void {
-    const now = new Date();
+    const effectiveNow = new Date(Date.now() + this.simulatedOffsetMinutes() * 60 * 1000);
     const tz = this.getEffectiveTimezone();
     this.timezone.set(tz);
 
     try {
-      this.currentTime.set(now.toLocaleTimeString('pt-BR', { timeZone: tz, hour12: false }));
+      this.currentTime.set(effectiveNow.toLocaleTimeString('pt-BR', { timeZone: tz, hour12: false }));
       this.currentDate.set(
-        now.toLocaleDateString('pt-BR', {
+        effectiveNow.toLocaleDateString('pt-BR', {
           timeZone: tz,
           weekday: 'long',
           day: '2-digit',
@@ -112,13 +115,13 @@ export class PontoComponent implements OnInit, OnDestroy {
         })
       );
     } catch {
-      this.currentTime.set(now.toLocaleTimeString('pt-BR', { hour12: false }));
+      this.currentTime.set(effectiveNow.toLocaleTimeString('pt-BR', { hour12: false }));
     }
   }
 
   private calculateOffsetMinutesForTimezone(tz: string): number {
     try {
-      const now = new Date();
+      const now = new Date(Date.now() + this.simulatedOffsetMinutes() * 60 * 1000);
       const localStr = now.toLocaleString('en-US', { timeZone: tz });
       const utcStr = now.toLocaleString('en-US', { timeZone: 'UTC' });
       return Math.round((new Date(localStr).getTime() - new Date(utcStr).getTime()) / 60000);
@@ -136,14 +139,75 @@ export class PontoComponent implements OnInit, OnDestroy {
     this.offsetString.set(`UTC${sign}${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`);
   }
 
+  // --- Funções do Simulador de Horário (Time Travel) ---
+  advanceMinutes(minutes: number): void {
+    this.simulatedOffsetMinutes.update(current => current + minutes);
+    this.updateClock();
+    this.loadTodayData();
+  }
+
+  resetSimulatedTime(): void {
+    this.simulatedOffsetMinutes.set(0);
+    this.updateClock();
+    this.loadTodayData();
+  }
+
+  jumpToHour(targetHour: number): void {
+    const tz = this.getEffectiveTimezone();
+    const now = new Date();
+    
+    // Obtém hora e minuto atual no fuso selecionado
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false
+    }).formatToParts(now);
+
+    const curHour = Number(parts.find(p => p.type === 'hour')?.value ?? 0);
+    const curMinute = Number(parts.find(p => p.type === 'minute')?.value ?? 0);
+
+    const currentTotalMinutes = curHour * 60 + curMinute;
+    const targetTotalMinutes = targetHour * 60;
+
+    let delta = targetTotalMinutes - currentTotalMinutes;
+    // Se o horário alvo for menor que a hora atual, pula para o mesmo horário amanhã (+ 24h)
+    if (delta < 0) {
+      delta += 24 * 60;
+    }
+
+    this.simulatedOffsetMinutes.set(delta);
+    this.updateClock();
+    this.loadTodayData();
+  }
+
+  getSimulatedOffsetLabel(): string {
+    const offset = this.simulatedOffsetMinutes();
+    if (offset === 0) return 'Horário Real';
+    const sign = offset > 0 ? '+' : '-';
+    const abs = Math.abs(offset);
+    const hours = Math.floor(abs / 60);
+    const minutes = abs % 60;
+
+    if (hours > 0 && minutes > 0) return `${sign}${hours}h ${minutes}min`;
+    if (hours > 0) return `${sign}${hours}h`;
+    return `${sign}${minutes}min`;
+  }
+
   loadTodayData(): void {
     const tz = this.getEffectiveTimezone();
-    this.timeRecordService.getDaily(undefined, tz).subscribe({
+    const effectiveNow = new Date(Date.now() + this.simulatedOffsetMinutes() * 60 * 1000);
+    
+    // Formata YYYY-MM-DD no fuso selecionado
+    const dateFormatted = new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(effectiveNow);
+
+    this.timeRecordService.getDaily(dateFormatted, tz).subscribe({
       next: (report) => this.dailyReport.set(report),
       error: () => {}
     });
 
-    this.timeRecordService.getNextExpected().subscribe({
+    const simTimeUtc = this.simulatedOffsetMinutes() !== 0 ? effectiveNow.toISOString() : undefined;
+    this.timeRecordService.getNextExpected(simTimeUtc, tz).subscribe({
       next: (res) => {
         this.nextPunchType.set(res.type);
         this.nextPunchDescription.set(res.description);
@@ -161,15 +225,20 @@ export class PontoComponent implements OnInit, OnDestroy {
     const tz = this.getEffectiveTimezone();
     const offset = this.calculateOffsetMinutesForTimezone(tz);
 
-    this.timeRecordService.punch(this.locationNotes, typeToSend, tz, offset).subscribe({
+    const simDate = this.simulatedOffsetMinutes() !== 0 
+      ? new Date(Date.now() + this.simulatedOffsetMinutes() * 60 * 1000).toISOString()
+      : undefined;
+
+    this.timeRecordService.punch(this.locationNotes, typeToSend, tz, offset, simDate).subscribe({
       next: (res) => {
         this.isPunching.set(false);
         const typeName = this.getPunchName(res.type);
-        this.successMessage.set(`Ponto registrado com sucesso: ${typeName}!`);
+        const simSuffix = this.simulatedOffsetMinutes() !== 0 ? ` (Horário Simulado: ${this.currentTime()})` : '';
+        this.successMessage.set(`Ponto registrado com sucesso: ${typeName}${simSuffix}!`);
         this.showCustomTypeSelect = false;
         this.loadTodayData();
 
-        setTimeout(() => this.successMessage.set(null), 5000);
+        setTimeout(() => this.successMessage.set(null), 6000);
       },
       error: (err) => {
         this.isPunching.set(false);

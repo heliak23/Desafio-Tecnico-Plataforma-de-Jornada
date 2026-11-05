@@ -18,7 +18,8 @@ public record ClockPunchRequest(
     TimeRecordType? Type,
     string? TimezoneId,
     int? OffsetMinutes,
-    string? LocationNotes
+    string? LocationNotes,
+    DateTime? SimulatedTimestampUtc = null
 );
 
 public record TimeRecordResponse(

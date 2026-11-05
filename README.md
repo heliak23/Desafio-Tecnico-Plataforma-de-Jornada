@@ -12,16 +12,22 @@
    * **Detecção Automática & Simulador de Deslocamento:** o frontend detecta o fuso do dispositivo do colaborador em tempo real via JavaScript `Intl` e conta com um seletor visual na tela de registro para simular e testar deslocamentos internacionais entre São Paulo (UTC-3), Lisboa (UTC+0/+1), Madrid (UTC+1/+2) ou Londres (UTC+0/+1).
    * **Perspectiva Flexível no Espelho:** o usuário e o RH podem alternar a visualização das marcações entre o Fuso Local, Fuso da Europa e UTC Absoluto.
 
-2. **Clean Architecture no Backend (.NET 8):**
+2. **Simulador de Horário / Máquina do Tempo (Time Travel para Avaliação):**
+   * **Demonstração Instantânea de 8 Horas:** o recrutador/avaliador não precisa esperar 8 horas reais para validar os cálculos.
+   * Na tela de **Registrar Ponto**, há um painel de simulação que avança o relógio virtual gradualmente (`+15m`, `+30m`, `+1h`, `+2h`, `+4h`) ou realiza saltos diretos de rotina (`08:00 Entrada`, `12:00 Almoço`, `13:00 Volta`, `17:00 Saída`).
+   * O relógio e a máquina de estados reagem imediatamente na interface e registram os pontos com timestamps simulados preservando integridade UTC.
+
+3. **Clean Architecture no Backend (.NET 8):**
    * Separação estrita em camadas: `Domain`, `Application`, `Infrastructure`, `Api` e `Tests`.
    * Regras de cálculo de jornada e banco de horas isoladas e testadas com **100% de aprovação em testes unitários automatizados**.
 
-3. **Frontend Moderno em Angular (v18/19):**
+4. **Frontend Moderno em Angular (v18/19):**
    * Standalone Components, Signals reativos para controle de estado, interceptors HTTP para injeção de JWT.
    * Design System corporativo e responsivo (Desktop e Mobile).
    * **Seletor de Perfis Demo com 1-Click:** botão na tela de login para o avaliador testar instantaneamente cada papel da empresa sem precisar digitar credenciais.
+   * **Botão de Limpeza do Banco (Reset):** permite limpar batidas com 1 clique para reiniciar os testes do zero a qualquer instante.
 
-4. **Ciclo Completo de Ajustes e Ocorrências:**
+5. **Ciclo Completo de Ajustes e Ocorrências:**
    * Solicitação de inclusão de batida esquecida com justificativa obrigatória.
    * Fluxo de aprovação pelo Gestor/RH que insere automaticamente a marcação no espelho mensal (`RecordSource.ManualAdjustment`).
 

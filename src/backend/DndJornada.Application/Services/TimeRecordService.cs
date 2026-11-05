@@ -30,8 +30,11 @@ public class TimeRecordService : ITimeRecordService
             ? request.TimezoneId
             : user.DefaultTimezoneId;
 
-        // Resolve offset
-        var nowUtc = DateTime.UtcNow;
+        // Resolve timestamp & offset
+        var nowUtc = request.SimulatedTimestampUtc.HasValue
+            ? DateTime.SpecifyKind(request.SimulatedTimestampUtc.Value, DateTimeKind.Utc)
+            : DateTime.UtcNow;
+
         int offsetMinutes;
 
         if (request.OffsetMinutes.HasValue)
@@ -53,9 +56,13 @@ public class TimeRecordService : ITimeRecordService
 
         // Validação anti-duplicidade (evita duplo clique acidental em menos de 30 segundos)
         var lastPunch = await _timeRecordRepository.GetLastRecordByUserAsync(userId, ct);
-        if (lastPunch != null && (nowUtc - lastPunch.TimestampUtc).TotalSeconds < 30)
+        if (!request.SimulatedTimestampUtc.HasValue && lastPunch != null && (nowUtc - lastPunch.TimestampUtc).TotalSeconds < 30)
         {
             throw new InvalidOperationException("Batida duplicada detectada. Por favor, aguarde 30 segundos entre batidas.");
+        }
+        else if (request.SimulatedTimestampUtc.HasValue && lastPunch != null && Math.Abs((nowUtc - lastPunch.TimestampUtc).TotalSeconds) < 5)
+        {
+            throw new InvalidOperationException("Batida no mesmo horário simulado já registrada.");
         }
 
         // Determina o tipo de batida
@@ -126,13 +133,27 @@ public class TimeRecordService : ITimeRecordService
         return _calculator.CalculateMonthlyReport(user, year, month, tz, records);
     }
 
-    public async Task<TimeRecordType> GetNextExpectedPunchTypeAsync(Guid userId, CancellationToken ct = default)
+    public async Task<TimeRecordType> GetNextExpectedPunchTypeAsync(Guid userId, DateTime? referenceUtc = null, string? timezoneId = null, CancellationToken ct = default)
     {
         var user = await _userRepository.GetByIdAsync(userId, ct)
             ?? throw new KeyNotFoundException("Colaborador não encontrado.");
 
-        var todayRecords = await _timeRecordRepository.GetByUserAndDateAsync(
-            userId, DateOnly.FromDateTime(DateTime.UtcNow), user.DefaultTimezoneId, ct);
+        var tz = !string.IsNullOrWhiteSpace(timezoneId) ? timezoneId : user.DefaultTimezoneId;
+        var refTime = referenceUtc ?? DateTime.UtcNow;
+
+        int offsetMinutes;
+        try
+        {
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(tz);
+            offsetMinutes = (int)timeZoneInfo.GetUtcOffset(refTime).TotalMinutes;
+        }
+        catch
+        {
+            offsetMinutes = 0;
+        }
+
+        var civilDate = DateOnly.FromDateTime(DateTime.SpecifyKind(refTime, DateTimeKind.Utc).AddMinutes(offsetMinutes));
+        var todayRecords = await _timeRecordRepository.GetByUserAndDateAsync(userId, civilDate, tz, ct);
 
         return _calculator.DetermineNextExpectedPunch(todayRecords);
     }

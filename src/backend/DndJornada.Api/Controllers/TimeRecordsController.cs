@@ -75,9 +75,12 @@ public class TimeRecordsController : BaseApiController
     /// Sugere o próximo tipo de batida esperado com base no histórico do dia.
     /// </summary>
     [HttpGet("next-expected")]
-    public async Task<ActionResult<object>> GetNextExpectedPunch(CancellationToken ct)
+    public async Task<ActionResult<object>> GetNextExpectedPunch(
+        [FromQuery] DateTime? simulatedTimeUtc,
+        [FromQuery] string? timezoneId,
+        CancellationToken ct)
     {
-        var nextType = await _timeRecordService.GetNextExpectedPunchTypeAsync(CurrentUserId, ct);
+        var nextType = await _timeRecordService.GetNextExpectedPunchTypeAsync(CurrentUserId, simulatedTimeUtc, timezoneId, ct);
         return Ok(new
         {
             type = nextType,

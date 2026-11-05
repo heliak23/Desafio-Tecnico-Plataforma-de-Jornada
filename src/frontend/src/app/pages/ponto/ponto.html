@@ -13,6 +13,61 @@
     </div>
   }
 
+  <!-- 🧪 PAINEL DO SIMULADOR DE HORÁRIO / TIME TRAVEL (MODO RECRUTADOR / AVALIAÇÃO) -->
+  <div class="card simulator-card" [class.simulator-card-active]="simulatedOffsetMinutes() !== 0">
+    <div class="simulator-top">
+      <div class="simulator-title-group">
+        <span class="simulator-icon">⏳</span>
+        <div>
+          <h2 class="simulator-heading">Máquina do Tempo • Simulador de Jornada</h2>
+          <p class="simulator-subheading">
+            Avance o relógio virtual para testar uma jornada completa de 8 horas (Entrada ➔ Almoço ➔ Volta ➔ Saída) em segundos, sem esperar horas reais.
+          </p>
+        </div>
+      </div>
+
+      <div class="simulator-status-box">
+        @if (simulatedOffsetMinutes() !== 0) {
+          <div class="status-badge-simulated">
+            <span class="pulse-dot"></span>
+            <strong>Simulação Ativa:</strong> {{ getSimulatedOffsetLabel() }}
+          </div>
+          <button type="button" class="btn-restore-real" (click)="resetSimulatedTime()" title="Voltar ao relógio real do computador">
+            🔄 Voltar ao Horário Real
+          </button>
+        } @else {
+          <div class="status-badge-real">
+            ⏱️ <strong>Horário Real</strong>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Controles de Avanço do Tempo -->
+    <div class="simulator-controls">
+      <div class="control-row">
+        <span class="control-label">Avanço Gradual:</span>
+        <div class="control-buttons">
+          <button type="button" class="btn-time-chip" (click)="advanceMinutes(15)">+15 min</button>
+          <button type="button" class="btn-time-chip" (click)="advanceMinutes(30)">+30 min</button>
+          <button type="button" class="btn-time-chip" (click)="advanceMinutes(60)">+1 hora</button>
+          <button type="button" class="btn-time-chip" (click)="advanceMinutes(120)">+2 horas</button>
+          <button type="button" class="btn-time-chip" (click)="advanceMinutes(240)">+4 horas</button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <span class="control-label">Saltos Rápidos da Jornada:</span>
+        <div class="control-buttons">
+          <button type="button" class="btn-jump-chip" (click)="jumpToHour(8)">☀️ 08:00 (Entrada)</button>
+          <button type="button" class="btn-jump-chip" (click)="jumpToHour(12)">☕ 12:00 (Almoço)</button>
+          <button type="button" class="btn-jump-chip" (click)="jumpToHour(13)">💼 13:00 (Volta)</button>
+          <button type="button" class="btn-jump-chip" (click)="jumpToHour(17)">🛑 17:00 (Saída)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="ponto-grid">
     
     <!-- Coluna Principal: Relógio & Botão de Ponto -->
@@ -35,6 +90,11 @@
       </div>
 
       <div class="clock-box">
+        @if (simulatedOffsetMinutes() !== 0) {
+          <div class="simulated-pill-indicator">
+            ⚡ Horário Simulado Ativo ({{ getSimulatedOffsetLabel() }})
+          </div>
+        }
         <span class="date-text">{{ currentDate() }}</span>
         <div class="time-display">{{ currentTime() }}</div>
         <div class="timezone-info-pill">
@@ -212,4 +272,3 @@
 
   </div>
 </div>
-
