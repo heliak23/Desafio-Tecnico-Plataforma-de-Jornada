@@ -9,7 +9,7 @@
       </div>
       <div class="print-meta-box">
         <strong>FECHAMENTO MENSAL DA EQUIPE</strong>
-        <span>Competência: {{ months[selectedMonth - 1].name }} / {{ selectedYear }}</span>
+        <span>Competência: {{ currentMonthName }} / {{ selectedYear }}</span>
         <span>Emissão: {{ currentDateString }}</span>
       </div>
     </div>
@@ -52,7 +52,7 @@
         <div>
           <div class="title-with-badge">
             <h3>📊 Fechamento Mensal Consolidado da Equipe (Governança RH)</h3>
-            <span class="badge badge-primary">Competência: {{ months[selectedMonth - 1].name }} / {{ selectedYear }}</span>
+            <span class="badge badge-primary">Competência: {{ currentMonthName }} / {{ selectedYear }}</span>
           </div>
           <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e banco de horas de toda a empresa.</p>
         </div>
@@ -60,24 +60,24 @@
         <!-- Filtros de Mês e Ano -->
         <div class="filter-controls no-print">
           <select 
-            [(ngModel)]="selectedMonth" 
-            (change)="onFilterSummaryChange()" 
+            [ngModel]="selectedMonth" 
+            (ngModelChange)="onMonthChange($event)" 
             class="form-control select-compact">
             @for (m of months; track m.value) {
-              <option [value]="m.value">{{ m.name }}</option>
+              <option [ngValue]="m.value">{{ m.name }}</option>
             }
           </select>
 
           <select 
-            [(ngModel)]="selectedYear" 
-            (change)="onFilterSummaryChange()" 
+            [ngModel]="selectedYear" 
+            (ngModelChange)="onYearChange($event)" 
             class="form-control select-compact">
             @for (y of years; track y) {
-              <option [value]="y">{{ y }}</option>
+              <option [ngValue]="y">{{ y }}</option>
             }
           </select>
 
-          <button (click)="loadTeamSummary()" class="btn btn-secondary btn-sm">
+          <button (click)="loadTeamSummary()" class="btn btn-secondary btn-sm" title="Recarregar fechamento da equipe">
             🔄 Atualizar
           </button>
         </div>

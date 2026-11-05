@@ -30,25 +30,25 @@
       <div class="filters-bar">
         <div class="filter-item">
           <label class="filter-label">Mês:</label>
-          <select [(ngModel)]="selectedMonth" (change)="onFilterChange()" class="form-control filter-select">
+          <select [ngModel]="selectedMonth" (ngModelChange)="onMonthChange($event)" class="form-control filter-select">
             @for (m of months; track m.value) {
-              <option [value]="m.value">{{ m.name }}</option>
+              <option [ngValue]="m.value">{{ m.name }}</option>
             }
           </select>
         </div>
 
         <div class="filter-item">
           <label class="filter-label">Ano:</label>
-          <select [(ngModel)]="selectedYear" (change)="onFilterChange()" class="form-control filter-select">
+          <select [ngModel]="selectedYear" (ngModelChange)="onYearChange($event)" class="form-control filter-select">
             @for (y of years; track y) {
-              <option [value]="y">{{ y }}</option>
+              <option [ngValue]="y">{{ y }}</option>
             }
           </select>
         </div>
 
         <div class="filter-item timezone-filter">
           <label class="filter-label">Perspectiva de Fuso Horário:</label>
-          <select [(ngModel)]="selectedTimezone" (change)="onFilterChange()" class="form-control filter-select">
+          <select [ngModel]="selectedTimezone" (ngModelChange)="onTimezoneChange($event)" class="form-control filter-select">
             @for (tz of availableTimezones; track tz.id) {
               <option [value]="tz.id">{{ tz.label }}</option>
             }

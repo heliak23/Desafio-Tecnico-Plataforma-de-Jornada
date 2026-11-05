@@ -88,15 +88,33 @@ export class GestaoComponent implements OnInit {
     }
   }
 
+  get currentMonthName(): string {
+    const m = this.months.find(x => x.value === Number(this.selectedMonth));
+    return m ? m.name : '';
+  }
+
   loadTeamSummary(): void {
     this.isLoadingSummary.set(true);
-    this.employeeService.getTeamMonthlySummary(this.selectedYear, this.selectedMonth).subscribe({
+    const yr = Number(this.selectedYear);
+    const mo = Number(this.selectedMonth);
+
+    this.employeeService.getTeamMonthlySummary(yr, mo).subscribe({
       next: (summary) => {
         this.teamSummary.set(summary);
         this.isLoadingSummary.set(false);
       },
       error: () => this.isLoadingSummary.set(false)
     });
+  }
+
+  onMonthChange(newMonth: number | string): void {
+    this.selectedMonth = Number(newMonth);
+    this.loadTeamSummary();
+  }
+
+  onYearChange(newYear: number | string): void {
+    this.selectedYear = Number(newYear);
+    this.loadTeamSummary();
   }
 
   onFilterSummaryChange(): void {
@@ -148,11 +166,12 @@ export class GestaoComponent implements OnInit {
     });
   }
 
-  viewEmployeeTimesheet(employee: User): void {
+  viewEmployeeTimesheet(employee: User, year: number = this.selectedYear, month: number = this.selectedMonth): void {
     this.isLoadingEmployeeReport.set(true);
-    const now = new Date();
+    const yr = Number(year);
+    const mo = Number(month);
 
-    this.employeeService.getEmployeeMonthly(employee.id, now.getFullYear(), now.getMonth() + 1).subscribe({
+    this.employeeService.getEmployeeMonthly(employee.id, yr, mo).subscribe({
       next: (report) => {
         this.selectedEmployeeReport = report;
         this.isLoadingEmployeeReport.set(false);
@@ -164,12 +183,15 @@ export class GestaoComponent implements OnInit {
   }
 
   viewEmployeeById(userId: string): void {
+    const yr = Number(this.selectedYear);
+    const mo = Number(this.selectedMonth);
     const emp = this.employees().find(e => e.id === userId);
+
     if (emp) {
-      this.viewEmployeeTimesheet(emp);
+      this.viewEmployeeTimesheet(emp, yr, mo);
     } else {
       this.isLoadingEmployeeReport.set(true);
-      this.employeeService.getEmployeeMonthly(userId, this.selectedYear, this.selectedMonth).subscribe({
+      this.employeeService.getEmployeeMonthly(userId, yr, mo).subscribe({
         next: (report) => {
           this.selectedEmployeeReport = report;
           this.isLoadingEmployeeReport.set(false);

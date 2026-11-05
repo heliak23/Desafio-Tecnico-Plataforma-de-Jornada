@@ -61,8 +61,10 @@ export class EspelhoComponent implements OnInit {
 
   loadTimesheet(): void {
     this.isLoading.set(true);
+    const yr = Number(this.selectedYear);
+    const mo = Number(this.selectedMonth);
 
-    this.timeRecordService.getMonthly(this.selectedYear, this.selectedMonth, this.selectedTimezone).subscribe({
+    this.timeRecordService.getMonthly(yr, mo, this.selectedTimezone).subscribe({
       next: (res) => {
         this.report.set(res);
         this.isLoading.set(false);
@@ -71,6 +73,21 @@ export class EspelhoComponent implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  onMonthChange(newMonth: number | string): void {
+    this.selectedMonth = Number(newMonth);
+    this.loadTimesheet();
+  }
+
+  onYearChange(newYear: number | string): void {
+    this.selectedYear = Number(newYear);
+    this.loadTimesheet();
+  }
+
+  onTimezoneChange(newTz: string): void {
+    this.selectedTimezone = newTz;
+    this.loadTimesheet();
   }
 
   onFilterChange(): void {
