@@ -1,0 +1,153 @@
+<div class="container ajustes-container">
+  
+  <div class="page-title-row">
+    <h2>📝 Solicitações e Ajustes de Ponto</h2>
+    <p class="subtitle">Justifique esquecimentos, consultas médicas ou horas extraordinárias para avaliação do Gestor/RH.</p>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      ✅ {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">
+      ⚠️ {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="ajustes-grid">
+    
+    <!-- Formulário de Solicitação -->
+    <div class="card form-card">
+      <div class="card-title-row">
+        <h3>Nova Solicitação de Ajuste</h3>
+      </div>
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label" for="targetDate">Data da Ocorrência *</label>
+            <input 
+              id="targetDate" 
+              type="date" 
+              [(ngModel)]="targetDate" 
+              name="targetDate" 
+              class="form-control" 
+              required 
+            />
+          </div>
+
+          <div class="form-group flex-1">
+            <label class="form-label" for="requestedType">Tipo de Batida *</label>
+            <select 
+              id="requestedType" 
+              [(ngModel)]="requestedType" 
+              name="requestedType" 
+              class="form-control" 
+              required>
+              <option [value]="1">🟢 Entrada</option>
+              <option [value]="2">☕ Início de Intervalo</option>
+              <option [value]="3">💼 Fim de Intervalo</option>
+              <option [value]="4">🛑 Saída</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label" for="requestedTime">Horário Local Real *</label>
+            <input 
+              id="requestedTime" 
+              type="time" 
+              [(ngModel)]="requestedTime" 
+              name="requestedTime" 
+              class="form-control" 
+              required 
+            />
+          </div>
+
+          <div class="form-group flex-1">
+            <label class="form-label" for="timezoneId">Fuso Horário</label>
+            <input 
+              id="timezoneId" 
+              type="text" 
+              [(ngModel)]="timezoneId" 
+              name="timezoneId" 
+              class="form-control" 
+              readonly 
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reason">Motivo / Justificativa *</label>
+          <textarea 
+            id="reason" 
+            [(ngModel)]="reason" 
+            name="reason" 
+            rows="3" 
+            placeholder="Descreva detalhadamente o motivo (ex: Reunião emergencial com cliente em Lisboa, falha na conexão de internet na viagem, atestado médico...)" 
+            class="form-control" 
+            required>
+          </textarea>
+        </div>
+
+        <button type="submit" [disabled]="isSubmitting()" class="btn btn-primary btn-block">
+          @if (isSubmitting()) {
+            <span>Enviando solicitação...</span>
+          } @else {
+            <span>🚀 Enviar para Aprovação</span>
+          }
+        </button>
+      </form>
+    </div>
+
+    <!-- Lista de Solicitações do Colaborador -->
+    <div class="card history-card">
+      <div class="card-title-row">
+        <h3>Histórico das Minhas Solicitações</h3>
+        <span class="badge badge-neutral">{{ adjustments().length }} total</span>
+      </div>
+
+      @if (isLoading()) {
+        <p class="loading-text">Carregando histórico...</p>
+      } @else if (adjustments().length === 0) {
+        <div class="empty-state">
+          <span>📭</span>
+          <p>Você não possui nenhuma solicitação de ajuste registrada.</p>
+        </div>
+      } @else {
+        <div class="adjustments-list">
+          @for (item of adjustments(); track item.id) {
+            <div class="adj-item">
+              <div class="adj-top">
+                <div class="adj-type-date">
+                  <span class="badge" [class]="getStatusBadgeClass(item.status)">
+                    {{ getStatusText(item.status) }}
+                  </span>
+                  <span class="adj-date">{{ item.targetDate | date:'dd/MM/yyyy' }}</span>
+                  <span class="adj-type">{{ getTypeLabel(item.requestedType) }}</span>
+                </div>
+                <span class="adj-time">{{ item.requestedLocalTime | date:'HH:mm' }} ({{ item.timezoneId }})</span>
+              </div>
+
+              <p class="adj-reason">"{{ item.reason }}"</p>
+
+              @if (item.reviewNotes) {
+                <div class="review-feedback">
+                  <span class="reviewer-name">Parecer de {{ item.reviewedByName }}:</span>
+                  <span class="review-text">{{ item.reviewNotes }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+
+</div>
+

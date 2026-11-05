@@ -1,55 +1,127 @@
-# D&D Group — Plataforma de Gestão de Jornada de Trabalho
+# ⚔️ D&D Group — Plataforma de Gestão de Jornada de Trabalho
 
-Solução desenvolvida para centralização, registro e controle de jornada de trabalho para colaboradores distribuídos internacionalmente (Brasil e Europa), com suporte a múltiplos fusos horários e trabalho remoto.
+> Solução corporativa desenvolvida para atender ao desafio técnico da **Dungeons & Dragons Group**, centralizando o registro, cálculo e gestão de jornada para colaboradores distribuídos internacionalmente (**Brasil e Europa**), com suporte nativo a **multi-fuso horário**, viagens a trabalho e controle hierárquico por papéis (**RBAC**).
+
+---
+
+## 🧭 Diferenciais Técnicos e Arquiteturais
+
+1. **Estratégia de Multi-Fuso Horário (Multi-Timezone):**
+   * **Banco e API 100% em UTC:** impossibilita furos ou horas negativas decorrentes de viagens ou horário de verão.
+   * **Identificador IANA & Offset:** cada batida salva o fuso de origem (ex: `America/Sao_Paulo`, `Europe/Lisbon`) e seu deslocamento no instante exato.
+   * **Detecção Automática & Simulador de Deslocamento:** o frontend detecta o fuso do dispositivo do colaborador em tempo real via JavaScript `Intl` e conta com um seletor visual na tela de registro para simular e testar deslocamentos internacionais entre São Paulo (UTC-3), Lisboa (UTC+0/+1), Madrid (UTC+1/+2) ou Londres (UTC+0/+1).
+   * **Perspectiva Flexível no Espelho:** o usuário e o RH podem alternar a visualização das marcações entre o Fuso Local, Fuso da Europa e UTC Absoluto.
+
+2. **Clean Architecture no Backend (.NET 8):**
+   * Separação estrita em camadas: `Domain`, `Application`, `Infrastructure`, `Api` e `Tests`.
+   * Regras de cálculo de jornada e banco de horas isoladas e testadas com **100% de aprovação em testes unitários automatizados**.
+
+3. **Frontend Moderno em Angular (v18/19):**
+   * Standalone Components, Signals reativos para controle de estado, interceptors HTTP para injeção de JWT.
+   * Design System corporativo e responsivo (Desktop e Mobile).
+   * **Seletor de Perfis Demo com 1-Click:** botão na tela de login para o avaliador testar instantaneamente cada papel da empresa sem precisar digitar credenciais.
+
+4. **Ciclo Completo de Ajustes e Ocorrências:**
+   * Solicitação de inclusão de batida esquecida com justificativa obrigatória.
+   * Fluxo de aprovação pelo Gestor/RH que insere automaticamente a marcação no espelho mensal (`RecordSource.ManualAdjustment`).
 
 ---
 
 ## 🛠️ Stack Tecnológica
 
-* **Backend:** C# / .NET 8 (ASP.NET Core Web API, Entity Framework Core)
-* **Frontend:** Angular 18/19 (Standalone Components, Signals, Reactive Forms)
-* **Banco de Dados:** PostgreSQL 16
-* **Infraestrutura Local & Conteinerização:** Docker & Docker Compose
-* **Autenticação:** JWT (JSON Web Tokens) com controle de acesso baseado em papéis (RBAC)
+* **Backend:** C# / .NET 8 (ASP.NET Core Web API, Entity Framework Core 8, FluentValidation, BCrypt.Net)
+* **Frontend:** Angular (Standalone Components, Signals, Reactive Forms, CSS Custom Properties)
+* **Banco de Dados:** PostgreSQL 16 (persiste em UTC com healthcheck e volumes persistentes)
+* **Infraestrutura Local:** Docker & Docker Compose
+* **Testes Automatizados:** xUnit, FluentAssertions, Moq
+* **Documentação de API:** OpenAPI / Swagger com suporte a Bearer Token
 
 ---
 
-## 🧭 Decisões de Arquitetura e Negócio (ADRs)
+## 🏛️ Decisões de Arquitetura Documentadas (ADRs)
 
-1. **Tratamento de Fuso Horário (Multi-timezone):**
-   * Todos os timestamps são obrigatoriamente persistidos em **UTC**.
-   * Cada batida armazena o identificador IANA do fuso local (`timezone_id`, ex: `America/Sao_Paulo`, `Europe/Lisbon`) e o deslocamento (*offset*) no momento do registro.
-   * O colaborador visualiza suas marcações no horário local em que foram feitas. O RH e Gestores possuem visão unificada e contextualizada.
+As decisões tomadas para cobrir cenários reais implícitos do negócio estão detalhadas na pasta [`docs/adr/`](file:///c:/Users/User/.gemini/antigravity/scratch/dnd-jornada/Desafio-Tecnico-Plataforma-de-Jornada/docs/adr/):
 
-2. **Tipos de Registro de Ponto:**
-   * `ClockIn` (Entrada)
-   * `LunchStart` (Início de Intervalo)
-   * `LunchEnd` (Fim de Intervalo)
-   * `ClockOut` (Saída)
-
-3. **Perfis de Usuário (RBAC):**
-   * `Employee` (Colaborador): registro de ponto diário, consulta do próprio histórico e extrato mensal.
-   * `Manager` (Gestor): consulta da equipe, monitoramento de horas e aprovação de ajustes.
-   * `HR` (Recursos Humanos): visão global da empresa, cadastro de colaboradores e fechamento mensal.
+* [ADR 001 — Estratégia de Persistência e Multi-Fuso Horário](file:///c:/Users/User/.gemini/antigravity/scratch/dnd-jornada/Desafio-Tecnico-Plataforma-de-Jornada/docs/adr/ADR-001-multi-timezone-persistence-strategy.md)
+* [ADR 002 — Adoção de Clean Architecture no Backend](file:///c:/Users/User/.gemini/antigravity/scratch/dnd-jornada/Desafio-Tecnico-Plataforma-de-Jornada/docs/adr/ADR-002-clean-architecture-layering.md)
+* [ADR 003 — Autenticação JWT e Perfis RBAC](file:///c:/Users/User/.gemini/antigravity/scratch/dnd-jornada/Desafio-Tecnico-Plataforma-de-Jornada/docs/adr/ADR-003-rbac-authentication-and-authorization.md)
+* [ADR 004 — Fluxo de Ajuste e Justificativa de Ponto](file:///c:/Users/User/.gemini/antigravity/scratch/dnd-jornada/Desafio-Tecnico-Plataforma-de-Jornada/docs/adr/ADR-004-point-adjustment-workflow.md)
+* [ADR 005 — Pareamento de Batidas e Banco de Horas](file:///c:/Users/User/.gemini/antigravity/scratch/dnd-jornada/Desafio-Tecnico-Plataforma-de-Jornada/docs/adr/ADR-005-timesheet-balance-tolerance.md)
 
 ---
 
-## 🚀 Como Executar o Ambiente de Banco de Dados (Docker)
+## 🚀 Como Executar o Projeto Passo a Passo
 
-1. Certifique-se de que o **Docker Desktop** esteja aberto e em execução.
-2. No terminal, acesse a pasta raiz do projeto:
-   ```bash
-   cd dnd-jornada
-   ```
-3. Suba os containers do PostgreSQL e do pgAdmin:
-   ```bash
-   docker compose up -d
-   ```
-4. Verifique se os containers estão rodando com sucesso:
-   ```bash
-   docker compose ps
-   ```
+### Pré-requisitos
+* Docker Desktop em execução
+* .NET 8 SDK
+* Node.js (v18+) e npm
 
-* **PostgreSQL:** Disponível na porta `5432`
-* **pgAdmin (Web UI):** Acesse `http://localhost:5050` (Login: `admin@dndgroup.com`, Senha: `admin`)
+---
 
+### Passo 1: Subir o Banco de Dados (PostgreSQL)
+
+Na raiz do repositório, execute:
+
+```bash
+docker compose up -d
+```
+
+* **PostgreSQL:** porta `5432`
+* **pgAdmin (Painel Web):** [http://localhost:5050](http://localhost:5050) (Login: `admin@dndgroup.com` / Senha: `admin`)
+
+---
+
+### Passo 2: Executar o Backend (.NET 8 Web API)
+
+Em um terminal, acesse a pasta da API:
+
+```bash
+cd src/backend/DndJornada.Api
+dotnet run
+```
+
+* A API iniciará em: `http://localhost:5000`
+* **Swagger Interativo:** Acesse [http://localhost:5000/swagger](http://localhost:5000/swagger)
+* *Nota:* Na primeira execução, a API executa automaticamente as migrações e popula o banco de dados com dados de teste.
+
+#### Para rodar os Testes Automatizados:
+```bash
+cd src/backend
+dotnet test
+```
+
+---
+
+### Passo 3: Executar o Frontend (Angular)
+
+Em outro terminal, acesse a pasta do frontend:
+
+```bash
+cd src/frontend
+npm install
+npm start
+```
+
+* Abra no navegador: [http://localhost:4200](http://localhost:4200)
+
+---
+
+## 👥 Contas de Teste Pré-Configuradas (Demo)
+
+A aplicação conta com um **seletor rápido** na tela de login, mas caso queira autenticar manualmente, utilize qualquer uma das contas abaixo (todas com a senha padrão `Password123!`):
+
+| Perfil / Papel | E-mail | Fuso de Origem | Cenário Demonstrado |
+| :--- | :--- | :--- | :--- |
+| **RH Geral** | `admin@dndgroup.com` | `America/Sao_Paulo` | Visão macro de todos os colaboradores, relatórios e fechamentos globais. |
+| **Gestor (Brasil)** | `gestor.brasil@dndgroup.com` | `America/Sao_Paulo` | Gestão da equipe brasileira e aprovação de ajustes. |
+| **Gestor (Europa)** | `gestor.europa@dndgroup.com` | `Europe/Lisbon` | Gestão da equipe europeia e aprovação de ajustes. |
+| **Colaborador (Brasil)** | `colab.brasil@dndgroup.com` | `America/Sao_Paulo` | Colaborador padrão no horário de Brasília (UTC-3). |
+| **Colaborador (Viajante)** | `colab.viajante@dndgroup.com` | `America/Sao_Paulo` | **Caso crítico do desafio:** possui batidas registradas tanto no Brasil quanto em Lisboa, comprovando a precisão do multi-fuso. |
+| **Colaborador (Europa)** | `colab.europa@dndgroup.com` | `Europe/Lisbon` | Colaborador padrão no horário de Lisboa (UTC+0 / UTC+1). |
+
+---
+
+## 📬 Contato do Desenvolvedor
+Repositório desenvolvido para entrega da avaliação técnica solicitada por:
+* **E-mail:** [lucas.freitas@dreamerstudios.io](mailto:lucas.freitas@dreamerstudios.io)

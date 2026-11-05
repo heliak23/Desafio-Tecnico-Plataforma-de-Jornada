@@ -1,0 +1,372 @@
+.ponto-container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.ponto-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Punch Card Principal */
+.punch-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 2rem;
+}
+
+.travel-location-box {
+  width: 100%;
+  max-width: 380px;
+  background-color: var(--slate-50);
+  border: 1px dashed var(--primary-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.travel-location-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.travel-select {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--slate-800);
+  background-color: var(--white);
+}
+
+.clock-box {
+  margin-bottom: 2rem;
+}
+
+.date-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: capitalize;
+}
+
+.time-display {
+  font-family: var(--font-mono);
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  line-height: 1.1;
+  margin: 0.5rem 0;
+  letter-spacing: -0.04em;
+}
+
+.timezone-info-pill {
+  display: inline-block;
+  background-color: var(--slate-100);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 1rem;
+  font-size: 0.75rem;
+  color: var(--slate-600);
+}
+
+/* Botão Redondo / Gigante de Ponto */
+.punch-action-area {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.next-suggestion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.suggestion-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.suggestion-badge {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+  background-color: var(--primary-light);
+  border: 1px solid var(--primary-subtle);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 1rem;
+}
+
+.btn-punch {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+  color: var(--white);
+  box-shadow: 0 10px 25px -5px rgba(67, 56, 202, 0.4), 0 0 0 10px rgba(79, 70, 229, 0.1);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.btn-punch:hover:not(:disabled) {
+  transform: scale(1.04);
+  box-shadow: 0 15px 30px -5px rgba(67, 56, 202, 0.5), 0 0 0 14px rgba(79, 70, 229, 0.15);
+}
+
+.btn-punch:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-punch:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-punch-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.punch-icon {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.punch-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.punch-sub {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.notes-group {
+  width: 100%;
+  text-align: left;
+}
+
+.custom-type-toggle {
+  width: 100%;
+}
+
+.toggle-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.manual-selector-box {
+  margin-top: 0.75rem;
+  padding: 0.875rem;
+  background-color: var(--slate-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--slate-200);
+}
+
+.type-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.type-btn {
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--slate-300);
+  background: var(--white);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.type-btn.selected {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Coluna Lateral */
+.side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.metrics-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.metric-card {
+  padding: 1rem;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--slate-400);
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  margin: 0.25rem 0;
+  display: block;
+}
+
+.metric-meta {
+  font-size: 0.6875rem;
+  color: var(--slate-500);
+}
+
+.text-success {
+  color: var(--success) !important;
+}
+
+.text-danger {
+  color: var(--danger) !important;
+}
+
+/* Timeline */
+.timeline-card {
+  flex: 1;
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.empty-timeline {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--slate-500);
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.empty-sub {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1rem;
+}
+
+.timeline-icon-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timeline-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.timeline-line {
+  flex: 1;
+  width: 2px;
+  background-color: var(--slate-200);
+  margin: 0.35rem 0;
+  min-height: 35px;
+}
+
+.timeline-item:last-child .timeline-line {
+  display: none;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-bottom: 1.25rem;
+}
+
+.timeline-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timeline-title {
+  font-weight: 700;
+  color: var(--slate-800);
+  font-size: 0.95rem;
+}
+
+.timeline-time {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--primary);
+}
+
+.timeline-meta {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+  margin-top: 0.2rem;
+}
+
+.meta-notes {
+  color: var(--slate-700);
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .ponto-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -1,0 +1,84 @@
+<div class="login-wrapper">
+  <div class="login-container">
+    
+    <!-- Hero / Header -->
+    <div class="login-header">
+      <div class="logo-shield">⚔️</div>
+      <h1>D&D Group</h1>
+      <p class="subtitle">Plataforma de Gestão de Jornada Internacional</p>
+      <div class="global-badge">
+        <span>🇧🇷 Brasil (UTC-3)</span>
+        <span class="dot">•</span>
+        <span>🇵🇹 Europa (UTC+0 / UTC+1)</span>
+      </div>
+    </div>
+
+    <!-- Error Alert -->
+    @if (errorMessage()) {
+      <div class="alert alert-danger">
+        ⚠️ {{ errorMessage() }}
+      </div>
+    }
+
+    <!-- Formulário de Login Tradicional -->
+    <div class="card login-card">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label class="form-label" for="email">E-mail Corporativo</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            placeholder="nome@dndgroup.com"
+            class="form-control"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Senha</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="••••••••"
+            class="form-control"
+            required
+          />
+        </div>
+
+        <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-block">
+          @if (isLoading()) {
+            <span>Entrando...</span>
+          } @else {
+            <span>Entrar na Plataforma →</span>
+          }
+        </button>
+      </form>
+    </div>
+
+    <!-- Seletor Rápido para Avaliação (Recrutador) -->
+    <div class="demo-section">
+      <div class="demo-header">
+        <span class="demo-title">🎯 Acesso Rápido para Avaliação do Desafio</span>
+        <p class="demo-desc">Clique em qualquer perfil abaixo para preencher e testar instantaneamente os cenários:</p>
+      </div>
+
+      <div class="demo-grid">
+        @for (acc of demoAccounts(); track acc.email) {
+          <button (click)="quickLogin(acc)" type="button" class="demo-card">
+            <div class="demo-badge-row">
+              <span class="badge badge-info">{{ acc.role }}</span>
+            </div>
+            <span class="demo-email">{{ acc.email }}</span>
+            <span class="demo-notes">{{ acc.description }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
+

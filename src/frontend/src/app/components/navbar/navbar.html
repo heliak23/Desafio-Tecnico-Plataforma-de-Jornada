@@ -1,0 +1,54 @@
+<header class="navbar">
+  <div class="navbar-container">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <span class="logo-icon">⚔️</span>
+        <div class="brand-text">
+          <span class="brand-title">D&D Group</span>
+          <span class="brand-subtitle">Jornada de Trabalho</span>
+        </div>
+      </div>
+      <span class="badge badge-info timezone-badge">
+        🌐 {{ timezoneInfo() }}
+      </span>
+    </div>
+
+    @if (authService.isAuthenticated()) {
+      <nav class="nav-links">
+        <a routerLink="/ponto" routerLinkActive="active" class="nav-link">
+          ⏱️ Registro
+        </a>
+        <a routerLink="/espelho" routerLinkActive="active" class="nav-link">
+          📅 Espelho Mensal
+        </a>
+        <a routerLink="/ajustes" routerLinkActive="active" class="nav-link">
+          📝 Solicitações
+        </a>
+        @if (authService.isManagerOrHR()) {
+          <a routerLink="/gestao" routerLinkActive="active" class="nav-link nav-link-special">
+            👥 Gestão de Equipe
+          </a>
+        }
+      </nav>
+
+      <div class="user-section">
+        <div class="clock-display">
+          <span class="clock-label">Horário Local</span>
+          <span class="clock-digits">{{ currentTime() }}</span>
+        </div>
+
+        <div class="user-info">
+          <span class="user-name">{{ authService.currentUser()?.name }}</span>
+          <span class="badge badge-neutral user-role">
+            {{ getRoleLabel(authService.currentUser()?.role) }}
+          </span>
+        </div>
+
+        <button (click)="authService.logout()" class="btn btn-secondary btn-sm" title="Encerrar sessão">
+          🚪 Sair
+        </button>
+      </div>
+    }
+  </div>
+</header>
+

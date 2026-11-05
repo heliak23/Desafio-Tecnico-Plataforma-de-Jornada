@@ -1,0 +1,208 @@
+<div class="container ponto-container">
+  
+  <!-- Alert Messages -->
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      ✅ {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">
+      ⚠️ {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="ponto-grid">
+    
+    <!-- Coluna Principal: Relógio & Botão de Ponto -->
+    <div class="card punch-card">
+      
+      <!-- Seletor de Localidade / Viagem -->
+      <div class="travel-location-box">
+        <label class="travel-location-label" for="travelPreset">
+          📍 Localidade / Viagem Atual:
+        </label>
+        <select 
+          id="travelPreset" 
+          [ngModel]="selectedLocationPreset()" 
+          (ngModelChange)="onLocationPresetChange($event)" 
+          class="form-control travel-select">
+          @for (preset of locationPresets; track preset.id) {
+            <option [value]="preset.id">{{ preset.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="clock-box">
+        <span class="date-text">{{ currentDate() }}</span>
+        <div class="time-display">{{ currentTime() }}</div>
+        <div class="timezone-info-pill">
+          <span>🌐 Fuso Local: <strong>{{ timezone() }}</strong> ({{ offsetString() }})</span>
+        </div>
+      </div>
+
+      <div class="punch-action-area">
+        <div class="next-suggestion">
+          <span class="suggestion-label">Próxima Batida Recomendada</span>
+          <span class="suggestion-badge">{{ getPunchIcon(nextPunchType()) }} {{ nextPunchDescription() }}</span>
+        </div>
+
+        <button 
+          (click)="onPunch()" 
+          [disabled]="isPunching()" 
+          class="btn-punch">
+          <div class="btn-punch-inner">
+            <span class="punch-icon">{{ getPunchIcon(nextPunchType()) }}</span>
+            <span class="punch-title">
+              @if (isPunching()) {
+                Gravando...
+              } @else {
+                Bater {{ nextPunchDescription() }}
+              }
+            </span>
+            <span class="punch-sub">Clique para registrar agora</span>
+          </div>
+        </button>
+
+        <!-- Campo Opcional de Localização / Notas -->
+        <div class="form-group notes-group">
+          <label class="form-label" for="locationNotes">
+            📍 Localização / Observação (Opcional):
+          </label>
+          <input
+            id="locationNotes"
+            type="text"
+            [(ngModel)]="locationNotes"
+            placeholder="Ex: Trabalho Remoto, Viagem a Lisboa, Escritório SP"
+            class="form-control"
+          />
+        </div>
+
+        <!-- Seletor Manual Alternativo -->
+        <div class="custom-type-toggle">
+          <button 
+            type="button" 
+            (click)="showCustomTypeSelect = !showCustomTypeSelect" 
+            class="toggle-link">
+            {{ showCustomTypeSelect ? '✖ Fechar seleção manual' : '⚙️ Escolher outro tipo de batida manualmente' }}
+          </button>
+
+          @if (showCustomTypeSelect) {
+            <div class="manual-selector-box">
+              <label class="form-label">Selecione o tipo exato:</label>
+              <div class="type-buttons">
+                <button 
+                  type="button" 
+                  [class.selected]="selectedCustomType === 1" 
+                  (click)="selectedCustomType = 1" 
+                  class="type-btn">
+                  🟢 Entrada
+                </button>
+                <button 
+                  type="button" 
+                  [class.selected]="selectedCustomType === 2" 
+                  (click)="selectedCustomType = 2" 
+                  class="type-btn">
+                  ☕ Início Almoço
+                </button>
+                <button 
+                  type="button" 
+                  [class.selected]="selectedCustomType === 3" 
+                  (click)="selectedCustomType = 3" 
+                  class="type-btn">
+                  💼 Fim Almoço
+                </button>
+                <button 
+                  type="button" 
+                  [class.selected]="selectedCustomType === 4" 
+                  (click)="selectedCustomType = 4" 
+                  class="type-btn">
+                  🛑 Saída
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Coluna Lateral: Resumo de Hoje e Timeline -->
+    <div class="side-column">
+      
+      <!-- Cards de Métricas do Dia -->
+      <div class="metrics-row">
+        <div class="card metric-card">
+          <span class="metric-label">Trabalhado Hoje</span>
+          <span class="metric-value">{{ dailyReport()?.formattedTotalWorked || '00h 00m' }}</span>
+          <span class="metric-meta">Meta: 08h 00m</span>
+        </div>
+
+        <div class="card metric-card">
+          <span class="metric-label">Intervalo Total</span>
+          <span class="metric-value">{{ dailyReport()?.formattedTotalBreak || '00h 00m' }}</span>
+          <span class="metric-meta">Almoço/Pausas</span>
+        </div>
+
+        <div class="card metric-card">
+          <span class="metric-label">Saldo do Dia</span>
+          <span 
+            class="metric-value" 
+            [class.text-success]="dailyReport()?.isPositiveBalance" 
+            [class.text-danger]="!dailyReport()?.isPositiveBalance">
+            {{ dailyReport()?.formattedBalance || '00h 00m' }}
+          </span>
+          <span class="metric-meta">Banco de Horas</span>
+        </div>
+      </div>
+
+      <!-- Timeline das Batidas de Hoje -->
+      <div class="card timeline-card">
+        <div class="timeline-header">
+          <h3>📋 Marcações de Hoje</h3>
+          <span class="badge badge-neutral">{{ dailyReport()?.records?.length || 0 }} registros</span>
+        </div>
+
+        @if (dailyReport()?.records?.length === 0) {
+          <div class="empty-timeline">
+            <span class="empty-icon">⏳</span>
+            <p>Nenhuma batida registrada hoje ainda.</p>
+            <span class="empty-sub">Clique no botão principal ao lado para registrar sua entrada.</span>
+          </div>
+        } @else {
+          <div class="timeline-list">
+            @for (rec of dailyReport()?.records; track rec.id) {
+              <div class="timeline-item">
+                <div class="timeline-icon-col">
+                  <span class="timeline-icon">{{ getPunchIcon(rec.type) }}</span>
+                  <div class="timeline-line"></div>
+                </div>
+
+                <div class="timeline-content">
+                  <div class="timeline-row">
+                    <span class="timeline-title">{{ getPunchName(rec.type) }}</span>
+                    <span class="timeline-time">
+                      {{ rec.localTimestamp | date:'HH:mm:ss' }}
+                    </span>
+                  </div>
+
+                  <div class="timeline-meta">
+                    <span>🌐 {{ rec.timezoneId }}</span>
+                    @if (rec.locationNotes) {
+                      <span class="meta-notes">• {{ rec.locationNotes }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+
+  </div>
+</div>
+

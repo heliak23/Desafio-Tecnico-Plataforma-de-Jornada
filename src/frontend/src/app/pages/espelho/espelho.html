@@ -1,0 +1,154 @@
+<div class="container espelho-container">
+  
+  <!-- Header & Filtros -->
+  <div class="espelho-header card">
+    <div class="header-titles">
+      <h2>📅 Espelho de Ponto Mensal</h2>
+      <p class="subtitle">
+        Colaborador: <strong>{{ report()?.userName }}</strong> • Departamento: <strong>{{ report()?.department }}</strong>
+      </p>
+    </div>
+
+    <div class="filters-bar">
+      <div class="filter-item">
+        <label class="filter-label">Mês:</label>
+        <select [(ngModel)]="selectedMonth" (change)="onFilterChange()" class="form-control filter-select">
+          @for (m of months; track m.value) {
+            <option [value]="m.value">{{ m.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label class="filter-label">Ano:</label>
+        <select [(ngModel)]="selectedYear" (change)="onFilterChange()" class="form-control filter-select">
+          @for (y of years; track y) {
+            <option [value]="y">{{ y }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item timezone-filter">
+        <label class="filter-label">Perspectiva de Fuso Horário:</label>
+        <select [(ngModel)]="selectedTimezone" (change)="onFilterChange()" class="form-control filter-select">
+          @for (tz of availableTimezones; track tz.id) {
+            <option [value]="tz.id">{{ tz.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards de Resumo Mensal (Banco de Horas) -->
+  <div class="summary-cards-row">
+    <div class="card summary-card">
+      <span class="summary-label">Total Trabalhado</span>
+      <span class="summary-val">{{ report()?.formattedTotalWorked || '00h 00m' }}</span>
+      <span class="summary-sub">Horas computadas no período</span>
+    </div>
+
+    <div class="card summary-card">
+      <span class="summary-label">Carga Esperada</span>
+      <span class="summary-val">{{ report()?.formattedTotalExpected || '00h 00m' }}</span>
+      <span class="summary-sub">Dias úteis x 8 horas diárias</span>
+    </div>
+
+    <div class="card summary-card" [class.positive-card]="report()?.isPositiveTotalBalance" [class.negative-card]="!report()?.isPositiveTotalBalance">
+      <span class="summary-label">Saldo Acumulado (Banco)</span>
+      <span class="summary-val">
+        {{ report()?.formattedTotalBalance || '00h 00m' }}
+      </span>
+      <span class="summary-sub">
+        {{ report()?.isPositiveTotalBalance ? 'Crédito de horas extras' : 'Débito a compensar' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Tabela do Espelho Diário -->
+  <div class="table-container card">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <p>Carregando espelho de ponto...</p>
+      </div>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Marcações Registradas (Horário Local)</th>
+            <th>Trabalhadas</th>
+            <th>Intervalo</th>
+            <th>Saldo Diário</th>
+            <th>Status / Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (day of report()?.days; track day.date) {
+            <tr [class.row-irregular]="day.hasIrregularity" [class.row-weekend]="day.expectedWorkTime === '00:00:00' && day.records.length === 0">
+              
+              <!-- Data -->
+              <td class="col-date">
+                <strong>{{ day.formattedDate }}</strong>
+              </td>
+
+              <!-- Batidas do Dia -->
+              <td class="col-punches">
+                @if (day.records.length === 0) {
+                  <span class="no-punch-text">Sem batidas</span>
+                } @else {
+                  <div class="punches-wrap">
+                    @for (rec of day.records; track rec.id) {
+                      <span class="punch-tag" [title]="'Registrado em ' + rec.timezoneId + (rec.locationNotes ? ' (' + rec.locationNotes + ')' : '')">
+                        {{ getPunchIcon(rec.type) }} {{ rec.localTimestamp | date:'HH:mm' }}
+                      </span>
+                    }
+                  </div>
+                }
+              </td>
+
+              <!-- Total Trabalhado -->
+              <td class="col-mono">
+                {{ day.formattedTotalWorked }}
+              </td>
+
+              <!-- Intervalo -->
+              <td class="col-mono">
+                {{ day.formattedTotalBreak }}
+              </td>
+
+              <!-- Saldo do Dia -->
+              <td class="col-mono" [class.text-success]="day.isPositiveBalance && day.records.length > 0" [class.text-danger]="!day.isPositiveBalance && day.records.length > 0">
+                @if (day.records.length > 0) {
+                  {{ day.formattedBalance }}
+                } @else {
+                  -
+                }
+              </td>
+
+              <!-- Status e Ajuste -->
+              <td class="col-status">
+                @if (day.hasIrregularity) {
+                  <div class="irregularity-wrap">
+                    <span class="badge badge-warning" [title]="day.irregularityReason || 'Inconsistência'">
+                      ⚠️ {{ day.irregularityReason || 'Inconsistência' }}
+                    </span>
+                    <button (click)="goToAdjustment(day)" class="btn btn-secondary btn-xs">
+                      Corrigir
+                    </button>
+                  </div>
+                } @else if (day.records.length > 0) {
+                  <span class="badge badge-success">✓ Concluído</span>
+                } @else {
+                  <span class="badge badge-neutral">Folga / Sem reg.</span>
+                }
+              </td>
+
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+</div>
+

@@ -1,0 +1,13 @@
+{
+  "name": "dnd-group-jornada",
+  "version": "1.0.0",
+  "description": "D&D Group — Plataforma de Gestão de Jornada de Trabalho",
+  "scripts": {
+    "start": "npm start --prefix src/frontend",
+    "start:frontend": "npm start --prefix src/frontend",
+    "start:backend": "dotnet run --project src/backend/DndJornada.Api",
+    "build": "npm run build --prefix src/frontend && dotnet build src/backend",
+    "test": "dotnet test src/backend"
+  }
+}
+

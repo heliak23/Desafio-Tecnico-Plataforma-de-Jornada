@@ -1,0 +1,155 @@
+.espelho-container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.espelho-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--slate-500);
+}
+
+.filter-select {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.summary-cards-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--slate-400);
+  letter-spacing: 0.05em;
+}
+
+.summary-val {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  margin: 0.35rem 0;
+}
+
+.summary-sub {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+}
+
+.positive-card {
+  border-left: 4px solid var(--success);
+}
+
+.positive-card .summary-val {
+  color: var(--success);
+}
+
+.negative-card {
+  border-left: 4px solid var(--danger);
+}
+
+.negative-card .summary-val {
+  color: var(--danger);
+}
+
+/* Tabela */
+.col-date {
+  white-space: nowrap;
+}
+
+.punches-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.punch-tag {
+  background-color: var(--slate-100);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.no-punch-text {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+  font-style: italic;
+}
+
+.col-mono {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.irregularity-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-xs {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.row-irregular {
+  background-color: #fffbeb !important;
+}
+
+.row-weekend {
+  opacity: 0.65;
+}
+
+.loading-state {
+  padding: 3rem;
+  text-align: center;
+  color: var(--slate-500);
+}
+
+@media (max-width: 900px) {
+  .summary-cards-row {
+    grid-template-columns: 1fr;
+  }
+}
+

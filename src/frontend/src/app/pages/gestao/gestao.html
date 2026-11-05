@@ -1,0 +1,249 @@
+<div class="container gestao-container">
+  
+  <div class="page-title-row">
+    <h2>👥 Painel de Gestão e Monitoramento de Equipe</h2>
+    <p class="subtitle">
+      Visão de líderes e RH para controle de jornada, aprovação de ocorrências e supervisão internacional.
+    </p>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      ✅ {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">
+      ⚠️ {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Seção 1: Solicitações de Ajuste Pendentes -->
+  <div class="card section-card">
+    <div class="section-header">
+      <div class="title-with-badge">
+        <h3>⏳ Solicitações Pendentes de Avaliação</h3>
+        <span class="badge" [class.badge-warning]="pendingAdjustments().length > 0" [class.badge-neutral]="pendingAdjustments().length === 0">
+          {{ pendingAdjustments().length }} pendente(s)
+        </span>
+      </div>
+      <p class="section-desc">Ajustes de ponto solicitados por colaboradores que aguardam seu parecer.</p>
+    </div>
+
+    @if (pendingAdjustments().length === 0) {
+      <div class="empty-state-clean">
+        <span>🎉</span>
+        <p>Tudo limpo! Não há solicitações pendentes no momento.</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Colaborador</th>
+              <th>Data do Ponto</th>
+              <th>Batida Solicitada</th>
+              <th>Horário / Fuso</th>
+              <th>Justificativa Apresentada</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (adj of pendingAdjustments(); track adj.id) {
+              <tr>
+                <td><strong>{{ adj.userName }}</strong></td>
+                <td>{{ adj.targetDate | date:'dd/MM/yyyy' }}</td>
+                <td>{{ getTypeLabel(adj.requestedType) }}</td>
+                <td>
+                  <span class="col-mono">{{ adj.requestedLocalTime | date:'HH:mm' }}</span>
+                  <span class="text-sub">({{ adj.timezoneId }})</span>
+                </td>
+                <td class="col-reason">"{{ adj.reason }}"</td>
+                <td>
+                  <button (click)="openReviewModal(adj)" class="btn btn-primary btn-xs">
+                    Avaliar
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Seção 2: Equipe Monitorada -->
+  <div class="card section-card">
+    <div class="section-header">
+      <div class="title-with-badge">
+        <h3>🌍 Colaboradores sob Gestão</h3>
+        <span class="badge badge-info">{{ employees().length }} colaboradores</span>
+      </div>
+      <p class="section-desc">Acompanhe a distribuição geográfica, fusos horários e espelhos de ponto da equipe.</p>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Departamento</th>
+            <th>Fuso de Contratação</th>
+            <th>Carga Horária</th>
+            <th>Espelho</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (emp of employees(); track emp.id) {
+            <tr>
+              <td><strong>{{ emp.name }}</strong></td>
+              <td class="col-mono">{{ emp.email }}</td>
+              <td>{{ emp.department }}</td>
+              <td>
+                <span class="badge badge-neutral">
+                  {{ emp.defaultTimezoneId.includes('Sao_Paulo') ? '🇧🇷 Brasil' : '🇵🇹 Europa' }} ({{ emp.defaultTimezoneId }})
+                </span>
+              </td>
+              <td>{{ emp.dailyWorkHours }}h / dia</td>
+              <td>
+                <button (click)="viewEmployeeTimesheet(emp)" class="btn btn-secondary btn-xs">
+                  👁️ Ver Espelho
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal de Avaliação de Ajuste -->
+  @if (selectedAdjustment) {
+    <div class="modal-overlay">
+      <div class="modal-content card">
+        <div class="modal-header">
+          <h3>Avaliar Solicitação de Ajuste</h3>
+          <button (click)="closeReviewModal()" class="close-btn">✖</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="info-group">
+            <span class="info-label">Colaborador:</span>
+            <span class="info-val">{{ selectedAdjustment.userName }}</span>
+          </div>
+
+          <div class="info-group">
+            <span class="info-label">Data e Horário:</span>
+            <span class="info-val">
+              {{ selectedAdjustment.targetDate | date:'dd/MM/yyyy' }} às {{ selectedAdjustment.requestedLocalTime | date:'HH:mm' }}
+              ({{ selectedAdjustment.timezoneId }})
+            </span>
+          </div>
+
+          <div class="info-group">
+            <span class="info-label">Batida Solicitada:</span>
+            <span class="info-val">{{ getTypeLabel(selectedAdjustment.requestedType) }}</span>
+          </div>
+
+          <div class="info-group">
+            <span class="info-label">Justificativa do Colaborador:</span>
+            <p class="reason-quote">"{{ selectedAdjustment.reason }}"</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reviewNotes">Parecer do Gestor (Opcional):</label>
+            <textarea
+              id="reviewNotes"
+              [(ngModel)]="reviewNotes"
+              rows="2"
+              placeholder="Ex: Aprovado conforme alinhado em reunião com a liderança."
+              class="form-control">
+            </textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="closeReviewModal()" class="btn btn-secondary">
+            Cancelar
+          </button>
+          <button (click)="submitReview(3)" [disabled]="isProcessing()" class="btn btn-danger">
+            Recusar
+          </button>
+          <button (click)="submitReview(2)" [disabled]="isProcessing()" class="btn btn-success">
+            ✓ Aprovar Batida
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de Espelho do Colaborador -->
+  @if (selectedEmployeeReport) {
+    <div class="modal-overlay">
+      <div class="modal-content modal-large card">
+        <div class="modal-header">
+          <div>
+            <h3>Espelho Mensal: {{ selectedEmployeeReport.userName }}</h3>
+            <span class="text-sub">{{ selectedEmployeeReport.department }} • Mês: {{ selectedEmployeeReport.month }}/{{ selectedEmployeeReport.year }}</span>
+          </div>
+          <button (click)="closeEmployeeTimesheetModal()" class="close-btn">✖</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="metrics-row-modal">
+            <div class="metric-pill">
+              <span>Trabalhado: <strong>{{ selectedEmployeeReport.formattedTotalWorked }}</strong></span>
+            </div>
+            <div class="metric-pill">
+              <span>Esperado: <strong>{{ selectedEmployeeReport.formattedTotalExpected }}</strong></span>
+            </div>
+            <div class="metric-pill" [class.text-success]="selectedEmployeeReport.isPositiveTotalBalance" [class.text-danger]="!selectedEmployeeReport.isPositiveTotalBalance">
+              <span>Saldo: <strong>{{ selectedEmployeeReport.formattedTotalBalance }}</strong></span>
+            </div>
+          </div>
+
+          <div class="table-container max-h-modal">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Batidas</th>
+                  <th>Trabalhado</th>
+                  <th>Saldo</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (d of selectedEmployeeReport.days; track d.date) {
+                  @if (d.records.length > 0) {
+                    <tr>
+                      <td>{{ d.formattedDate }}</td>
+                      <td>
+                        @for (r of d.records; track r.id) {
+                          <span class="badge badge-neutral">{{ r.localTimestamp | date:'HH:mm' }}</span>
+                        }
+                      </td>
+                      <td class="col-mono">{{ d.formattedTotalWorked }}</td>
+                      <td class="col-mono" [class.text-success]="d.isPositiveBalance" [class.text-danger]="!d.isPositiveBalance">
+                        {{ d.formattedBalance }}
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="closeEmployeeTimesheetModal()" class="btn btn-secondary">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
+
