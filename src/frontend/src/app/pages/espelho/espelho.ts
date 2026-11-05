@@ -88,5 +88,27 @@ export class EspelhoComponent implements OnInit {
       default: return '📍';
     }
   }
+
+  formatRecordTime(rec: any): string {
+    try {
+      const date = new Date(rec.timestampUtc);
+      // Se o usuário selecionou uma perspectiva específica no filtro do espelho, converte para ela;
+      // senão, exibe no fuso de origem do registro
+      const targetTz = this.selectedTimezone || rec.timezoneId || 'UTC';
+      return date.toLocaleTimeString('pt-BR', {
+        timeZone: targetTz,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    } catch {
+      const date = new Date(rec.timestampUtc);
+      return date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    }
+  }
 }
 

@@ -294,4 +294,46 @@ export class PontoComponent implements OnInit, OnDestroy {
   selectCustomType(type: TimeRecordType): void {
     this.selectedCustomType = type;
   }
+
+  formatRecordTime(rec: any): string {
+    try {
+      const date = new Date(rec.timestampUtc);
+      return date.toLocaleTimeString('pt-BR', {
+        timeZone: rec.timezoneId || 'UTC',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+    } catch {
+      const date = new Date(rec.timestampUtc);
+      return date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+    }
+  }
+
+  isDifferentFromCurrentTimezone(recTz: string): boolean {
+    const currentTz = this.getEffectiveTimezone();
+    return !!recTz && !!currentTz && recTz !== currentTz;
+  }
+
+  formatConvertedTime(rec: any): string {
+    try {
+      const date = new Date(rec.timestampUtc);
+      const currentTz = this.getEffectiveTimezone();
+      return date.toLocaleTimeString('pt-BR', {
+        timeZone: currentTz,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+    } catch {
+      return '';
+    }
+  }
 }

@@ -98,8 +98,8 @@
                 } @else {
                   <div class="punches-wrap">
                     @for (rec of day.records; track rec.id) {
-                      <span class="punch-tag" [title]="'Registrado em ' + rec.timezoneId + (rec.locationNotes ? ' (' + rec.locationNotes + ')' : '')">
-                        {{ getPunchIcon(rec.type) }} {{ rec.localTimestamp | date:'HH:mm' }}
+                      <span class="punch-tag" [title]="'Origem: ' + rec.timezoneId + (rec.locationNotes ? ' • ' + rec.locationNotes : '')">
+                        {{ getPunchIcon(rec.type) }} {{ formatRecordTime(rec) }}
                       </span>
                     }
                   </div>

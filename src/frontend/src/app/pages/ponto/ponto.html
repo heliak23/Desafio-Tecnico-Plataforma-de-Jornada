@@ -250,13 +250,18 @@
                 <div class="timeline-content">
                   <div class="timeline-row">
                     <span class="timeline-title">{{ getPunchName(rec.type) }}</span>
-                    <span class="timeline-time">
-                      {{ rec.localTimestamp | date:'HH:mm:ss' }}
+                    <span class="timeline-time" [title]="'Horário no fuso de registro: ' + rec.timezoneId">
+                      {{ formatRecordTime(rec) }}
                     </span>
                   </div>
 
                   <div class="timeline-meta">
-                    <span>🌐 {{ rec.timezoneId }}</span>
+                    <span>🌐 Fuso: <strong>{{ rec.timezoneId }}</strong></span>
+                    @if (isDifferentFromCurrentTimezone(rec.timezoneId)) {
+                      <span class="converted-time-badge" [title]="'Convertido para o fuso da tela (' + getEffectiveTimezone() + ')'">
+                        ({{ formatConvertedTime(rec) }} neste fuso)
+                      </span>
+                    }
                     @if (rec.locationNotes) {
                       <span class="meta-notes">• {{ rec.locationNotes }}</span>
                     }

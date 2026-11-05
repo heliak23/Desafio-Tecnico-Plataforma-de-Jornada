@@ -439,6 +439,18 @@
   font-weight: 500;
 }
 
+.converted-time-badge {
+  display: inline-block;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #cbd5e1;
+  margin-left: 0.4rem;
+}
+
 /* ========================================================
    🧪 SIMULADOR DE HORÁRIO / TIME TRAVEL (MODO RECRUTADOR)
    ======================================================== */
