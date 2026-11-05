@@ -8,15 +8,23 @@ namespace DndJornada.Infrastructure.Data;
 
 public static class DbInitializer
 {
-    public static async Task SeedAsync(AppDbContext context, IPasswordHasher hasher)
+    public static async Task SeedAsync(AppDbContext context, IPasswordHasher hasher, bool includeSampleRecords = false)
     {
         await context.Database.EnsureCreatedAsync();
 
-        if (await context.Users.AnyAsync())
+        if (!await context.Users.AnyAsync())
         {
-            return; // Banco já populado
+            await SeedUsersAsync(context, hasher);
         }
 
+        if (includeSampleRecords && !await context.TimeRecords.AnyAsync())
+        {
+            await SeedSampleRecordsAsync(context);
+        }
+    }
+
+    public static async Task SeedUsersAsync(AppDbContext context, IPasswordHasher hasher)
+    {
         var defaultPasswordHash = hasher.HashPassword("Password123!");
 
         // 1. RH Geral
@@ -102,9 +110,15 @@ public static class DbInitializer
 
         await context.Users.AddRangeAsync(adminHr, managerBr, managerEu, employeeBr, employeeTraveler, employeeEu);
         await context.SaveChangesAsync();
+    }
 
-        // 7. Seed de Batidas de Teste para o Colaborador Viajante
-        // Mostra batidas em São Paulo (UTC-3) e batidas em Lisboa (UTC+0 / UTC+1)
+    public static async Task SeedSampleRecordsAsync(AppDbContext context)
+    {
+        var employeeTraveler = await context.Users.FirstOrDefaultAsync(u => u.Email == "colab.viajante@dndgroup.com");
+        var employeeBr = await context.Users.FirstOrDefaultAsync(u => u.Email == "colab.brasil@dndgroup.com");
+
+        if (employeeTraveler == null) return;
+
         var today = DateTime.UtcNow.Date;
 
         var sampleRecords = new List<TimeRecord>
@@ -113,7 +127,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-2).AddHours(12), // 09:00 BRT
+                TimestampUtc = today.AddDays(-2).AddHours(12),
                 TimezoneId = "America/Sao_Paulo",
                 OffsetMinutes = -180,
                 Type = TimeRecordType.ClockIn,
@@ -122,7 +136,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-2).AddHours(15), // 12:00 BRT
+                TimestampUtc = today.AddDays(-2).AddHours(15),
                 TimezoneId = "America/Sao_Paulo",
                 OffsetMinutes = -180,
                 Type = TimeRecordType.LunchStart,
@@ -131,7 +145,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-2).AddHours(16), // 13:00 BRT
+                TimestampUtc = today.AddDays(-2).AddHours(16),
                 TimezoneId = "America/Sao_Paulo",
                 OffsetMinutes = -180,
                 Type = TimeRecordType.LunchEnd,
@@ -140,7 +154,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-2).AddHours(21), // 18:00 BRT
+                TimestampUtc = today.AddDays(-2).AddHours(21),
                 TimezoneId = "America/Sao_Paulo",
                 OffsetMinutes = -180,
                 Type = TimeRecordType.ClockOut,
@@ -151,7 +165,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-1).AddHours(9), // 09:00 WET
+                TimestampUtc = today.AddDays(-1).AddHours(9),
                 TimezoneId = "Europe/Lisbon",
                 OffsetMinutes = 0,
                 Type = TimeRecordType.ClockIn,
@@ -160,7 +174,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-1).AddHours(13), // 13:00 WET
+                TimestampUtc = today.AddDays(-1).AddHours(13),
                 TimezoneId = "Europe/Lisbon",
                 OffsetMinutes = 0,
                 Type = TimeRecordType.LunchStart,
@@ -169,7 +183,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-1).AddHours(14), // 14:00 WET
+                TimestampUtc = today.AddDays(-1).AddHours(14),
                 TimezoneId = "Europe/Lisbon",
                 OffsetMinutes = 0,
                 Type = TimeRecordType.LunchEnd,
@@ -178,7 +192,7 @@ public static class DbInitializer
             new()
             {
                 UserId = employeeTraveler.Id,
-                TimestampUtc = today.AddDays(-1).AddHours(18), // 18:00 WET
+                TimestampUtc = today.AddDays(-1).AddHours(18),
                 TimezoneId = "Europe/Lisbon",
                 OffsetMinutes = 0,
                 Type = TimeRecordType.ClockOut,
@@ -188,21 +202,23 @@ public static class DbInitializer
 
         await context.TimeRecords.AddRangeAsync(sampleRecords);
 
-        // 8. Solicitação de Ajuste de Exemplo (Pendente de Aprovação)
-        var sampleAdjustment = new TimeRecordAdjustment
+        if (employeeBr != null)
         {
-            UserId = employeeBr.Id,
-            TargetDate = DateOnly.FromDateTime(today.AddDays(-1)),
-            RequestedType = TimeRecordType.ClockOut,
-            RequestedTimestampUtc = today.AddDays(-1).AddHours(21),
-            TimezoneId = "America/Sao_Paulo",
-            OffsetMinutes = -180,
-            Reason = "Esqueci de registrar a saída devido à reunião emergencial com cliente às 18h.",
-            Status = AdjustmentStatus.Pending
-        };
+            var sampleAdjustment = new TimeRecordAdjustment
+            {
+                UserId = employeeBr.Id,
+                TargetDate = DateOnly.FromDateTime(today.AddDays(-1)),
+                RequestedType = TimeRecordType.ClockOut,
+                RequestedTimestampUtc = today.AddDays(-1).AddHours(21),
+                TimezoneId = "America/Sao_Paulo",
+                OffsetMinutes = -180,
+                Reason = "Esqueci de registrar a saída devido à reunião emergencial com cliente às 18h.",
+                Status = AdjustmentStatus.Pending
+            };
 
-        await context.TimeRecordAdjustments.AddAsync(sampleAdjustment);
+            await context.TimeRecordAdjustments.AddAsync(sampleAdjustment);
+        }
+
         await context.SaveChangesAsync();
     }
 }
-
