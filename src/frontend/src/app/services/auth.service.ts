@@ -43,6 +43,10 @@ export class AuthService {
     return this.http.get<any[]>(`${this.apiUrl}/demo-accounts`);
   }
 
+  resetDatabase(): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>('http://localhost:5000/api/admin/reset-database', {});
+  }
+
   private saveSession(response: LoginResponse): void {
     localStorage.setItem(this.tokenKey, response.token);
     localStorage.setItem(this.userKey, JSON.stringify(response));

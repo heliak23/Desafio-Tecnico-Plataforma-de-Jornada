@@ -13,6 +13,13 @@
       </div>
     </div>
 
+    <!-- Success Alert -->
+    @if (successMessage()) {
+      <div class="alert alert-success">
+        ✅ {{ successMessage() }}
+      </div>
+    }
+
     <!-- Error Alert -->
     @if (errorMessage()) {
       <div class="alert alert-danger">
@@ -76,6 +83,16 @@
             <span class="demo-notes">{{ acc.description }}</span>
           </button>
         }
+      </div>
+
+      <div class="demo-footer">
+        <button 
+          (click)="onResetDatabase()" 
+          [disabled]="isResetting()" 
+          type="button" 
+          class="btn-reset-db">
+          🔄 {{ isResetting() ? 'Restaurando...' : 'Zerar Banco de Dados e Restaurar Padrão de Fábrica' }}
+        </button>
       </div>
     </div>
 

@@ -116,6 +116,29 @@ export class GestaoComponent implements OnInit {
     this.selectedEmployeeReport = null;
   }
 
+  onResetDatabase(): void {
+    if (!confirm('Deseja realmente zerar o banco de dados e restaurar o estado padrão de fábrica?')) {
+      return;
+    }
+
+    this.isProcessing.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    this.authService.resetDatabase().subscribe({
+      next: (res) => {
+        this.isProcessing.set(false);
+        this.successMessage.set(res.message);
+        this.loadData();
+        setTimeout(() => this.successMessage.set(null), 5000);
+      },
+      error: () => {
+        this.isProcessing.set(false);
+        this.errorMessage.set('Erro ao resetar o banco de dados.');
+      }
+    });
+  }
+
   getTypeLabel(type: TimeRecordType): string {
     switch (type) {
       case TimeRecordType.ClockIn: return '🟢 Entrada';

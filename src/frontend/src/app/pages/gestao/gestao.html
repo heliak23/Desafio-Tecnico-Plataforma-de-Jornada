@@ -1,10 +1,15 @@
 <div class="container gestao-container">
   
   <div class="page-title-row">
-    <h2>👥 Painel de Gestão e Monitoramento de Equipe</h2>
-    <p class="subtitle">
-      Visão de líderes e RH para controle de jornada, aprovação de ocorrências e supervisão internacional.
-    </p>
+    <div>
+      <h2>👥 Painel de Gestão e Monitoramento de Equipe</h2>
+      <p class="subtitle">
+        Visão de líderes e RH para controle de jornada, aprovação de ocorrências e supervisão internacional.
+      </p>
+    </div>
+    <button (click)="onResetDatabase()" [disabled]="isProcessing()" class="btn btn-secondary btn-sm" title="Zerar todas as batidas e restaurar para o estado inicial de fábrica">
+      🔄 Zerar Banco de Dados
+    </button>
   </div>
 
   @if (successMessage()) {

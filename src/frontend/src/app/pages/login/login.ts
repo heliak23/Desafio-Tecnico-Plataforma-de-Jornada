@@ -61,7 +61,9 @@ export class LoginComponent implements OnInit {
   email = '';
   password = '';
   errorMessage = signal<string | null>(null);
+  successMessage = signal<string | null>(null);
   isLoading = signal(false);
+  isResetting = signal(false);
   demoAccounts = signal<DemoAccount[]>(DEFAULT_DEMO_ACCOUNTS);
 
   constructor(
@@ -117,5 +119,27 @@ export class LoginComponent implements OnInit {
     this.email = account.email;
     this.password = account.password;
     this.onSubmit();
+  }
+
+  onResetDatabase(): void {
+    if (!confirm('Deseja realmente zerar o banco de dados e restaurar para o estado inicial de teste?')) {
+      return;
+    }
+
+    this.isResetting.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    this.authService.resetDatabase().subscribe({
+      next: (res) => {
+        this.isResetting.set(false);
+        this.successMessage.set(res.message);
+        setTimeout(() => this.successMessage.set(null), 5000);
+      },
+      error: () => {
+        this.isResetting.set(false);
+        this.errorMessage.set('Erro ao resetar o banco de dados. Verifique se o backend está rodando.');
+      }
+    });
   }
 }
