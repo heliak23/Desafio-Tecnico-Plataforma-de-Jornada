@@ -41,13 +41,10 @@ export class EspelhoComponent implements OnInit {
   availableTimezones = [
     { id: 'America/Sao_Paulo', label: '🇧🇷 Brasil (São Paulo - UTC-3)' },
     { id: 'Europe/Lisbon', label: '🇵🇹 Portugal (Lisboa - UTC+0/UTC+1)' },
+    { id: 'Europe/Madrid', label: '🇪🇸 Espanha (Madrid - UTC+1/UTC+2)' },
     { id: 'Europe/Berlin', label: '🇩🇪 Alemanha (Berlim - UTC+1/UTC+2)' },
     { id: 'Europe/Paris', label: '🇫🇷 França (Paris - UTC+1/UTC+2)' },
     { id: 'Europe/London', label: '🇬🇧 Reino Unido (Londres - UTC+0/UTC+1)' },
-    { id: 'Europe/Madrid', label: '🇪🇸 Espanha (Madrid - UTC+1/UTC+2)' },
-    { id: 'America/New_York', label: '🇺🇸 EUA (Nova York - UTC-5/UTC-4)' },
-    { id: 'America/Los_Angeles', label: '🇺🇸 EUA (Vale do Silício - UTC-8/UTC-7)' },
-    { id: 'Asia/Tokyo', label: '🇯🇵 Japão (Tóquio - UTC+9)' },
     { id: 'UTC', label: '🌐 UTC Universal' }
   ];
 

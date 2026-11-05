@@ -36,23 +36,18 @@ export class PontoComponent implements OnInit, OnDestroy {
   selectedCustomType?: TimeRecordType;
   showCustomTypeSelect = false;
 
-  // Seletor de Localidade / Viagem
+  // Seletor de Localidade / Viagem (Operação Brasil & Europa)
   locationPresets: LocationPreset[] = [
     { id: 'AUTO', label: '🌐 Automático (Detectado pelo Navegador)', timezoneId: '', defaultNote: '' },
     { id: 'BR_SP', label: '🇧🇷 Brasil — São Paulo (UTC-3)', timezoneId: 'America/Sao_Paulo', defaultNote: 'Escritório São Paulo' },
     { id: 'PT_LIS', label: '🇵🇹 Portugal — Lisboa (UTC+0 / UTC+1)', timezoneId: 'Europe/Lisbon', defaultNote: 'Hub Lisboa (Viagem Internacional)' },
+    { id: 'ES_MAD', label: '🇪🇸 Espanha — Madrid (UTC+1 / UTC+2)', timezoneId: 'Europe/Madrid', defaultNote: 'Hub Madrid (Cliente/Evento)' },
     { id: 'DE_BER', label: '🇩🇪 Alemanha — Berlim (UTC+1 / UTC+2)', timezoneId: 'Europe/Berlin', defaultNote: 'Hub Berlim (Operações Europa)' },
     { id: 'FR_PAR', label: '🇫🇷 França — Paris (UTC+1 / UTC+2)', timezoneId: 'Europe/Paris', defaultNote: 'Hub Paris (Estúdio Criativo)' },
-    { id: 'ES_MAD', label: '🇪🇸 Espanha — Madrid (UTC+1 / UTC+2)', timezoneId: 'Europe/Madrid', defaultNote: 'Hub Madrid (Cliente/Evento)' },
     { id: 'GB_LON', label: '🇬🇧 Reino Unido — Londres (UTC+0 / UTC+1)', timezoneId: 'Europe/London', defaultNote: 'Hub Londres (Reunião Internacional)' },
     { id: 'IE_DUB', label: '🇮🇪 Irlanda — Dublin (UTC+0 / UTC+1)', timezoneId: 'Europe/Dublin', defaultNote: 'Hub Dublin (Tecnologia)' },
     { id: 'NL_AMS', label: '🇳🇱 Holanda — Amsterdã (UTC+1 / UTC+2)', timezoneId: 'Europe/Amsterdam', defaultNote: 'Hub Amsterdã (Suporte Global)' },
-    { id: 'IT_ROM', label: '🇮🇹 Itália — Roma (UTC+1 / UTC+2)', timezoneId: 'Europe/Rome', defaultNote: 'Hub Roma (Parceria Internacional)' },
-    { id: 'US_NYC', label: '🇺🇸 EUA — Nova York (UTC-5 / UTC-4)', timezoneId: 'America/New_York', defaultNote: 'Escritório Nova York (Costa Leste)' },
-    { id: 'US_SFO', label: '🇺🇸 EUA — São Francisco (UTC-8 / UTC-7)', timezoneId: 'America/Los_Angeles', defaultNote: 'Hub Califórnia (Vale do Silício)' },
-    { id: 'CA_TOR', label: '🇨🇦 Canadá — Toronto (UTC-5 / UTC-4)', timezoneId: 'America/Toronto', defaultNote: 'Hub Toronto (Desenvolvimento)' },
-    { id: 'JP_TYO', label: '🇯🇵 Japão — Tóquio (UTC+9)', timezoneId: 'Asia/Tokyo', defaultNote: 'Hub Tóquio (Ásia/Pacífico)' },
-    { id: 'AU_SYD', label: '🇦🇺 Austrália — Sydney (UTC+10 / UTC+11)', timezoneId: 'Australia/Sydney', defaultNote: 'Hub Sydney (Oceania)' }
+    { id: 'IT_ROM', label: '🇮🇹 Itália — Roma (UTC+1 / UTC+2)', timezoneId: 'Europe/Rome', defaultNote: 'Hub Roma (Parceria Internacional)' }
   ];
   selectedLocationPreset = signal('AUTO');
 
