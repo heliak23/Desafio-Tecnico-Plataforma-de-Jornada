@@ -44,24 +44,31 @@
 
       <div class="punch-action-area">
         <div class="next-suggestion">
-          <span class="suggestion-label">Próxima Batida Recomendada</span>
-          <span class="suggestion-badge">{{ getPunchIcon(nextPunchType()) }} {{ nextPunchDescription() }}</span>
+          <span class="suggestion-label">
+            {{ showCustomTypeSelect && selectedCustomType ? 'Batida Selecionada Manualmente' : 'Próxima Batida Recomendada' }}
+          </span>
+          <span class="suggestion-badge" [class]="'badge-type-' + getActivePunchType()">
+            {{ getActivePunchIcon() }} {{ getActivePunchName() }}
+          </span>
         </div>
 
         <button 
           (click)="onPunch()" 
           [disabled]="isPunching()" 
-          class="btn-punch">
+          class="btn-punch"
+          [class]="'theme-punch-' + getActivePunchType()">
           <div class="btn-punch-inner">
-            <span class="punch-icon">{{ getPunchIcon(nextPunchType()) }}</span>
+            <span class="punch-icon">{{ getActivePunchIcon() }}</span>
             <span class="punch-title">
               @if (isPunching()) {
                 Gravando...
               } @else {
-                Bater {{ nextPunchDescription() }}
+                Bater {{ getActivePunchName() }}
               }
             </span>
-            <span class="punch-sub">Clique para registrar agora</span>
+            <span class="punch-sub">
+              {{ showCustomTypeSelect && selectedCustomType ? 'Seleção manual ativa • Clique para bater' : 'Clique para registrar agora' }}
+            </span>
           </div>
         </button>
 
@@ -83,41 +90,41 @@
         <div class="custom-type-toggle">
           <button 
             type="button" 
-            (click)="showCustomTypeSelect = !showCustomTypeSelect" 
+            (click)="toggleCustomTypeSelect()" 
             class="toggle-link">
             {{ showCustomTypeSelect ? '✖ Fechar seleção manual' : '⚙️ Escolher outro tipo de batida manualmente' }}
           </button>
 
           @if (showCustomTypeSelect) {
             <div class="manual-selector-box">
-              <label class="form-label">Selecione o tipo exato:</label>
+              <label class="form-label">Selecione o tipo desejado para atualizar o botão:</label>
               <div class="type-buttons">
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 1" 
-                  (click)="selectedCustomType = 1" 
-                  class="type-btn">
+                  (click)="selectCustomType(1)" 
+                  class="type-btn type-btn-entrada">
                   🟢 Entrada
                 </button>
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 2" 
-                  (click)="selectedCustomType = 2" 
-                  class="type-btn">
+                  (click)="selectCustomType(2)" 
+                  class="type-btn type-btn-almoco-inicio">
                   ☕ Início Almoço
                 </button>
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 3" 
-                  (click)="selectedCustomType = 3" 
-                  class="type-btn">
+                  (click)="selectCustomType(3)" 
+                  class="type-btn type-btn-almoco-fim">
                   💼 Fim Almoço
                 </button>
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 4" 
-                  (click)="selectedCustomType = 4" 
-                  class="type-btn">
+                  (click)="selectCustomType(4)" 
+                  class="type-btn type-btn-saida">
                   🛑 Saída
                 </button>
               </div>

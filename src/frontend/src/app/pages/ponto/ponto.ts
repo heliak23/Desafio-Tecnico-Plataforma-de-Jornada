@@ -197,4 +197,32 @@ export class PontoComponent implements OnInit, OnDestroy {
       default: return '📍';
     }
   }
+
+  getActivePunchType(): TimeRecordType {
+    if (this.showCustomTypeSelect && this.selectedCustomType) {
+      return this.selectedCustomType;
+    }
+    return this.nextPunchType();
+  }
+
+  getActivePunchName(): string {
+    return this.getPunchName(this.getActivePunchType());
+  }
+
+  getActivePunchIcon(): string {
+    return this.getPunchIcon(this.getActivePunchType());
+  }
+
+  toggleCustomTypeSelect(): void {
+    this.showCustomTypeSelect = !this.showCustomTypeSelect;
+    if (this.showCustomTypeSelect && !this.selectedCustomType) {
+      this.selectedCustomType = this.nextPunchType();
+    } else if (!this.showCustomTypeSelect) {
+      this.selectedCustomType = undefined;
+    }
+  }
+
+  selectCustomType(type: TimeRecordType): void {
+    this.selectedCustomType = type;
+  }
 }
