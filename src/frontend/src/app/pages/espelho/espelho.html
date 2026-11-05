@@ -67,22 +67,22 @@
     <div class="card summary-card">
       <span class="summary-label">Total Trabalhado</span>
       <span class="summary-val">{{ report()?.formattedTotalWorked || '00h 00m' }}</span>
-      <span class="summary-sub">Horas efetivamente apuradas</span>
+      <span class="summary-sub">Horas apuradas no mês</span>
     </div>
 
     <div class="card summary-card">
-      <span class="summary-label">Carga Esperada</span>
-      <span class="summary-val">{{ report()?.formattedTotalExpected || '00h 00m' }}</span>
-      <span class="summary-sub">Dias úteis x 8 horas diárias</span>
+      <span class="summary-label">Meta do Mês (160h)</span>
+      <span class="summary-val">{{ report()?.formattedRemainingHours || '160h 00m' }}</span>
+      <span class="summary-sub">Faltam cumprir da meta de 160h</span>
     </div>
 
     <div class="card summary-card" [class.positive-card]="report()?.isPositiveTotalBalance" [class.negative-card]="!report()?.isPositiveTotalBalance">
-      <span class="summary-label">Saldo Acumulado (Banco)</span>
+      <span class="summary-label">Banco de Horas (Dias Decorridos)</span>
       <span class="summary-val">
         {{ report()?.formattedTotalBalance || '00h 00m' }}
       </span>
       <span class="summary-sub">
-        {{ report()?.isPositiveTotalBalance ? 'Crédito de horas extras' : 'Débito a compensar' }}
+        {{ report()?.isPositiveTotalBalance ? 'Crédito de horas até hoje' : 'Débito acumulado até hoje' }}
       </span>
     </div>
   </div>

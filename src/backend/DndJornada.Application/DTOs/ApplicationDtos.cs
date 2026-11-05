@@ -64,7 +64,9 @@ public record MonthlyTimesheetReportDto(
     string FormattedTotalExpected,
     TimeSpan TotalBalance,
     string FormattedTotalBalance,
-    bool IsPositiveTotalBalance
+    bool IsPositiveTotalBalance,
+    TimeSpan? RemainingHours = null,
+    string? FormattedRemainingHours = null
 );
 
 public record CreateAdjustmentRequest(
@@ -112,7 +114,8 @@ public record TeamMonthlySummaryItemDto(
     string FormattedTotalBalance,
     bool IsPositiveTotalBalance,
     int IrregularitiesCount,
-    int ActiveDaysCount
+    int ActiveDaysCount,
+    string? FormattedRemainingHours = null
 );
 
 public record TeamMonthlySummaryReportDto(

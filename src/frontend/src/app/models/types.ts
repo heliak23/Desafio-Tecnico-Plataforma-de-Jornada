@@ -87,6 +87,8 @@ export interface MonthlyTimesheetReport {
   totalBalance: string;
   formattedTotalBalance: string;
   isPositiveTotalBalance: boolean;
+  remainingHours?: string;
+  formattedRemainingHours?: string;
 }
 
 export interface AdjustmentResponse {
@@ -143,6 +145,7 @@ export interface TeamMonthlySummaryItem {
   isPositiveTotalBalance: boolean;
   irregularitiesCount: number;
   activeDaysCount: number;
+  formattedRemainingHours?: string;
 }
 
 export interface TeamMonthlySummaryReport {

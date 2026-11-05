@@ -135,6 +135,23 @@ public class TimeRecordCalculator : ITimeRecordCalculator
 
         var totalWorked = TimeSpan.Zero;
         var totalExpected = TimeSpan.Zero;
+        var expectedElapsed = TimeSpan.Zero;
+
+        // Determina a data civil atual no fuso informado
+        var nowUtc = DateTime.UtcNow;
+        DateOnly todayCivil;
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
+            todayCivil = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(nowUtc, tz));
+        }
+        catch
+        {
+            todayCivil = DateOnly.FromDateTime(nowUtc);
+        }
+
+        bool isCurrentMonth = (year == todayCivil.Year && month == todayCivil.Month);
+        bool isPastMonth = (year < todayCivil.Year || (year == todayCivil.Year && month < todayCivil.Month));
 
         // Agrupa os registros por LocalDate (data civil em que a batida ocorreu)
         var recordsByLocalDate = monthRecords
@@ -153,9 +170,27 @@ public class TimeRecordCalculator : ITimeRecordCalculator
 
             totalWorked += daily.TotalWorkedTime;
             totalExpected += daily.ExpectedWorkTime;
+
+            // Saldo de banco de horas considera apenas os dias úteis já transcorridos
+            if (isCurrentMonth)
+            {
+                if (date <= todayCivil)
+                {
+                    expectedElapsed += daily.ExpectedWorkTime;
+                }
+            }
+            else if (isPastMonth)
+            {
+                expectedElapsed += daily.ExpectedWorkTime;
+            }
         }
 
-        var totalBalance = totalWorked - totalExpected;
+        // Saldo do Banco de Horas sobre os dias decorridos (não cobra dias futuros que ainda não chegaram!)
+        var totalBalance = totalWorked - expectedElapsed;
+
+        // Meta contratual padrão de 160h/mês
+        var monthlyTarget = TimeSpan.FromHours(160);
+        var remainingQuota = monthlyTarget > totalWorked ? monthlyTarget - totalWorked : TimeSpan.Zero;
 
         return new MonthlyTimesheetReportDto(
             UserId: user.Id,
@@ -166,11 +201,13 @@ public class TimeRecordCalculator : ITimeRecordCalculator
             Days: dailyReports,
             TotalWorked: totalWorked,
             FormattedTotalWorked: FormatDuration(totalWorked),
-            TotalExpected: totalExpected,
-            FormattedTotalExpected: FormatDuration(totalExpected),
+            TotalExpected: monthlyTarget,
+            FormattedTotalExpected: "160h 00m",
             TotalBalance: totalBalance,
             FormattedTotalBalance: FormatBalance(totalBalance),
-            IsPositiveTotalBalance: totalBalance >= TimeSpan.Zero
+            IsPositiveTotalBalance: totalBalance >= TimeSpan.Zero,
+            RemainingHours: remainingQuota,
+            FormattedRemainingHours: FormatDuration(remainingQuota)
         );
     }
 

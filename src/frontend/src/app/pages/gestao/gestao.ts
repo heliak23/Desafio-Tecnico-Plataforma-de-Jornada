@@ -82,8 +82,10 @@ export class GestaoComponent implements OnInit {
       error: () => this.isLoading.set(false)
     });
 
-    // Carrega o fechamento consolidado da equipe
-    this.loadTeamSummary();
+    // Carrega o fechamento consolidado da equipe se for RH
+    if (this.authService.isHR()) {
+      this.loadTeamSummary();
+    }
   }
 
   loadTeamSummary(): void {

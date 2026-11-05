@@ -45,148 +45,163 @@
     </div>
   }
 
-  <!-- SEÇÃO EM DESTAQUE: FECHAMENTO MENSAL CONSOLIDADO DA EQUIPE -->
-  <div class="card section-card highlight-card">
-    <div class="section-header-flex">
-      <div>
-        <div class="title-with-badge">
-          <h3>📊 Fechamento Mensal Consolidado da Equipe</h3>
-          <span class="badge badge-primary">Competência: {{ months[selectedMonth - 1].name }} / {{ selectedYear }}</span>
-        </div>
-        <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e ocorrências de toda a equipe.</p>
-      </div>
-
-      <!-- Filtros de Mês e Ano -->
-      <div class="filter-controls no-print">
-        <select 
-          [(ngModel)]="selectedMonth" 
-          (change)="onFilterSummaryChange()" 
-          class="form-control select-compact">
-          @for (m of months; track m.value) {
-            <option [value]="m.value">{{ m.name }}</option>
-          }
-        </select>
-
-        <select 
-          [(ngModel)]="selectedYear" 
-          (change)="onFilterSummaryChange()" 
-          class="form-control select-compact">
-          @for (y of years; track y) {
-            <option [value]="y">{{ y }}</option>
-          }
-        </select>
-
-        <button (click)="loadTeamSummary()" class="btn btn-secondary btn-sm">
-          🔄 Atualizar
-        </button>
-      </div>
-    </div>
-
-    <!-- Cards Executivos do Mês -->
-    <div class="metrics-summary-grid">
-      <div class="card metric-summary-card">
-        <span class="m-icon">👥</span>
+  <!-- SEÇÃO EM DESTAQUE: FECHAMENTO MENSAL CONSOLIDADO DA EQUIPE (EXCLUSIVO RH) -->
+  @if (authService.isHR()) {
+    <div class="card section-card highlight-card">
+      <div class="section-header-flex">
         <div>
-          <span class="m-label">Colaboradores</span>
-          <span class="m-val">{{ teamSummary()?.totalEmployees || employees().length }}</span>
-          <span class="m-sub">Sob sua gestão</span>
+          <div class="title-with-badge">
+            <h3>📊 Fechamento Mensal Consolidado da Equipe (Governança RH)</h3>
+            <span class="badge badge-primary">Competência: {{ months[selectedMonth - 1].name }} / {{ selectedYear }}</span>
+          </div>
+          <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e banco de horas de toda a empresa.</p>
         </div>
-      </div>
 
-      <div class="card metric-summary-card">
-        <span class="m-icon">⏱️</span>
-        <div>
-          <span class="m-label">Total Horas Trabalhadas</span>
-          <span class="m-val">{{ teamSummary()?.formattedTotalWorkedCompany || '00h 00m' }}</span>
-          <span class="m-sub">Consolidado no mês</span>
-        </div>
-      </div>
-
-      <div class="card metric-summary-card" [class.border-positive]="teamSummary()?.isPositiveTotalBalanceCompany" [class.border-negative]="!teamSummary()?.isPositiveTotalBalanceCompany">
-        <span class="m-icon">⚖️</span>
-        <div>
-          <span class="m-label">Saldo Banco de Horas</span>
-          <span class="m-val" [class.text-success]="teamSummary()?.isPositiveTotalBalanceCompany" [class.text-danger]="!teamSummary()?.isPositiveTotalBalanceCompany">
-            {{ teamSummary()?.formattedTotalBalanceCompany || '00h 00m' }}
-          </span>
-          <span class="m-sub">Crédito / Débito total</span>
-        </div>
-      </div>
-
-      <div class="card metric-summary-card">
-        <span class="m-icon">⚠️</span>
-        <div>
-          <span class="m-label">Inconsistências no Mês</span>
-          <span class="m-val" [class.text-danger]="(teamSummary()?.totalIrregularitiesCompany || 0) > 0">
-            {{ teamSummary()?.totalIrregularitiesCompany || 0 }}
-          </span>
-          <span class="m-sub">Batidas ímpares / pendências</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabela Consolidada de Colaboradores -->
-    @if (isLoadingSummary()) {
-      <div class="loading-state">
-        <p>Calculando fechamento mensal da equipe...</p>
-      </div>
-    } @else {
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Colaborador</th>
-              <th>Departamento & Fuso</th>
-              <th>Dias Ativos</th>
-              <th>Horas Trabalhadas</th>
-              <th>Carga Prevista</th>
-              <th>Saldo de Horas</th>
-              <th>Status / Alertas</th>
-              <th class="no-print">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of teamSummary()?.items; track item.userId) {
-              <tr>
-                <td>
-                  <strong>{{ item.name }}</strong>
-                  <div class="sub-email">{{ item.email }}</div>
-                </td>
-                <td>
-                  <div>{{ item.department }}</div>
-                  <span class="badge badge-neutral badge-tiny">
-                    {{ item.defaultTimezoneId.includes('Sao_Paulo') ? '🇧🇷 Brasil' : '🇵🇹 Europa' }}
-                  </span>
-                </td>
-                <td class="col-mono">{{ item.activeDaysCount }} dias</td>
-                <td class="col-mono"><strong>{{ item.formattedTotalWorked }}</strong></td>
-                <td class="col-mono text-muted">{{ item.formattedTotalExpected }}</td>
-                <td class="col-mono" [class.text-success]="item.isPositiveTotalBalance" [class.text-danger]="!item.isPositiveTotalBalance">
-                  <strong>{{ item.formattedTotalBalance }}</strong>
-                </td>
-                <td>
-                  @if (item.irregularitiesCount > 0) {
-                    <span class="badge badge-warning" title="Possui batidas incompletas neste mês">
-                      ⚠️ {{ item.irregularitiesCount }} inconsistência(s)
-                    </span>
-                  } @else {
-                    <span class="badge badge-success">
-                      ✓ Regular
-                    </span>
-                  }
-                </td>
-                <td class="no-print">
-                  <button (click)="viewEmployeeById(item.userId)" class="btn btn-secondary btn-xs" title="Visualizar espelho detalhado do colaborador">
-                    👁️ Ver Espelho
-                  </button>
-                </td>
-              </tr>
+        <!-- Filtros de Mês e Ano -->
+        <div class="filter-controls no-print">
+          <select 
+            [(ngModel)]="selectedMonth" 
+            (change)="onFilterSummaryChange()" 
+            class="form-control select-compact">
+            @for (m of months; track m.value) {
+              <option [value]="m.value">{{ m.name }}</option>
             }
-          </tbody>
-        </table>
+          </select>
+
+          <select 
+            [(ngModel)]="selectedYear" 
+            (change)="onFilterSummaryChange()" 
+            class="form-control select-compact">
+            @for (y of years; track y) {
+              <option [value]="y">{{ y }}</option>
+            }
+          </select>
+
+          <button (click)="loadTeamSummary()" class="btn btn-secondary btn-sm">
+            🔄 Atualizar
+          </button>
+        </div>
       </div>
-    }
-  </div>
+
+      <!-- Cards Executivos do Mês -->
+      <div class="metrics-summary-grid">
+        <div class="card metric-summary-card">
+          <span class="m-icon">👥</span>
+          <div>
+            <span class="m-label">Colaboradores</span>
+            <span class="m-val">{{ teamSummary()?.totalEmployees || employees().length }}</span>
+            <span class="m-sub">Empresa inteira</span>
+          </div>
+        </div>
+
+        <div class="card metric-summary-card">
+          <span class="m-icon">⏱️</span>
+          <div>
+            <span class="m-label">Total Horas Trabalhadas</span>
+            <span class="m-val">{{ teamSummary()?.formattedTotalWorkedCompany || '00h 00m' }}</span>
+            <span class="m-sub">Consolidado no mês</span>
+          </div>
+        </div>
+
+        <div class="card metric-summary-card" [class.border-positive]="teamSummary()?.isPositiveTotalBalanceCompany" [class.border-negative]="!teamSummary()?.isPositiveTotalBalanceCompany">
+          <span class="m-icon">⚖️</span>
+          <div>
+            <span class="m-label">Saldo Banco de Horas</span>
+            <span class="m-val" [class.text-success]="teamSummary()?.isPositiveTotalBalanceCompany" [class.text-danger]="!teamSummary()?.isPositiveTotalBalanceCompany">
+              {{ teamSummary()?.formattedTotalBalanceCompany || '00h 00m' }}
+            </span>
+            <span class="m-sub">Dias decorridos até hoje</span>
+          </div>
+        </div>
+
+        <div class="card metric-summary-card">
+          <span class="m-icon">⚠️</span>
+          <div>
+            <span class="m-label">Inconsistências no Mês</span>
+            <span class="m-val" [class.text-danger]="(teamSummary()?.totalIrregularitiesCompany || 0) > 0">
+              {{ teamSummary()?.totalIrregularitiesCompany || 0 }}
+            </span>
+            <span class="m-sub">Batidas ímpares / pendências</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela Consolidada de Colaboradores -->
+      @if (isLoadingSummary()) {
+        <div class="loading-state">
+          <p>Calculando fechamento mensal da equipe...</p>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Departamento & Fuso</th>
+                <th>Dias Ativos</th>
+                <th>Horas Trabalhadas</th>
+                <th>Faltam Cumprir (Meta 160h)</th>
+                <th>Banco de Horas (Até Hoje)</th>
+                <th>Status / Alertas</th>
+                <th class="no-print">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of teamSummary()?.items; track item.userId) {
+                <tr>
+                  <td>
+                    <strong>{{ item.name }}</strong>
+                    <div class="sub-email">{{ item.email }}</div>
+                  </td>
+                  <td>
+                    <div>{{ item.department }}</div>
+                    <span class="badge badge-neutral badge-tiny">
+                      {{ item.defaultTimezoneId.includes('Sao_Paulo') ? '🇧🇷 Brasil' : '🇵🇹 Europa' }}
+                    </span>
+                  </td>
+                  <td class="col-mono">{{ item.activeDaysCount }} dias</td>
+                  <td class="col-mono"><strong>{{ item.formattedTotalWorked }}</strong></td>
+                  <td class="col-mono text-muted"><strong>{{ item.formattedRemainingHours || '160h 00m' }}</strong></td>
+                  <td class="col-mono" [class.text-success]="item.isPositiveTotalBalance" [class.text-danger]="!item.isPositiveTotalBalance">
+                    <strong>{{ item.formattedTotalBalance }}</strong>
+                  </td>
+                  <td>
+                    @if (item.irregularitiesCount > 0) {
+                      <span class="badge badge-warning" title="Possui batidas incompletas neste mês">
+                        ⚠️ {{ item.irregularitiesCount }} inconsistência(s)
+                      </span>
+                    } @else {
+                      <span class="badge badge-success">
+                        ✓ Regular
+                      </span>
+                    }
+                  </td>
+                  <td class="no-print">
+                    <button (click)="viewEmployeeById(item.userId)" class="btn btn-secondary btn-xs" title="Visualizar espelho detalhado do colaborador">
+                      👁️ Ver Espelho
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- Banner de Governança para Gestor (o controle de banco de horas fica com o RH) -->
+    <div class="card manager-governance-card no-print">
+      <div class="gov-content">
+        <span class="gov-icon">🔒</span>
+        <div>
+          <h4>Governança de Banco de Horas (Gestão Exclusiva do RH)</h4>
+          <p>
+            O Fechamento Consolidado de Folha e a gestão do Banco de Horas da empresa são de controle restrito do <strong>Departamento de Recursos Humanos (RH)</strong>. Como Líder/Gestor, seu escopo abrange a aprovação de ocorrências operacionais e o acompanhamento dos espelhos da sua equipe abaixo.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
 
   <!-- SEÇÃO 2: SOLICITAÇÕES DE AJUSTE PENDENTES -->
   <div class="card section-card no-print">
