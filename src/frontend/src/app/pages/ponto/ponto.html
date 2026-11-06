@@ -1,25 +1,32 @@
 <div class="container ponto-container">
   
-  <!-- Alert Messages -->
+  <!-- Alertas de Feedback -->
   @if (successMessage()) {
     <div class="alert alert-success">
-      ✅ {{ successMessage() }}
+      <span class="alert-icon">✅</span>
+      <span>{{ successMessage() }}</span>
     </div>
   }
 
   @if (errorMessage()) {
     <div class="alert alert-danger">
-      ⚠️ {{ errorMessage() }}
+      <span class="alert-icon">⚠️</span>
+      <span>{{ errorMessage() }}</span>
     </div>
   }
 
-  <!-- 🧪 PAINEL DO SIMULADOR DE HORÁRIO / TIME TRAVEL (MODO RECRUTADOR / AVALIAÇÃO) -->
-  <div class="card simulator-card" [class.simulator-card-active]="simulatedOffsetMinutes() !== 0">
+  <!-- 🧪 COCKPIT DO SIMULADOR DE JORNADA (TIME TRAVEL / MODO AVALIADOR) -->
+  <section class="card simulator-card" [class.simulator-card-active]="simulatedOffsetMinutes() !== 0">
     <div class="simulator-top">
       <div class="simulator-title-group">
-        <span class="simulator-icon">⏳</span>
+        <div class="sim-icon-badge">
+          <span class="simulator-icon">⏳</span>
+        </div>
         <div>
-          <h2 class="simulator-heading">Máquina do Tempo • Simulador de Jornada</h2>
+          <div class="sim-header-title-row">
+            <h2 class="simulator-heading">Máquina do Tempo • Simulador de Jornada</h2>
+            <span class="badge badge-primary sim-tag">Modo Avaliação</span>
+          </div>
           <p class="simulator-subheading">
             Avance o relógio virtual para testar uma jornada completa de 8 horas (Entrada ➔ Almoço ➔ Volta ➔ Saída) em segundos, sem esperar horas reais.
           </p>
@@ -30,14 +37,18 @@
         @if (simulatedOffsetMinutes() !== 0) {
           <div class="status-badge-simulated">
             <span class="pulse-dot"></span>
-            <strong>Simulação Ativa:</strong> {{ getSimulatedOffsetLabel() }}
+            <div class="sim-status-text">
+              <span class="sim-status-label">Simulação Ativa</span>
+              <strong class="sim-status-value">{{ getSimulatedOffsetLabel() }}</strong>
+            </div>
           </div>
           <button type="button" class="btn-restore-real" (click)="resetSimulatedTime()" title="Voltar ao relógio real do computador">
-            🔄 Voltar ao Horário Real
+            <span>🔄 Voltar ao Horário Real</span>
           </button>
         } @else {
           <div class="status-badge-real">
-            ⏱️ <strong>Horário Real</strong>
+            <span class="real-clock-icon">⏱️</span>
+            <span>Relógio em Horário Real</span>
           </div>
         }
       </div>
@@ -59,25 +70,41 @@
       <div class="control-row">
         <span class="control-label">Saltos Rápidos da Jornada:</span>
         <div class="control-buttons">
-          <button type="button" class="btn-jump-chip" (click)="jumpToHour(8)">☀️ 08:00 (Entrada)</button>
-          <button type="button" class="btn-jump-chip" (click)="jumpToHour(12)">☕ 12:00 (Almoço)</button>
-          <button type="button" class="btn-jump-chip" (click)="jumpToHour(13)">💼 13:00 (Volta)</button>
-          <button type="button" class="btn-jump-chip" (click)="jumpToHour(17)">🛑 17:00 (Saída)</button>
+          <button type="button" class="btn-jump-chip btn-jump-morning" (click)="jumpToHour(8)">
+            <span>☀️ 08:00</span>
+            <span class="jump-sub">Entrada</span>
+          </button>
+          <button type="button" class="btn-jump-chip btn-jump-lunch" (click)="jumpToHour(12)">
+            <span>☕ 12:00</span>
+            <span class="jump-sub">Almoço</span>
+          </button>
+          <button type="button" class="btn-jump-chip btn-jump-back" (click)="jumpToHour(13)">
+            <span>💼 13:00</span>
+            <span class="jump-sub">Retorno</span>
+          </button>
+          <button type="button" class="btn-jump-chip btn-jump-leave" (click)="jumpToHour(17)">
+            <span>🛑 17:00</span>
+            <span class="jump-sub">Saída</span>
+          </button>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
+  <!-- Grid Principal -->
   <div class="ponto-grid">
     
-    <!-- Coluna Principal: Relógio & Botão de Ponto -->
+    <!-- Coluna 1: Relógio & Botão de Ponto -->
     <div class="card punch-card">
       
       <!-- Seletor de Localidade / Viagem -->
       <div class="travel-location-box">
-        <label class="travel-location-label" for="travelPreset">
-          📍 Localidade / Viagem Atual:
-        </label>
+        <div class="travel-header">
+          <span class="travel-icon">📍</span>
+          <label class="travel-location-label" for="travelPreset">
+            Localidade de Marcação / Modo Viagem:
+          </label>
+        </div>
         <select 
           id="travelPreset" 
           [ngModel]="selectedLocationPreset()" 
@@ -89,19 +116,23 @@
         </select>
       </div>
 
+      <!-- Display do Relógio Digital -->
       <div class="clock-box">
         @if (simulatedOffsetMinutes() !== 0) {
           <div class="simulated-pill-indicator">
-            ⚡ Horário Simulado Ativo ({{ getSimulatedOffsetLabel() }})
+            <span class="bolt-icon">⚡</span>
+            <span>Horário Simulado Ativo ({{ getSimulatedOffsetLabel() }})</span>
           </div>
         }
         <span class="date-text">{{ currentDate() }}</span>
         <div class="time-display">{{ currentTime() }}</div>
         <div class="timezone-info-pill">
-          <span>🌐 Fuso Local: <strong>{{ timezone() }}</strong> ({{ offsetString() }})</span>
+          <span class="globe-icon">🌐</span>
+          <span>Fuso Atual: <strong>{{ timezone() }}</strong> ({{ offsetString() }})</span>
         </div>
       </div>
 
+      <!-- Área de Ação do Ponto -->
       <div class="punch-action-area">
         <div class="next-suggestion">
           <span class="suggestion-label">
@@ -112,11 +143,13 @@
           </span>
         </div>
 
+        <!-- Botão Redondo com Anel de Luz e Microinteração -->
         <button 
           (click)="onPunch()" 
           [disabled]="isPunching()" 
           class="btn-punch"
           [class]="'theme-punch-' + getActivePunchType()">
+          <div class="btn-punch-glow"></div>
           <div class="btn-punch-inner">
             <span class="punch-icon">{{ getActivePunchIcon() }}</span>
             <span class="punch-title">
@@ -127,7 +160,7 @@
               }
             </span>
             <span class="punch-sub">
-              {{ showCustomTypeSelect && selectedCustomType ? 'Seleção manual ativa • Clique para bater' : 'Clique para registrar agora' }}
+              {{ showCustomTypeSelect && selectedCustomType ? 'Seleção manual • Clique para bater' : 'Clique para registrar agora' }}
             </span>
           </div>
         </button>
@@ -135,14 +168,14 @@
         <!-- Campo Opcional de Localização / Notas -->
         <div class="form-group notes-group">
           <label class="form-label" for="locationNotes">
-            📍 Localização / Observação (Opcional):
+            Localização / Observação do Registro (Opcional):
           </label>
           <input
             id="locationNotes"
             type="text"
             [(ngModel)]="locationNotes"
             placeholder="Ex: Trabalho Remoto, Viagem a Lisboa, Escritório SP"
-            class="form-control"
+            class="form-control input-notes"
           />
         </div>
 
@@ -152,40 +185,44 @@
             type="button" 
             (click)="toggleCustomTypeSelect()" 
             class="toggle-link">
-            {{ showCustomTypeSelect ? '✖ Fechar seleção manual' : '⚙️ Escolher outro tipo de batida manualmente' }}
+            <span>{{ showCustomTypeSelect ? '✖ Fechar seleção manual' : '⚙️ Escolher outro tipo de batida manualmente' }}</span>
           </button>
 
           @if (showCustomTypeSelect) {
             <div class="manual-selector-box">
-              <label class="form-label">Selecione o tipo desejado para atualizar o botão:</label>
+              <label class="manual-label">Selecione o tipo desejado para atualizar o botão principal:</label>
               <div class="type-buttons">
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 1" 
                   (click)="selectCustomType(1)" 
                   class="type-btn type-btn-entrada">
-                  🟢 Entrada
+                  <span>🟢</span>
+                  <span>Entrada</span>
                 </button>
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 2" 
                   (click)="selectCustomType(2)" 
                   class="type-btn type-btn-almoco-inicio">
-                  ☕ Início Almoço
+                  <span>☕</span>
+                  <span>Início Almoço</span>
                 </button>
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 3" 
                   (click)="selectCustomType(3)" 
                   class="type-btn type-btn-almoco-fim">
-                  💼 Fim Almoço
+                  <span>💼</span>
+                  <span>Fim Almoço</span>
                 </button>
                 <button 
                   type="button" 
                   [class.selected]="selectedCustomType === 4" 
                   (click)="selectCustomType(4)" 
                   class="type-btn type-btn-saida">
-                  🛑 Saída
+                  <span>🛑</span>
+                  <span>Saída</span>
                 </button>
               </div>
             </div>
@@ -196,69 +233,90 @@
 
     </div>
 
-    <!-- Coluna Lateral: Resumo de Hoje e Timeline -->
+    <!-- Coluna 2: Métricas do Dia e Timeline -->
     <div class="side-column">
       
       <!-- Cards de Métricas do Dia -->
       <div class="metrics-row">
         <div class="card metric-card">
-          <span class="metric-label">Trabalhado Hoje</span>
+          <div class="metric-top">
+            <span class="metric-label">Trabalhado Hoje</span>
+            <span class="metric-icon">⏱️</span>
+          </div>
           <span class="metric-value">{{ dailyReport()?.formattedTotalWorked || '00h 00m' }}</span>
-          <span class="metric-meta">Meta: 08h 00m</span>
+          <div class="metric-progress-wrap">
+            <div class="metric-progress-bar" [style.width.%]="getWorkedPercentage()"></div>
+          </div>
+          <span class="metric-meta">Meta diária: 08h 00m ({{ getWorkedPercentage() }}%)</span>
         </div>
 
         <div class="card metric-card">
-          <span class="metric-label">Intervalo Total</span>
+          <div class="metric-top">
+            <span class="metric-label">Intervalo Total</span>
+            <span class="metric-icon">☕</span>
+          </div>
           <span class="metric-value">{{ dailyReport()?.formattedTotalBreak || '00h 00m' }}</span>
-          <span class="metric-meta">Almoço/Pausas</span>
+          <span class="metric-meta">Almoço & Pausas</span>
         </div>
 
-        <div class="card metric-card">
-          <span class="metric-label">Saldo do Dia</span>
+        <div class="card metric-card" [class.metric-positive]="dailyReport()?.isPositiveBalance" [class.metric-negative]="!dailyReport()?.isPositiveBalance">
+          <div class="metric-top">
+            <span class="metric-label">Saldo do Dia</span>
+            <span class="metric-icon">📊</span>
+          </div>
           <span 
             class="metric-value" 
             [class.text-success]="dailyReport()?.isPositiveBalance" 
             [class.text-danger]="!dailyReport()?.isPositiveBalance">
             {{ dailyReport()?.formattedBalance || '00h 00m' }}
           </span>
-          <span class="metric-meta">Banco de Horas</span>
+          <span class="metric-meta">Banco de Horas Diário</span>
         </div>
       </div>
 
       <!-- Timeline das Batidas de Hoje -->
       <div class="card timeline-card">
         <div class="timeline-header">
-          <h3>📋 Marcações de Hoje</h3>
-          <span class="badge badge-neutral">{{ dailyReport()?.records?.length || 0 }} registros</span>
+          <div class="timeline-title-wrap">
+            <span class="timeline-header-icon">📋</span>
+            <h3>Marcações do Dia</h3>
+          </div>
+          <span class="badge badge-neutral timeline-count-badge">{{ dailyReport()?.records?.length || 0 }} registros</span>
         </div>
 
         @if (dailyReport()?.records?.length === 0) {
           <div class="empty-timeline">
-            <span class="empty-icon">⏳</span>
-            <p>Nenhuma batida registrada hoje ainda.</p>
-            <span class="empty-sub">Clique no botão principal ao lado para registrar sua entrada.</span>
+            <div class="empty-icon-circle">
+              <span class="empty-icon">⏳</span>
+            </div>
+            <h4>Nenhuma batida registrada hoje ainda</h4>
+            <p>Clique no botão principal ao lado para registrar o início da sua jornada.</p>
           </div>
         } @else {
           <div class="timeline-list">
             @for (rec of dailyReport()?.records; track rec.id) {
               <div class="timeline-item">
                 <div class="timeline-icon-col">
-                  <span class="timeline-icon">{{ getPunchIcon(rec.type) }}</span>
+                  <div class="timeline-icon-node" [class]="'node-type-' + rec.type">
+                    <span class="timeline-icon">{{ getPunchIcon(rec.type) }}</span>
+                  </div>
                   <div class="timeline-line"></div>
                 </div>
 
-                <div class="timeline-content">
+                <div class="timeline-content card-subtle">
                   <div class="timeline-row">
                     <span class="timeline-title">{{ getPunchName(rec.type) }}</span>
-                    <span class="timeline-time" [title]="'Horário no fuso de registro: ' + rec.timezoneId">
+                    <span class="timeline-time" [title]="'Horário registrado no fuso: ' + rec.timezoneId">
                       {{ formatRecordTime(rec) }}
                     </span>
                   </div>
 
                   <div class="timeline-meta">
-                    <span>🌐 Fuso: <strong>{{ rec.timezoneId }}</strong></span>
+                    <span class="meta-tz">
+                      <span class="meta-globe">🌐</span> {{ rec.timezoneId }}
+                    </span>
                     @if (isDifferentFromCurrentTimezone(rec.timezoneId)) {
-                      <span class="converted-time-badge" [title]="'Convertido para o fuso da tela (' + getEffectiveTimezone() + ')'">
+                      <span class="converted-time-badge" [title]="'Convertido para o fuso ativo na tela (' + getEffectiveTimezone() + ')'">
                         ({{ formatConvertedTime(rec) }} neste fuso)
                       </span>
                     }

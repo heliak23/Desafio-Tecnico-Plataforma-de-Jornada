@@ -1,83 +1,116 @@
 <div class="login-wrapper">
+  <!-- Subtle ambient background glow circles -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
   <div class="login-container">
     
-    <!-- Hero / Header -->
-    <div class="login-header">
-      <div class="logo-shield">⚔️</div>
-      <h1>D&D Group</h1>
-      <p class="subtitle">Plataforma de Gestão de Jornada Internacional</p>
-      <div class="global-badge">
-        <span>🇧🇷 Brasil (UTC-3)</span>
-        <span class="dot">•</span>
-        <span>🇵🇹 Europa (UTC+0 / UTC+1)</span>
+    <!-- Hero / Header da Marca -->
+    <header class="login-header">
+      <div class="brand-crest">
+        <span class="crest-icon">⚔️</span>
       </div>
-    </div>
+      <div class="brand-name-group">
+        <h1 class="brand-name">D&D <span class="brand-gradient-text">Group</span></h1>
+        <p class="subtitle">Plataforma Global de Gestão de Jornada & Compliance</p>
+      </div>
 
-    <!-- Success Alert -->
+      <div class="global-badge">
+        <span class="region-pill">🇧🇷 Brasil <code>UTC-3</code></span>
+        <span class="region-separator">•</span>
+        <span class="region-pill">🇵🇹 Europa <code>UTC+0 / UTC+1</code></span>
+      </div>
+    </header>
+
+    <!-- Feedback Alerts -->
     @if (successMessage()) {
       <div class="alert alert-success">
-        ✅ {{ successMessage() }}
+        <span class="alert-icon">✅</span>
+        <span>{{ successMessage() }}</span>
       </div>
     }
 
-    <!-- Error Alert -->
     @if (errorMessage()) {
       <div class="alert alert-danger">
-        ⚠️ {{ errorMessage() }}
+        <span class="alert-icon">⚠️</span>
+        <span>{{ errorMessage() }}</span>
       </div>
     }
 
-    <!-- Formulário de Login Tradicional -->
+    <!-- Formulário Tradicional de Login -->
     <div class="card login-card">
-      <form (ngSubmit)="onSubmit()">
+      <div class="card-header-clean">
+        <h2 class="card-title">Acessar sua Conta</h2>
+        <p class="card-subtitle">Insira suas credenciais corporativas para entrar</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="login-form">
         <div class="form-group">
           <label class="form-label" for="email">E-mail Corporativo</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            [(ngModel)]="email"
-            placeholder="nome@dndgroup.com"
-            class="form-control"
-            required
-          />
+          <div class="input-with-icon">
+            <span class="field-icon">✉️</span>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="ex: colab.brasil@dndgroup.com"
+              class="form-control input-enhanced"
+              required
+              autocomplete="email"
+            />
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="password">Senha</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            [(ngModel)]="password"
-            placeholder="••••••••"
-            class="form-control"
-            required
-          />
+          <label class="form-label" for="password">Senha de Acesso</label>
+          <div class="input-with-icon">
+            <span class="field-icon">🔒</span>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="••••••••"
+              class="form-control input-enhanced"
+              required
+              autocomplete="current-password"
+            />
+          </div>
         </div>
 
-        <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-block">
+        <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-block btn-login">
           @if (isLoading()) {
-            <span>Entrando...</span>
+            <span class="spinner-dot"></span>
+            <span>Autenticando...</span>
           } @else {
-            <span>Entrar na Plataforma →</span>
+            <span>Entrar na Plataforma</span>
+            <span class="arrow-icon">→</span>
           }
         </button>
       </form>
     </div>
 
-    <!-- Seletor Rápido para Avaliação (Recrutador) -->
+    <!-- Seletor Rápido para Avaliação do Recrutador -->
     <div class="demo-section">
       <div class="demo-header">
-        <span class="demo-title">🎯 Acesso Rápido para Avaliação do Desafio</span>
-        <p class="demo-desc">Clique em qualquer perfil abaixo para preencher e testar instantaneamente os cenários:</p>
+        <div class="demo-title-group">
+          <span class="demo-badge">🎯 MODO AVALIADOR</span>
+          <h3 class="demo-heading">Acesso Rápido com 1 Clique</h3>
+        </div>
+        <p class="demo-desc">
+          Selecione qualquer perfil abaixo para autenticar instantaneamente e experimentar a perspectiva de cada cargo:
+        </p>
       </div>
 
       <div class="demo-grid">
         @for (acc of demoAccounts(); track acc.email) {
-          <button (click)="quickLogin(acc)" type="button" class="demo-card">
-            <div class="demo-badge-row">
-              <span class="badge badge-info">{{ acc.role }}</span>
+          <button (click)="quickLogin(acc)" type="button" class="demo-card" [class]="'demo-role-' + acc.role.toLowerCase().replace(' ', '-')">
+            <div class="demo-card-top">
+              <span class="badge" [class.badge-primary]="acc.role.includes('RH')" [class.badge-info]="acc.role.includes('Gestor')" [class.badge-success]="acc.role.includes('Colaborador')">
+                {{ acc.role }}
+              </span>
+              <span class="quick-arrow">↗</span>
             </div>
             <span class="demo-email">{{ acc.email }}</span>
             <span class="demo-notes">{{ acc.description }}</span>
@@ -91,11 +124,11 @@
           [disabled]="isResetting()" 
           type="button" 
           class="btn-reset-db">
-          🔄 {{ isResetting() ? 'Restaurando...' : 'Zerar Banco de Dados e Restaurar Padrão de Fábrica' }}
+          <span class="reset-icon">🔄</span>
+          <span>{{ isResetting() ? 'Restaurando Banco de Dados...' : 'Zerar Banco de Dados e Restaurar Padrão de Fábrica' }}</span>
         </button>
       </div>
     </div>
 
   </div>
 </div>
-

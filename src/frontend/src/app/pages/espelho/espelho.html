@@ -17,13 +17,18 @@
     <div class="print-divider"></div>
   </div>
 
-  <!-- Header & Filtros -->
-  <div class="espelho-header card no-print">
+  <!-- Header & Filtros (Cockpit) -->
+  <div class="card espelho-header no-print">
     <div class="header-titles">
-      <h2>📅 Espelho de Ponto Mensal</h2>
-      <p class="subtitle">
-        Colaborador: <strong>{{ report()?.userName }}</strong> • Departamento: <strong>{{ report()?.department }}</strong>
-      </p>
+      <div class="title-with-icon">
+        <span class="header-icon">📅</span>
+        <div>
+          <h2>Espelho de Ponto Mensal</h2>
+          <p class="subtitle">
+            Colaborador: <strong>{{ report()?.userName }}</strong> • Departamento: <strong>{{ report()?.department }}</strong>
+          </p>
+        </div>
+      </div>
     </div>
 
     <div class="header-action-row">
@@ -47,7 +52,7 @@
         </div>
 
         <div class="filter-item timezone-filter">
-          <label class="filter-label">Perspectiva de Fuso Horário:</label>
+          <label class="filter-label">Perspectiva de Fuso:</label>
           <select [ngModel]="selectedTimezone" (ngModelChange)="onTimezoneChange($event)" class="form-control filter-select">
             @for (tz of availableTimezones; track tz.id) {
               <option [value]="tz.id">{{ tz.label }}</option>
@@ -56,8 +61,9 @@
         </div>
       </div>
 
-      <button (click)="printTimesheet()" class="btn btn-outline-primary btn-sm" title="Imprimir ou salvar este espelho de ponto em PDF">
-        🖨️ Imprimir Espelho (PDF)
+      <button (click)="printTimesheet()" class="btn btn-outline-primary btn-sm btn-print" title="Imprimir ou salvar este espelho de ponto em PDF">
+        <span class="print-icon">🖨️</span>
+        <span>Imprimir Espelho (PDF)</span>
       </button>
     </div>
   </div>
@@ -65,19 +71,28 @@
   <!-- Cards de Resumo Mensal (Banco de Horas) -->
   <div class="summary-cards-row">
     <div class="card summary-card">
-      <span class="summary-label">Total Trabalhado</span>
+      <div class="summary-top">
+        <span class="summary-label">Total Trabalhado</span>
+        <span class="sum-icon">⏱️</span>
+      </div>
       <span class="summary-val">{{ report()?.formattedTotalWorked || '00h 00m' }}</span>
       <span class="summary-sub">Horas apuradas no mês</span>
     </div>
 
     <div class="card summary-card">
-      <span class="summary-label">Meta do Mês (160h)</span>
+      <div class="summary-top">
+        <span class="summary-label">Meta do Mês (160h)</span>
+        <span class="sum-icon">🎯</span>
+      </div>
       <span class="summary-val">{{ report()?.formattedRemainingHours || '160h 00m' }}</span>
       <span class="summary-sub">Faltam cumprir da meta de 160h</span>
     </div>
 
     <div class="card summary-card" [class.positive-card]="report()?.isPositiveTotalBalance" [class.negative-card]="!report()?.isPositiveTotalBalance">
-      <span class="summary-label">Banco de Horas (Dias Decorridos)</span>
+      <div class="summary-top">
+        <span class="summary-label">Banco de Horas Acumulado</span>
+        <span class="sum-icon">📊</span>
+      </div>
       <span class="summary-val">
         {{ report()?.formattedTotalBalance || '00h 00m' }}
       </span>
@@ -88,9 +103,10 @@
   </div>
 
   <!-- Tabela do Espelho Diário -->
-  <div class="table-container card">
+  <div class="table-container card table-card">
     @if (isLoading()) {
       <div class="loading-state">
+        <div class="loading-spinner"></div>
         <p>Carregando espelho de ponto...</p>
       </div>
     } @else {
@@ -117,11 +133,11 @@
               <!-- Batidas do Dia -->
               <td class="col-punches">
                 @if (day.records.length === 0) {
-                  <span class="no-punch-text">Sem batidas</span>
+                  <span class="no-punch-text">— Sem batidas</span>
                 } @else {
                   <div class="punches-wrap">
                     @for (rec of day.records; track rec.id) {
-                      <span class="punch-tag" [title]="'Origem: ' + rec.timezoneId + (rec.locationNotes ? ' • ' + rec.locationNotes : '')">
+                      <span class="punch-tag" [class]="'punch-tag-' + rec.type" [title]="'Origem: ' + rec.timezoneId + (rec.locationNotes ? ' • ' + rec.locationNotes : '')">
                         {{ getPunchIcon(rec.type) }} {{ formatRecordTime(rec) }}
                       </span>
                     }
@@ -144,7 +160,7 @@
                 @if (day.records.length > 0) {
                   {{ day.formattedBalance }}
                 } @else {
-                  -
+                  <span class="dimmed-text">—</span>
                 }
               </td>
 
@@ -155,7 +171,7 @@
                     <span class="badge badge-warning" [title]="day.irregularityReason || 'Inconsistência'">
                       ⚠️ {{ day.irregularityReason || 'Inconsistência' }}
                     </span>
-                    <button (click)="goToAdjustment(day)" class="btn btn-secondary btn-xs no-print">
+                    <button (click)="goToAdjustment(day)" class="btn btn-secondary btn-xs btn-correct no-print">
                       Corrigir
                     </button>
                   </div>

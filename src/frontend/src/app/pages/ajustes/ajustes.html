@@ -1,19 +1,27 @@
 <div class="container ajustes-container">
   
+  <!-- Header da Página -->
   <div class="page-title-row">
-    <h2>📝 Solicitações e Ajustes de Ponto</h2>
-    <p class="subtitle">Justifique esquecimentos, consultas médicas ou horas extraordinárias para avaliação do Gestor/RH.</p>
+    <div class="title-with-icon">
+      <span class="header-icon">📝</span>
+      <div>
+        <h2>Solicitações e Ajustes de Ponto</h2>
+        <p class="subtitle">Justifique esquecimentos, consultas médicas ou horas extraordinárias para avaliação do Gestor/RH.</p>
+      </div>
+    </div>
   </div>
 
   @if (successMessage()) {
     <div class="alert alert-success">
-      ✅ {{ successMessage() }}
+      <span class="alert-icon">✅</span>
+      <span>{{ successMessage() }}</span>
     </div>
   }
 
   @if (errorMessage()) {
     <div class="alert alert-danger">
-      ⚠️ {{ errorMessage() }}
+      <span class="alert-icon">⚠️</span>
+      <span>{{ errorMessage() }}</span>
     </div>
   }
 
@@ -22,10 +30,14 @@
     <!-- Formulário de Solicitação -->
     <div class="card form-card">
       <div class="card-title-row">
-        <h3>Nova Solicitação de Ajuste</h3>
+        <div class="card-title-wrap">
+          <span class="card-icon">➕</span>
+          <h3>Nova Solicitação de Ajuste</h3>
+        </div>
+        <span class="badge badge-primary">Fluxo Formal CLT</span>
       </div>
 
-      <form (ngSubmit)="onSubmit()">
+      <form (ngSubmit)="onSubmit()" class="form-content">
         <div class="form-row">
           <div class="form-group flex-1">
             <label class="form-label" for="targetDate">Data da Ocorrência *</label>
@@ -49,7 +61,7 @@
               required>
               <option [value]="1">🟢 Entrada</option>
               <option [value]="2">☕ Início de Intervalo</option>
-              <option [value]="3">💼 Fim de Intervalo</option>
+              <option [value]="3">💼 Retorno de Intervalo</option>
               <option [value]="4">🛑 Saída</option>
             </select>
           </div>
@@ -63,42 +75,43 @@
               type="time" 
               [(ngModel)]="requestedTime" 
               name="requestedTime" 
-              class="form-control" 
+              class="form-control input-mono" 
               required 
             />
           </div>
 
           <div class="form-group flex-1">
-            <label class="form-label" for="timezoneId">Fuso Horário</label>
+            <label class="form-label" for="timezoneId">Fuso Horário Ativo</label>
             <input 
               id="timezoneId" 
               type="text" 
               [(ngModel)]="timezoneId" 
               name="timezoneId" 
-              class="form-control" 
+              class="form-control input-readonly input-mono" 
               readonly 
             />
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="reason">Motivo / Justificativa *</label>
+          <label class="form-label" for="reason">Motivo / Justificativa Circunstanciada *</label>
           <textarea 
             id="reason" 
             [(ngModel)]="reason" 
             name="reason" 
-            rows="3" 
-            placeholder="Descreva detalhadamente o motivo (ex: Reunião emergencial com cliente em Lisboa, falha na conexão de internet na viagem, atestado médico...)" 
-            class="form-control" 
+            rows="4" 
+            placeholder="Descreva detalhadamente o motivo (ex: Reunião emergencial com cliente em Lisboa, oscilação de conectividade em trânsito, consulta médica, hora extra convocada...)" 
+            class="form-control textarea-enhanced" 
             required>
           </textarea>
         </div>
 
-        <button type="submit" [disabled]="isSubmitting()" class="btn btn-primary btn-block">
+        <button type="submit" [disabled]="isSubmitting()" class="btn btn-primary btn-block btn-submit-adj">
           @if (isSubmitting()) {
+            <span class="spinner-dot"></span>
             <span>Enviando solicitação...</span>
           } @else {
-            <span>🚀 Enviar para Aprovação</span>
+            <span>🚀 Enviar para Aprovação do Gestor</span>
           }
         </button>
       </form>
@@ -107,38 +120,54 @@
     <!-- Lista de Solicitações do Colaborador -->
     <div class="card history-card">
       <div class="card-title-row">
-        <h3>Histórico das Minhas Solicitações</h3>
-        <span class="badge badge-neutral">{{ adjustments().length }} total</span>
+        <div class="card-title-wrap">
+          <span class="card-icon">📂</span>
+          <h3>Histórico das Minhas Solicitações</h3>
+        </div>
+        <span class="badge badge-neutral count-badge">{{ adjustments().length }} total</span>
       </div>
 
       @if (isLoading()) {
-        <p class="loading-text">Carregando histórico...</p>
+        <div class="loading-state-subtle">
+          <div class="spinner-dot-dark"></div>
+          <p>Carregando histórico...</p>
+        </div>
       } @else if (adjustments().length === 0) {
         <div class="empty-state">
-          <span>📭</span>
-          <p>Você não possui nenhuma solicitação de ajuste registrada.</p>
+          <div class="empty-icon-circle">
+            <span class="empty-icon">📭</span>
+          </div>
+          <h4>Nenhuma solicitação registrada</h4>
+          <p>Seus pedidos de ajuste de ponto e justificativas aparecerão aqui para acompanhamento.</p>
         </div>
       } @else {
         <div class="adjustments-list">
           @for (item of adjustments(); track item.id) {
-            <div class="adj-item">
+            <div class="adj-item" [class]="'adj-status-' + item.status">
               <div class="adj-top">
                 <div class="adj-type-date">
                   <span class="badge" [class]="getStatusBadgeClass(item.status)">
                     {{ getStatusText(item.status) }}
                   </span>
                   <span class="adj-date">{{ item.targetDate | date:'dd/MM/yyyy' }}</span>
-                  <span class="adj-type">{{ getTypeLabel(item.requestedType) }}</span>
+                  <span class="adj-type-chip">{{ getTypeLabel(item.requestedType) }}</span>
                 </div>
-                <span class="adj-time">{{ item.requestedLocalTime | date:'HH:mm' }} ({{ item.timezoneId }})</span>
+                <span class="adj-time">{{ item.requestedLocalTime | date:'HH:mm' }} • {{ item.timezoneId }}</span>
               </div>
 
-              <p class="adj-reason">"{{ item.reason }}"</p>
+              <div class="adj-reason-box">
+                <span class="quote-mark">“</span>
+                <p class="adj-reason">{{ item.reason }}</p>
+                <span class="quote-mark">”</span>
+              </div>
 
               @if (item.reviewNotes) {
-                <div class="review-feedback">
-                  <span class="reviewer-name">Parecer de {{ item.reviewedByName }}:</span>
-                  <span class="review-text">{{ item.reviewNotes }}</span>
+                <div class="review-feedback" [class.review-approved]="item.status === 2" [class.review-rejected]="item.status === 3">
+                  <div class="reviewer-header">
+                    <span class="reviewer-badge-icon">{{ item.status === 2 ? '✅' : '❌' }}</span>
+                    <strong class="reviewer-name">Parecer de {{ item.reviewedByName }}:</strong>
+                  </div>
+                  <p class="review-text">{{ item.reviewNotes }}</p>
                 </div>
               }
             </div>
@@ -150,4 +179,3 @@
   </div>
 
 </div>
-

@@ -341,4 +341,16 @@ export class PontoComponent implements OnInit, OnDestroy {
       return '';
     }
   }
+
+  getWorkedPercentage(): number {
+    const report = this.dailyReport();
+    if (!report || !report.totalWorkedTime) return 0;
+    const parts = report.totalWorkedTime.split(':').map(Number);
+    if (parts.length >= 2) {
+      const totalMinutes = (parts[0] || 0) * 60 + (parts[1] || 0);
+      const expectedMinutes = 8 * 60;
+      return Math.min(100, Math.round((totalMinutes / expectedMinutes) * 100));
+    }
+    return 0;
+  }
 }

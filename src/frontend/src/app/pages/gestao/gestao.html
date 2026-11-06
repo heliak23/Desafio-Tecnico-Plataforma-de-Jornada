@@ -16,32 +16,38 @@
     <div class="print-divider"></div>
   </div>
 
+  <!-- Top Action Bar -->
   <div class="page-title-row no-print">
-    <div>
-      <h2>👥 Painel de Gestão e Fechamento de Equipe</h2>
-      <p class="subtitle">
-        Visão consolidada para RH e líderes: acompanhamento mensal, banco de horas, aprovação de ocorrências e relatórios oficiais.
-      </p>
+    <div class="title-with-icon">
+      <span class="header-icon">👥</span>
+      <div>
+        <h2>Painel de Gestão e Fechamento de Equipe</h2>
+        <p class="subtitle">
+          Visão consolidada para RH e líderes: acompanhamento mensal, banco de horas, aprovação de ocorrências e relatórios oficiais.
+        </p>
+      </div>
     </div>
     <div class="top-actions">
       <button (click)="printTeamReport()" class="btn btn-outline-primary btn-sm" title="Gerar PDF ou imprimir relatório consolidado da equipe">
-        🖨️ Imprimir Fechamento da Equipe (PDF)
+        <span>🖨️ Imprimir Fechamento (PDF)</span>
       </button>
-      <button (click)="onResetDatabase()" [disabled]="isProcessing()" class="btn btn-secondary btn-sm" title="Zerar todas as batidas e restaurar para o estado inicial de fábrica">
-        🔄 Zerar Banco de Dados
+      <button (click)="onResetDatabase()" [disabled]="isProcessing()" class="btn btn-secondary btn-sm btn-reset-top" title="Zerar todas as batidas e restaurar para o estado inicial de fábrica">
+        <span>🔄 Zerar Banco de Dados</span>
       </button>
     </div>
   </div>
 
   @if (successMessage()) {
     <div class="alert alert-success no-print">
-      ✅ {{ successMessage() }}
+      <span class="alert-icon">✅</span>
+      <span>{{ successMessage() }}</span>
     </div>
   }
 
   @if (errorMessage()) {
     <div class="alert alert-danger no-print">
-      ⚠️ {{ errorMessage() }}
+      <span class="alert-icon">⚠️</span>
+      <span>{{ errorMessage() }}</span>
     </div>
   }
 
@@ -49,12 +55,17 @@
   @if (authService.isHR()) {
     <div class="card section-card highlight-card">
       <div class="section-header-flex">
-        <div>
-          <div class="title-with-badge">
-            <h3>📊 Fechamento Mensal Consolidado da Equipe (Governança RH)</h3>
-            <span class="badge badge-primary">Competência: {{ currentMonthName }} / {{ selectedYear }}</span>
+        <div class="title-with-badge">
+          <div class="section-icon-badge">
+            <span class="sec-icon">📊</span>
           </div>
-          <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e banco de horas de toda a empresa.</p>
+          <div>
+            <div class="sec-title-wrap">
+              <h3>Fechamento Mensal Consolidado da Empresa</h3>
+              <span class="badge badge-primary">Governança RH</span>
+            </div>
+            <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e banco de horas de toda a organização.</p>
+          </div>
         </div>
 
         <!-- Filtros de Mês e Ano -->
@@ -86,26 +97,26 @@
       <!-- Cards Executivos do Mês -->
       <div class="metrics-summary-grid">
         <div class="card metric-summary-card">
-          <span class="m-icon">👥</span>
-          <div>
+          <div class="m-icon-wrap m-icon-blue">👥</div>
+          <div class="m-content">
             <span class="m-label">Colaboradores</span>
             <span class="m-val">{{ teamSummary()?.totalEmployees || employees().length }}</span>
-            <span class="m-sub">Empresa inteira</span>
+            <span class="m-sub">Empresa inteira ativa</span>
           </div>
         </div>
 
         <div class="card metric-summary-card">
-          <span class="m-icon">⏱️</span>
-          <div>
-            <span class="m-label">Total Horas Trabalhadas</span>
+          <div class="m-icon-wrap m-icon-indigo">⏱️</div>
+          <div class="m-content">
+            <span class="m-label">Horas Trabalhadas</span>
             <span class="m-val">{{ teamSummary()?.formattedTotalWorkedCompany || '00h 00m' }}</span>
             <span class="m-sub">Consolidado no mês</span>
           </div>
         </div>
 
         <div class="card metric-summary-card" [class.border-positive]="teamSummary()?.isPositiveTotalBalanceCompany" [class.border-negative]="!teamSummary()?.isPositiveTotalBalanceCompany">
-          <span class="m-icon">⚖️</span>
-          <div>
+          <div class="m-icon-wrap m-icon-amber">⚖️</div>
+          <div class="m-content">
             <span class="m-label">Saldo Banco de Horas</span>
             <span class="m-val" [class.text-success]="teamSummary()?.isPositiveTotalBalanceCompany" [class.text-danger]="!teamSummary()?.isPositiveTotalBalanceCompany">
               {{ teamSummary()?.formattedTotalBalanceCompany || '00h 00m' }}
@@ -115,9 +126,9 @@
         </div>
 
         <div class="card metric-summary-card">
-          <span class="m-icon">⚠️</span>
-          <div>
-            <span class="m-label">Inconsistências no Mês</span>
+          <div class="m-icon-wrap m-icon-rose">⚠️</div>
+          <div class="m-content">
+            <span class="m-label">Inconsistências</span>
             <span class="m-val" [class.text-danger]="(teamSummary()?.totalIrregularitiesCompany || 0) > 0">
               {{ teamSummary()?.totalIrregularitiesCompany || 0 }}
             </span>
@@ -129,6 +140,7 @@
       <!-- Tabela Consolidada de Colaboradores -->
       @if (isLoadingSummary()) {
         <div class="loading-state">
+          <div class="loading-spinner"></div>
           <p>Calculando fechamento mensal da equipe...</p>
         </div>
       } @else {
@@ -137,11 +149,11 @@
             <thead>
               <tr>
                 <th>Colaborador</th>
-                <th>Departamento & Fuso</th>
+                <th>Departamento & Local</th>
                 <th>Dias Ativos</th>
                 <th>Horas Trabalhadas</th>
-                <th>Faltam Cumprir (Meta 160h)</th>
-                <th>Banco de Horas (Até Hoje)</th>
+                <th>Falta p/ Meta (160h)</th>
+                <th>Banco de Horas</th>
                 <th>Status / Alertas</th>
                 <th class="no-print">Ações</th>
               </tr>
@@ -150,11 +162,18 @@
               @for (item of teamSummary()?.items; track item.userId) {
                 <tr>
                   <td>
-                    <strong>{{ item.name }}</strong>
-                    <div class="sub-email">{{ item.email }}</div>
+                    <div class="colab-info-cell">
+                      <div class="colab-avatar">
+                        {{ getInitials(item.name) }}
+                      </div>
+                      <div>
+                        <strong class="colab-name">{{ item.name }}</strong>
+                        <div class="sub-email">{{ item.email }}</div>
+                      </div>
+                    </div>
                   </td>
                   <td>
-                    <div>{{ item.department }}</div>
+                    <div class="dept-text">{{ item.department }}</div>
                     <span class="badge badge-neutral badge-tiny">
                       {{ item.defaultTimezoneId.includes('Sao_Paulo') ? '🇧🇷 Brasil' : '🇵🇹 Europa' }}
                     </span>
@@ -177,7 +196,7 @@
                     }
                   </td>
                   <td class="no-print">
-                    <button (click)="viewEmployeeById(item.userId)" class="btn btn-secondary btn-xs" title="Visualizar espelho detalhado do colaborador">
+                    <button (click)="viewEmployeeById(item.userId)" class="btn btn-secondary btn-xs btn-view-sheet" title="Visualizar espelho detalhado do colaborador">
                       👁️ Ver Espelho
                     </button>
                   </td>
@@ -207,18 +226,28 @@
   <div class="card section-card no-print">
     <div class="section-header">
       <div class="title-with-badge">
-        <h3>⏳ Solicitações Pendentes de Avaliação</h3>
-        <span class="badge" [class.badge-warning]="pendingAdjustments().length > 0" [class.badge-neutral]="pendingAdjustments().length === 0">
-          {{ pendingAdjustments().length }} pendente(s)
-        </span>
+        <div class="section-icon-badge">
+          <span class="sec-icon">⏳</span>
+        </div>
+        <div>
+          <div class="sec-title-wrap">
+            <h3>Solicitações Pendentes de Avaliação</h3>
+            <span class="badge" [class.badge-warning]="pendingAdjustments().length > 0" [class.badge-neutral]="pendingAdjustments().length === 0">
+              {{ pendingAdjustments().length }} pendente(s)
+            </span>
+          </div>
+          <p class="section-desc">Ocorrências de ponto solicitadas pelos colaboradores que aguardam seu parecer formal.</p>
+        </div>
       </div>
-      <p class="section-desc">Ocorrências de ponto solicitadas pelos colaboradores que aguardam seu parecer formal.</p>
     </div>
 
     @if (pendingAdjustments().length === 0) {
       <div class="empty-state-clean">
-        <span>🎉</span>
-        <p>Tudo limpo! Não há solicitações pendentes no momento.</p>
+        <div class="empty-icon-circle">
+          <span class="empty-emoji">🎉</span>
+        </div>
+        <h4>Tudo em dia!</h4>
+        <p>Não há nenhuma solicitação de ajuste pendente de aprovação no momento.</p>
       </div>
     } @else {
       <div class="table-container">
@@ -243,9 +272,13 @@
                   <span class="col-mono">{{ adj.requestedLocalTime | date:'HH:mm' }}</span>
                   <span class="text-sub">({{ adj.timezoneId }})</span>
                 </td>
-                <td class="col-reason">"{{ adj.reason }}"</td>
+                <td class="col-reason">
+                  <div class="reason-chip">
+                    "{{ adj.reason }}"
+                  </div>
+                </td>
                 <td>
-                  <button (click)="openReviewModal(adj)" class="btn btn-primary btn-xs">
+                  <button (click)="openReviewModal(adj)" class="btn btn-primary btn-xs btn-review-action">
                     Avaliar
                   </button>
                 </td>
@@ -262,19 +295,22 @@
     <div class="modal-overlay no-print">
       <div class="modal-content card">
         <div class="modal-header">
-          <h3>Avaliar Solicitação de Ajuste</h3>
-          <button (click)="closeReviewModal()" class="close-btn">✖</button>
+          <div class="modal-title-wrap">
+            <span class="modal-icon">⚖️</span>
+            <h3>Avaliar Solicitação de Ajuste</h3>
+          </div>
+          <button (click)="closeReviewModal()" class="close-btn" title="Fechar modal">✕</button>
         </div>
 
         <div class="modal-body">
           <div class="info-group">
             <span class="info-label">Colaborador:</span>
-            <span class="info-val">{{ selectedAdjustment.userName }}</span>
+            <span class="info-val"><strong>{{ selectedAdjustment.userName }}</strong></span>
           </div>
 
           <div class="info-group">
-            <span class="info-label">Data e Horário:</span>
-            <span class="info-val">
+            <span class="info-label">Data e Horário Solicitado:</span>
+            <span class="info-val col-mono">
               {{ selectedAdjustment.targetDate | date:'dd/MM/yyyy' }} às {{ selectedAdjustment.requestedLocalTime | date:'HH:mm' }}
               ({{ selectedAdjustment.timezoneId }})
             </span>
@@ -287,17 +323,21 @@
 
           <div class="info-group">
             <span class="info-label">Justificativa do Colaborador:</span>
-            <p class="reason-quote">"{{ selectedAdjustment.reason }}"</p>
+            <div class="reason-quote-box">
+              <span class="quote-sym">“</span>
+              <p class="reason-quote">{{ selectedAdjustment.reason }}</p>
+              <span class="quote-sym">”</span>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="reviewNotes">Parecer do Gestor (Opcional):</label>
+          <div class="form-group review-notes-group">
+            <label class="form-label" for="reviewNotes">Parecer Formal do Gestor / RH:</label>
             <textarea
               id="reviewNotes"
               [(ngModel)]="reviewNotes"
-              rows="2"
-              placeholder="Ex: Aprovado conforme alinhado com a liderança."
-              class="form-control">
+              rows="3"
+              placeholder="Ex: Aprovado conforme alinhamento prévio da liderança."
+              class="form-control textarea-enhanced">
             </textarea>
           </div>
         </div>
@@ -347,7 +387,7 @@
             <button (click)="printEmployeeReport()" class="btn btn-outline-primary btn-sm">
               🖨️ Imprimir Espelho (PDF)
             </button>
-            <button (click)="closeEmployeeTimesheetModal()" class="close-btn">✖</button>
+            <button (click)="closeEmployeeTimesheetModal()" class="close-btn" title="Fechar modal">✕</button>
           </div>
         </div>
 
