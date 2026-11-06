@@ -1,664 +1,182 @@
-/* ==========================================================================
-   D&D Group — Tela de Login Moderna (Enterprise SaaS & Thematic Universe)
-   ========================================================================== */
-
-.login-split-page {
-  display: flex;
+.login-wrapper {
   min-height: 100vh;
-  width: 100%;
-  background-color: #f8fafc;
-  color: #1e293b;
-  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
-}
-
-/* --------------------------------------------------------------------------
-   Lado Esquerdo: Formulário Corporativo e Acesso de Avaliação
-   -------------------------------------------------------------------------- */
-.login-pane-form {
-  flex: 1 1 540px;
-  max-width: 620px;
-  min-height: 100vh;
-  background: #ffffff;
-  border-right: 1px solid #e2e8f0;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  padding: 2.5rem 2.5rem 3rem 2.5rem;
-  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.03);
-  overflow-y: auto;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  background: radial-gradient(circle at top, #eef2ff 0%, #f4f6fa 60%);
 }
 
-.form-scrollable-content {
+.login-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 580px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin: auto 0;
-  padding-bottom: 1.5rem;
 }
 
-/* Marca D&D */
-.brand-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+.login-header {
+  text-align: center;
 }
 
-.brand-identity {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.logo-shield {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
 }
 
-.logo-shield-box {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(49, 46, 129, 0.25);
+.login-header h1 {
+  font-size: 2rem;
+  color: var(--slate-900);
+  margin-bottom: 0.25rem;
 }
 
-.dnd-symbol {
-  font-size: 1.4rem;
+.subtitle {
+  color: var(--slate-600);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
 }
 
-.brand-name {
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #0f172a;
-  line-height: 1.1;
-  margin: 0;
-}
-
-.brand-red {
-  color: #dc2626;
-  font-weight: 900;
-}
-
-.brand-sub {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #64748b;
-  display: block;
-}
-
-.badge-global-live {
+.global-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  padding: 0.3rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #334155;
+  gap: 0.5rem;
+  background-color: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-700);
 }
 
-.pulse-indicator {
-  width: 7px;
-  height: 7px;
-  background-color: #10b981;
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
-  animation: pulseGreen 2s infinite;
+.dot {
+  color: var(--slate-400);
 }
 
-@keyframes pulseGreen {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+.login-card {
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
 }
 
-/* Boas-Vindas */
-.welcome-block {
-  margin-top: 0.25rem;
+.btn-block {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
 }
 
-.welcome-title {
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.03em;
-  margin-bottom: 0.35rem;
-}
-
-.welcome-desc {
-  font-size: 0.9rem;
-  color: #64748b;
-  margin: 0;
-  line-height: 1.45;
-}
-
-/* Alertas */
-.alert-box {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  font-size: 0.85rem;
+.alert {
+  padding: 0.875rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
   font-weight: 500;
-}
-
-.alert-success {
-  background-color: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  color: #065f46;
 }
 
 .alert-danger {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
+  background-color: var(--danger-light);
+  border: 1px solid var(--danger-border);
+  color: var(--danger);
 }
 
-/* Formulário */
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
+/* Demo Accounts Section */
+.demo-section {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--primary-subtle);
+  padding: 1.25rem;
 }
 
-.form-group-custom {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+.demo-header {
+  margin-bottom: 0.875rem;
 }
 
-.input-label {
-  font-size: 0.825rem;
-  font-weight: 600;
-  color: #334155;
+.demo-title {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--primary);
+  display: block;
 }
 
-.label-with-hint {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.helper-hint {
+.demo-desc {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--slate-500);
+  margin-top: 0.2rem;
 }
 
-.helper-hint code {
-  background: #f1f5f9;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
-  font-family: var(--font-mono, monospace);
-  color: #4f46e5;
-  font-weight: 600;
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
 }
 
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.field-icon {
-  position: absolute;
-  left: 0.85rem;
-  font-size: 1rem;
-  pointer-events: none;
-  opacity: 0.65;
-}
-
-.form-input-styled {
-  width: 100%;
-  padding: 0.7rem 0.85rem 0.7rem 2.5rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-family: inherit;
-  color: #0f172a;
-  background-color: #ffffff;
-  transition: all 0.2s ease;
-}
-
-.form-input-styled:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
-}
-
-.form-input-styled::placeholder {
-  color: #94a3b8;
-}
-
-/* Botão Primário Roxo/Indigo */
-.btn-primary-purple {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.75rem 1.25rem;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.925rem;
-  font-weight: 600;
+.demo-card {
+  text-align: left;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.75rem;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
-  transition: all 0.2s ease;
-  margin-top: 0.25rem;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: inherit;
 }
 
-.btn-primary-purple:hover:not(:disabled) {
-  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+.demo-card:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
   transform: translateY(-1px);
 }
 
-.btn-primary-purple:disabled {
-  opacity: 0.65;
+.demo-email {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.demo-notes {
+  font-size: 0.6875rem;
+  color: var(--slate-500);
+  line-height: 1.2;
+}
+
+.demo-footer {
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px dashed var(--slate-200);
+  text-align: center;
+}
+
+.btn-reset-db {
+  background: var(--slate-100);
+  border: 1px solid var(--slate-300);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.btn-reset-db:hover:not(:disabled) {
+  background-color: var(--danger-light);
+  border-color: var(--danger-border);
+  color: var(--danger);
+}
+
+.btn-reset-db:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.btn-arrow {
-  font-size: 1.1rem;
-  transition: transform 0.2s ease;
-}
-
-.btn-primary-purple:hover .btn-arrow {
-  transform: translateX(3px);
-}
-
-.btn-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Divisor */
-.auth-divider {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 0.25rem 0;
-}
-
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background-color: #e2e8f0;
-}
-
-.divider-text {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #94a3b8;
-  white-space: nowrap;
-}
-
-/* Seção de Avaliação Rápida (Recrutadores) */
-.evaluator-card {
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 14px;
-  padding: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.evaluator-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.eval-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  color: #4f46e5;
-  font-weight: 700;
-}
-
-.eval-desc {
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.accounts-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.6rem;
-}
-
-.account-chip-btn {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 0.6rem 0.75rem;
-  text-align: left;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.account-chip-btn:hover {
-  border-color: #6366f1;
-  background-color: #fdfdfe;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.12);
-}
-
-.chip-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.chip-role {
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
-  background-color: #f1f5f9;
-  color: #475569;
-}
-
-.chip-hr .chip-role {
-  background-color: #ede9fe;
-  color: #6d28d9;
-}
-
-.chip-mgr .chip-role {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.chip-travel .chip-role {
-  background-color: #fef3c7;
-  color: #b45309;
-}
-
-.chip-action {
-  font-size: 0.65rem;
-  color: #6366f1;
-  font-weight: 700;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.account-chip-btn:hover .chip-action {
-  opacity: 1;
-}
-
-.chip-name {
-  font-size: 0.825rem;
-  color: #0f172a;
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.chip-desc {
-  font-size: 0.68rem;
-  color: #64748b;
-  line-height: 1.25;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Reset Factory DB */
-.reset-db-container {
-  display: flex;
-  justify-content: center;
-  padding-top: 0.25rem;
-}
-
-.btn-reset-factory {
-  background: none;
-  border: none;
-  color: #64748b;
-  font-size: 0.725rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease;
-}
-
-.btn-reset-factory:hover:not(:disabled) {
-  color: #dc2626;
-}
-
-.btn-reset-factory:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* --------------------------------------------------------------------------
-   Lado Direito: Showcase Imersivo D&D Universe (Dark Theme & Glassmorphism)
-   -------------------------------------------------------------------------- */
-.login-pane-showcase {
-  flex: 1 1 660px;
-  min-height: 100vh;
-  background-color: #0d111d;
-  background-image: 
-    linear-gradient(135deg, rgba(13, 17, 29, 0.88) 0%, rgba(28, 22, 60, 0.84) 100%),
-    url('/assets/login-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 3.5rem 3.5rem;
-}
-
-.showcase-content-wrapper {
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin: auto 0;
-}
-
-.showcase-top-tag {
-  display: flex;
-}
-
-.tag-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  color: #e2e8f0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 0.4rem 1rem;
-  border-radius: 9999px;
-}
-
-/* Cards Flutuantes em Vidro (Glassmorphism) */
-.showcase-feature-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  padding: 1.75rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.glass-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(99, 102, 241, 0.5);
-}
-
-.glass-pill-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.pill-badge {
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  padding: 0.25rem 0.65rem;
-  border-radius: 6px;
-}
-
-.pill-purple {
-  background: rgba(99, 102, 241, 0.25);
-  border: 1px solid rgba(99, 102, 241, 0.5);
-  color: #c7d2fe;
-}
-
-.pill-green {
-  background: rgba(16, 185, 129, 0.25);
-  border: 1px solid rgba(16, 185, 129, 0.5);
-  color: #a7f3d0;
-}
-
-.pill-meta {
-  font-size: 0.72rem;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.glass-card-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0;
-  letter-spacing: -0.01em;
-}
-
-.glass-card-text {
-  font-size: 0.85rem;
-  line-height: 1.55;
-  color: #cbd5e1;
-  margin: 0;
-}
-
-/* Timezone Chips */
-.timezone-chips-row {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-.tz-chip {
-  flex: 1;
-  background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
-  padding: 0.6rem 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.tz-flag {
-  font-size: 1.3rem;
-}
-
-.tz-chip strong {
-  display: block;
-  font-size: 0.825rem;
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.tz-chip small {
-  display: block;
-  font-size: 0.7rem;
-  color: #cbd5e1;
-}
-
-/* Citação no Rodapé */
-.showcase-bottom-quote {
-  border-left: 2px solid #6366f1;
-  padding-left: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.quote-phrase {
-  font-size: 0.95rem;
-  font-style: italic;
-  line-height: 1.45;
-  color: #e2e8f0;
-  margin: 0;
-}
-
-.quote-author {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: #818cf8;
-}
-
-/* --------------------------------------------------------------------------
-   Responsividade Mobile / Tablet
-   -------------------------------------------------------------------------- */
-@media (max-width: 1080px) {
-  .login-pane-showcase {
-    display: none;
-  }
-
-  .login-pane-form {
-    max-width: 100%;
-    border-right: none;
-    padding: 2.5rem 1.5rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .accounts-grid {
+@media (max-width: 600px) {
+  .demo-grid {
     grid-template-columns: 1fr;
   }
-  
-  .login-pane-form {
-    padding: 1.75rem 1rem;
-  }
 }
+
