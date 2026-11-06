@@ -160,7 +160,7 @@
               </div>
             </div>
 
-            <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-block btn-action-main">
+            <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-action-main">
               @if (isLoading()) {
                 <span class="spinner-dot"></span>
                 <span>Autenticando...</span>
@@ -265,7 +265,7 @@
             (click)="onResetDatabase()" 
             [disabled]="isResetting()" 
             type="button" 
-            class="btn btn-danger btn-block btn-action-main">
+            class="btn btn-danger btn-action-main">
             @if (isResetting()) {
               <span class="spinner-dot"></span>
               <span>Restaurando Banco de Dados...</span>

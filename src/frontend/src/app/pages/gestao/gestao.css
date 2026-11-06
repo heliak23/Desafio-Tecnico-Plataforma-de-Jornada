@@ -255,14 +255,14 @@
 }
 
 /* Larguras Proporcionais Exatas - Somam 100% */
-.th-colab   { width: 25%; }
-.th-dept    { width: 19%; }
-.th-days    { width: 7%; text-align: center; }
-.th-worked  { width: 11%; text-align: right; }
-.th-target  { width: 11%; text-align: right; }
-.th-balance { width: 11%; text-align: right; }
-.th-status  { width: 8%; text-align: center; }
-.th-actions { width: 8%; text-align: center; }
+.th-colab   { width: 23%; }
+.th-dept    { width: 17%; }
+.th-days    { width: 6%; text-align: center; }
+.th-worked  { width: 10%; text-align: right; }
+.th-target  { width: 14%; text-align: right; }
+.th-balance { width: 16%; text-align: right; }
+.th-status  { width: 7%; text-align: center; }
+.th-actions { width: 7%; text-align: center; }
 
 .text-right { text-align: right; }
 .text-center { text-align: center; }
@@ -634,5 +634,211 @@
 @media (max-width: 600px) {
   .metrics-summary-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* ==========================================================================
+   🖨️ PRINT / EXPORTAÇÃO PDF - ENQUADRAMENTO DA FOLHA A4
+   ========================================================================== */
+@media print {
+  .gestao-dashboard-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .section-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .highlight-card {
+    border-top: none !important;
+  }
+
+  .section-header-flex {
+    border-bottom: 1px solid #cbd5e1 !important;
+    padding-bottom: 0.35rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .section-icon-badge {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .sec-icon {
+    font-size: 0.85rem !important;
+  }
+
+  .sec-title-wrap h3 {
+    font-size: 0.88rem !important;
+  }
+
+  .section-desc {
+    font-size: 0.65rem !important;
+  }
+
+  /* Cards de Métricas Consolidada no Topo (Enquadrados em 4 colunas no A4) */
+  .metrics-summary-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0.4rem !important;
+    margin-bottom: 0.65rem !important;
+    page-break-inside: avoid !important;
+  }
+
+  .metric-summary-card {
+    padding: 0.35rem 0.55rem !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    gap: 0.4rem !important;
+    border-radius: 4px !important;
+  }
+
+  .m-icon-wrap {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .m-val {
+    font-size: 0.95rem !important;
+    margin: 0.05rem 0 !important;
+  }
+
+  .m-label,
+  .m-sub {
+    font-size: 0.58rem !important;
+  }
+
+  /* Tabela de Fechamento da Equipe: Enquadramento A4 Perfeito */
+  .team-table-container {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .team-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+  }
+
+  .team-table th {
+    padding: 5px 6px !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.02em !important;
+    background-color: #f1f5f9 !important;
+    color: #1e293b !important;
+    border-bottom: 1.5px solid #94a3b8 !important;
+    border-top: none !important;
+    white-space: nowrap !important;
+  }
+
+  .team-table td {
+    padding: 4px 6px !important;
+    font-size: 0.72rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    vertical-align: middle !important;
+  }
+
+  /* Proporções Exatas Somando 100% (Sem a coluna de Ações) */
+  .th-colab   { width: 23% !important; }
+  .th-dept    { width: 17% !important; }
+  .th-days    { width: 6% !important; text-align: center !important; }
+  .th-worked  { width: 10% !important; text-align: right !important; }
+  .th-target  { width: 16% !important; text-align: right !important; }
+  .th-balance { width: 19% !important; text-align: right !important; }
+  .th-status  { width: 9% !important; text-align: center !important; }
+
+  .colab-info-cell {
+    gap: 0.35rem !important;
+    min-width: 0 !important;
+  }
+
+  .colab-avatar {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.6rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .colab-name {
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .sub-email {
+    font-size: 0.62rem !important;
+    color: #64748b !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .dept-text {
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .badge-tiny {
+    font-size: 0.58rem !important;
+    padding: 0.05rem 0.25rem !important;
+  }
+
+  .badge-status {
+    font-size: 0.62rem !important;
+    padding: 0.1rem 0.35rem !important;
+    white-space: nowrap !important;
+  }
+
+  .col-mono {
+    font-size: 0.72rem !important;
+  }
+
+  /* Modal de Espelho Individual quando disparado para impressão */
+  .printable-modal-overlay {
+    position: static !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .printable-modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    animation: none !important;
+  }
+
+  .max-h-modal {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body:has(.printable-modal-overlay) .gestao-dashboard-container > *:not(.printable-modal-overlay) {
+    display: none !important;
   }
 }

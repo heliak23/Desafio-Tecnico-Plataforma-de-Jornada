@@ -152,8 +152,8 @@
                 <th class="th-dept">Departamento</th>
                 <th class="th-days">Dias</th>
                 <th class="th-worked">Trabalhado</th>
-                <th class="th-target">Meta (160h)</th>
-                <th class="th-balance">Banco Horas</th>
+                <th class="th-target" title="Meta contratual mensal de 160h (exibe as horas restantes a cumprir no mês)">Meta Mensal (160h)</th>
+                <th class="th-balance" title="Saldo apurado em relação à jornada útil decorrida na semana (meta semanal de 40h)">Banco Semanal (Meta 40h)</th>
                 <th class="th-status">Status</th>
                 <th class="th-actions no-print">Ações</th>
               </tr>
@@ -204,6 +204,25 @@
               }
             </tbody>
           </table>
+        </div>
+
+        <!-- Assinaturas e Homologação Oficial de Fechamento da Empresa na Impressão/PDF -->
+        <div class="print-only print-signatures-row">
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <strong>Responsável RH / DP</strong>
+            <span>Homologação e Fechamento</span>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <strong>Diretoria de Operações</strong>
+            <span>Visto da Liderança</span>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <strong>Data da Emissão</strong>
+            <span>{{ currentDateString }}</span>
+          </div>
         </div>
       }
     </div>

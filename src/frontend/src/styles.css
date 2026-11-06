@@ -504,24 +504,183 @@ tr:hover td {
   animation: dotPulse 2s infinite;
 }
 
-/* Print Styles */
+/* Print Styles & A4 Page Setup */
 .print-only {
   display: none !important;
 }
 
+@page {
+  size: A4 portrait;
+  margin: 10mm 12mm 12mm 12mm;
+}
+
 @media print {
-  .no-print {
-    display: none !important;
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
+
+  /* Ocultar navegação, sidebars e elementos marcados como no-print */
+  .no-print,
+  .app-sidebar-host,
+  .sidebar,
+  app-navbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   .print-only {
     display: block !important;
   }
+
   body {
     background: #ffffff !important;
-    color: #000000 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt;
   }
-  .card, .table-container {
+
+  /* Garantir que na impressão a folha seja sempre branca e nítida */
+  :root {
+    --bg-page: #ffffff !important;
+    --surface-card: #ffffff !important;
+    --surface-subtle: #f8fafc !important;
+    --slate-900: #0f172a !important;
+    --slate-800: #1e293b !important;
+    --slate-700: #334155 !important;
+    --slate-600: #475569 !important;
+    --border-card: #cbd5e1 !important;
+    --border-subtle: #cbd5e1 !important;
+  }
+
+  /* Reset de layout do shell para ocupar 100% da largura da folha A4 */
+  .app-dashboard-shell {
+    display: block !important;
+    min-height: auto !important;
+    background: transparent !important;
+  }
+
+  .app-main-viewport,
+  .main-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .dashboard-content-container,
+  .gestao-dashboard-container,
+  .espelho-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .card, 
+  .table-container {
     box-shadow: none !important;
-    border: 1px solid #cbd5e1 !important;
+  }
+
+  /* Quebras de página e formatação de tabelas para A4 */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  /* Cabeçalho Oficial Corporativo para Impressão */
+  .print-official-header {
+    display: block !important;
+    padding-bottom: 0.85rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .print-brand-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+  }
+
+  .print-brand-title {
+    font-size: 1.3rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+    color: #0f172a !important;
+    margin: 0 0 0.2rem 0 !important;
+  }
+
+  .print-brand-sub {
+    font-size: 0.78rem !important;
+    color: #475569 !important;
+    margin: 0 !important;
+  }
+
+  .print-meta-box {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    font-size: 0.75rem !important;
+    color: #1e293b !important;
+    gap: 0.15rem !important;
+    text-align: right !important;
+  }
+
+  .print-meta-box strong {
+    font-size: 0.82rem !important;
+    color: #0f172a !important;
+  }
+
+  .print-divider {
+    height: 1.5px !important;
+    background-color: #0f172a !important;
+    margin-top: 0.65rem !important;
+    width: 100% !important;
+  }
+
+  /* Bloco de Assinaturas e Homologação */
+  .print-signatures-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-top: 2rem !important;
+    padding: 0.75rem 1rem !important;
+    page-break-inside: avoid !important;
+  }
+
+  .sig-box {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 180px !important;
+    text-align: center !important;
+    font-size: 0.72rem !important;
+    color: #1e293b !important;
+    gap: 0.2rem !important;
+  }
+
+  .sig-line {
+    width: 100% !important;
+    height: 1px !important;
+    background-color: #0f172a !important;
+    margin-bottom: 0.35rem !important;
   }
 }
