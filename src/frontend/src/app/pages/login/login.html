@@ -1,134 +1,284 @@
-<div class="login-wrapper">
-  <!-- Subtle ambient background glow circles -->
+<div class="split-login-viewport">
+  
+  <!-- Subtle ambient background shapes -->
   <div class="ambient-glow glow-1"></div>
   <div class="ambient-glow glow-2"></div>
 
-  <div class="login-container">
+  <!-- 🎴 SPLIT CARD PRINCIPAL -->
+  <div class="split-auth-card">
     
-    <!-- Hero / Header da Marca -->
-    <header class="login-header">
-      <div class="brand-crest">
-        <span class="crest-icon">⚔️</span>
-      </div>
-      <div class="brand-name-group">
-        <h1 class="brand-name">D&D <span class="brand-gradient-text">Group</span></h1>
-        <p class="subtitle">Plataforma Global de Gestão de Jornada & Compliance</p>
-      </div>
-
-      <div class="global-badge">
-        <span class="region-pill">🇧🇷 Brasil <code>UTC-3</code></span>
-        <span class="region-separator">•</span>
-        <span class="region-pill">🇵🇹 Europa <code>UTC+0 / UTC+1</code></span>
-      </div>
-    </header>
-
-    <!-- Feedback Alerts -->
-    @if (successMessage()) {
-      <div class="alert alert-success">
-        <span class="alert-icon">✅</span>
-        <span>{{ successMessage() }}</span>
-      </div>
-    }
-
-    @if (errorMessage()) {
-      <div class="alert alert-danger">
-        <span class="alert-icon">⚠️</span>
-        <span>{{ errorMessage() }}</span>
-      </div>
-    }
-
-    <!-- Formulário Tradicional de Login -->
-    <div class="card login-card">
-      <div class="card-header-clean">
-        <h2 class="card-title">Acessar sua Conta</h2>
-        <p class="card-subtitle">Insira suas credenciais corporativas para entrar</p>
-      </div>
-
-      <form (ngSubmit)="onSubmit()" class="login-form">
-        <div class="form-group">
-          <label class="form-label" for="email">E-mail Corporativo</label>
-          <div class="input-with-icon">
-            <span class="field-icon">✉️</span>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              [(ngModel)]="email"
-              placeholder="ex: colab.brasil@dndgroup.com"
-              class="form-control input-enhanced"
-              required
-              autocomplete="email"
-            />
+    <!-- LADO ESQUERDO: BRANDING INSTITUCIONAL & SELETOR DE MODOS -->
+    <aside class="auth-brand-side">
+      <div class="brand-top-section">
+        
+        <!-- Logo e Título da Empresa -->
+        <div class="brand-logo-wrap">
+          <div class="brand-crest-box">
+            <span class="brand-crest-icon">⚔️</span>
           </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="password">Senha de Acesso</label>
-          <div class="input-with-icon">
-            <span class="field-icon">🔒</span>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              [(ngModel)]="password"
-              placeholder="••••••••"
-              class="form-control input-enhanced"
-              required
-              autocomplete="current-password"
-            />
-          </div>
-        </div>
-
-        <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-block btn-login">
-          @if (isLoading()) {
-            <span class="spinner-dot"></span>
-            <span>Autenticando...</span>
-          } @else {
-            <span>Entrar na Plataforma</span>
-            <span class="arrow-icon">→</span>
-          }
-        </button>
-      </form>
-    </div>
-
-    <!-- Seletor Rápido para Avaliação do Recrutador -->
-    <div class="demo-section">
-      <div class="demo-header">
-        <div class="demo-title-group">
-          <span class="demo-badge">🎯 MODO AVALIADOR</span>
-          <h3 class="demo-heading">Acesso Rápido com 1 Clique</h3>
-        </div>
-        <p class="demo-desc">
-          Selecione qualquer perfil abaixo para autenticar instantaneamente e experimentar a perspectiva de cada cargo:
-        </p>
-      </div>
-
-      <div class="demo-grid">
-        @for (acc of demoAccounts(); track acc.email) {
-          <button (click)="quickLogin(acc)" type="button" class="demo-card" [class]="'demo-role-' + acc.role.toLowerCase().replace(' ', '-')">
-            <div class="demo-card-top">
-              <span class="badge" [class.badge-primary]="acc.role.includes('RH')" [class.badge-info]="acc.role.includes('Gestor')" [class.badge-success]="acc.role.includes('Colaborador')">
-                {{ acc.role }}
-              </span>
-              <span class="quick-arrow">↗</span>
+          <div>
+            <div class="brand-name-row">
+              <span class="brand-main-text">D&D</span>
+              <span class="brand-tag-pill">GROUP</span>
             </div>
-            <span class="demo-email">{{ acc.email }}</span>
-            <span class="demo-notes">{{ acc.description }}</span>
-          </button>
-        }
+            <span class="brand-caption">Jornada Global & Compliance</span>
+          </div>
+        </div>
+
+        <p class="brand-mission-desc">
+          Plataforma corporativa centralizada para controle de jornada diária, múltiplos fusos horários e governança de banco de horas internacional.
+        </p>
+
+        <!-- Pílulas dos Fusos Ativos -->
+        <div class="regions-pill-group">
+          <span class="reg-chip">🇧🇷 Brasil <code>UTC-3</code></span>
+          <span class="reg-sep">•</span>
+          <span class="reg-chip">🇵🇹 Europa <code>UTC+0 / +1</code></span>
+        </div>
+
       </div>
 
-      <div class="demo-footer">
-        <button 
-          (click)="onResetDatabase()" 
-          [disabled]="isResetting()" 
-          type="button" 
-          class="btn-reset-db">
-          <span class="reset-icon">🔄</span>
-          <span>{{ isResetting() ? 'Restaurando Banco de Dados...' : 'Zerar Banco de Dados e Restaurar Padrão de Fábrica' }}</span>
-        </button>
+      <!-- SELETOR VERTICAL DAS 3 OPÇÕES (MENU INTERATIVO) -->
+      <div class="mode-selector-block">
+        <span class="mode-section-title">OPÇÕES DE ACESSO:</span>
+        
+        <div class="mode-buttons-list">
+          
+          <!-- Opção 1: Entrar com Conta -->
+          <button 
+            type="button" 
+            class="mode-btn" 
+            [class.active]="activeTab() === 'credentials'"
+            (click)="setTab('credentials')">
+            <div class="mode-btn-icon">🔑</div>
+            <div class="mode-btn-text">
+              <span class="mode-btn-title">Entrar com Conta</span>
+              <span class="mode-btn-sub">E-mail corporativo e senha</span>
+            </div>
+            <span class="mode-chevron">›</span>
+          </button>
+
+          <!-- Opção 2: Modo Avaliador -->
+          <button 
+            type="button" 
+            class="mode-btn" 
+            [class.active]="activeTab() === 'demo'"
+            (click)="setTab('demo')">
+            <div class="mode-btn-icon">🎯</div>
+            <div class="mode-btn-text">
+              <span class="mode-btn-title">Modo Avaliador</span>
+              <span class="mode-btn-sub">Perfis prontos com 1 clique</span>
+            </div>
+            <span class="mode-chevron">›</span>
+          </button>
+
+          <!-- Opção 3: Zerar Banco de Dados -->
+          <button 
+            type="button" 
+            class="mode-btn" 
+            [class.active]="activeTab() === 'reset'"
+            (click)="setTab('reset')">
+            <div class="mode-btn-icon">🔄</div>
+            <div class="mode-btn-text">
+              <span class="mode-btn-title">Zerar Banco de Dados</span>
+              <span class="mode-btn-sub">Restaurar estado de fábrica</span>
+            </div>
+            <span class="mode-chevron">›</span>
+          </button>
+
+        </div>
       </div>
-    </div>
+
+      <!-- Rodapé da Marca -->
+      <div class="brand-footer-note">
+        <span>Clean Architecture • .NET 8 • Angular v18/19</span>
+      </div>
+    </aside>
+
+    <!-- LADO DIREITO: PAINEL DE AÇÃO DINÂMICO -->
+    <main class="auth-action-side">
+      
+      <!-- Feedback Alerts -->
+      @if (successMessage()) {
+        <div class="alert alert-success">
+          <span class="alert-icon">✅</span>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <div class="alert alert-danger">
+          <span class="alert-icon">⚠️</span>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- ABA 1: ENTRAR COM CONTA (CREDENCIAIS)             -->
+      <!-- ══════════════════════════════════════════════════ -->
+      @if (activeTab() === 'credentials') {
+        <div class="tab-pane-content tab-fade-in">
+          
+          <div class="pane-header">
+            <h2 class="pane-title">Acessar sua Conta</h2>
+            <p class="pane-subtitle">Insira suas credenciais corporativas para entrar na plataforma</p>
+          </div>
+
+          <form (ngSubmit)="onSubmit()" class="login-form">
+            
+            <div class="form-group">
+              <label class="form-label" for="email">E-mail Corporativo</label>
+              <div class="input-with-icon">
+                <span class="field-icon">✉️</span>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  [(ngModel)]="email"
+                  placeholder="ex: colab.brasil@dndgroup.com"
+                  class="form-control input-enhanced"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="password">Senha de Acesso</label>
+              <div class="input-with-icon">
+                <span class="field-icon">🔒</span>
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  [(ngModel)]="password"
+                  placeholder="••••••••"
+                  class="form-control input-enhanced"
+                  required
+                  autocomplete="current-password"
+                />
+              </div>
+            </div>
+
+            <button type="submit" [disabled]="isLoading()" class="btn btn-primary btn-block btn-action-main">
+              @if (isLoading()) {
+                <span class="spinner-dot"></span>
+                <span>Autenticando...</span>
+              } @else {
+                <span>Entrar na Plataforma</span>
+                <span class="arrow-icon">→</span>
+              }
+            </button>
+          </form>
+
+          <div class="pane-helper-box">
+            <span class="helper-text">💡 Dica para o Avaliador:</span>
+            <button type="button" (click)="setTab('demo')" class="link-switch-tab">
+              Prefere testar sem digitar? Acesse com 1 clique pelo <strong>Modo Avaliador</strong>.
+            </button>
+          </div>
+
+        </div>
+      }
+
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- ABA 2: MODO AVALIADOR (1-CLICK DEMO ACCOUNTS)     -->
+      <!-- ══════════════════════════════════════════════════ -->
+      @if (activeTab() === 'demo') {
+        <div class="tab-pane-content tab-fade-in">
+          
+          <div class="pane-header">
+            <div class="pane-badge-row">
+              <span class="badge badge-primary">🎯 RECURSO EXCLUSIVO DO DESAFIO</span>
+            </div>
+            <h2 class="pane-title">Acesso Rápido para Avaliador</h2>
+            <p class="pane-subtitle">
+              Clique em qualquer perfil abaixo para autenticar instantaneamente e experimentar a perspectiva de cada cargo:
+            </p>
+          </div>
+
+          <div class="demo-cards-grid">
+            @for (acc of demoAccounts(); track acc.email) {
+              <button (click)="quickLogin(acc)" type="button" class="demo-profile-card">
+                <div class="demo-profile-top">
+                  <span class="badge" [class.badge-primary]="acc.role.includes('RH')" [class.badge-info]="acc.role.includes('Gestor')" [class.badge-success]="acc.role.includes('Colaborador')">
+                    {{ acc.role }}
+                  </span>
+                  <span class="card-enter-icon">Entrar ➔</span>
+                </div>
+                <span class="profile-email">{{ acc.email }}</span>
+                <span class="profile-notes">{{ acc.description }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="pane-helper-box">
+            <span class="helper-text">🔐 Senha padrão dos perfis: <code>Password123!</code></span>
+          </div>
+
+        </div>
+      }
+
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- ABA 3: ZERAR BANCO DE DADOS & RESTAURAR SISTEMA    -->
+      <!-- ══════════════════════════════════════════════════ -->
+      @if (activeTab() === 'reset') {
+        <div class="tab-pane-content tab-fade-in">
+          
+          <div class="pane-header">
+            <div class="pane-badge-row">
+              <span class="badge badge-warning">⚙️ MANUTENÇÃO & DEMONSTRAÇÃO</span>
+            </div>
+            <h2 class="pane-title">Zerar Banco de Dados & Restaurar</h2>
+            <p class="pane-subtitle">
+              Restaure o banco de dados PostgreSQL para o estado inicial de fábrica para reiniciar seus testes do zero.
+            </p>
+          </div>
+
+          <div class="reset-governance-box">
+            <div class="gov-point">
+              <span class="gov-bullet">🧹</span>
+              <div>
+                <strong>Limpeza total de batidas:</strong>
+                <p>Remove todas as marcações de ponto e ajustes criados durante os seus testes.</p>
+              </div>
+            </div>
+
+            <div class="gov-point">
+              <span class="gov-bullet">🌱</span>
+              <div>
+                <strong>Re-seeding automático:</strong>
+                <p>Recria os colaboradores padrão nos fusos do Brasil e Europa com integridade UTC.</p>
+              </div>
+            </div>
+
+            <div class="gov-point">
+              <span class="gov-bullet">🛡️</span>
+              <div>
+                <strong>Segurança & Isolamento:</strong>
+                <p>Executado diretamente no container PostgreSQL da aplicação via API .NET 8.</p>
+              </div>
+            </div>
+          </div>
+
+          <button 
+            (click)="onResetDatabase()" 
+            [disabled]="isResetting()" 
+            type="button" 
+            class="btn btn-danger btn-block btn-action-main">
+            @if (isResetting()) {
+              <span class="spinner-dot"></span>
+              <span>Restaurando Banco de Dados...</span>
+            } @else {
+              <span>🔄 Confirmar e Zerar Banco de Dados</span>
+            }
+          </button>
+
+        </div>
+      }
+
+    </main>
 
   </div>
+
 </div>

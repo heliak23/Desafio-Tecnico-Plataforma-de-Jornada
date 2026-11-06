@@ -273,7 +273,10 @@ export class GestaoComponent implements OnInit {
 
   getInitials(name?: string): string {
     if (!name) return 'DD';
-    const parts = name.trim().split(' ').filter(Boolean);
+    // Remove parênteses, colchetes e seus conteúdos, ex: "Beatriz Alencar (RH)" -> "Beatriz Alencar"
+    const cleaned = name.replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
+    const parts = cleaned.split(' ').filter(Boolean);
+    if (parts.length === 0) return 'DD';
     if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }

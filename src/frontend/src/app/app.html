@@ -1,4 +1,14 @@
-<app-navbar></app-navbar>
-<main class="main-content">
-  <router-outlet></router-outlet>
-</main>
+@if (authService.isAuthenticated()) {
+  <div class="app-dashboard-shell">
+    <app-navbar class="app-sidebar-host"></app-navbar>
+    <div class="app-main-viewport">
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+} @else {
+  <main class="app-public-viewport">
+    <router-outlet></router-outlet>
+  </main>
+}

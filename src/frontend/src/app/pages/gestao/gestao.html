@@ -1,4 +1,4 @@
-<div class="container gestao-container">
+<div class="dashboard-content-container gestao-dashboard-container">
   
   <!-- Cabeçalho Oficial visível apenas na Impressão/PDF -->
   <div class="print-only print-official-header">
@@ -16,14 +16,14 @@
     <div class="print-divider"></div>
   </div>
 
-  <!-- Top Action Bar -->
+  <!-- Top Action Bar Compacta -->
   <div class="page-title-row no-print">
     <div class="title-with-icon">
       <span class="header-icon">👥</span>
       <div>
         <h2>Painel de Gestão e Fechamento de Equipe</h2>
         <p class="subtitle">
-          Visão consolidada para RH e líderes: acompanhamento mensal, banco de horas, aprovação de ocorrências e relatórios oficiais.
+          Visão consolidada para RH e líderes: acompanhamento mensal, banco de horas e aprovação de ocorrências.
         </p>
       </div>
     </div>
@@ -38,14 +38,14 @@
   </div>
 
   @if (successMessage()) {
-    <div class="alert alert-success no-print">
+    <div class="alert alert-success alert-compact no-print">
       <span class="alert-icon">✅</span>
       <span>{{ successMessage() }}</span>
     </div>
   }
 
   @if (errorMessage()) {
-    <div class="alert alert-danger no-print">
+    <div class="alert alert-danger alert-compact no-print">
       <span class="alert-icon">⚠️</span>
       <span>{{ errorMessage() }}</span>
     </div>
@@ -64,7 +64,7 @@
               <h3>Fechamento Mensal Consolidado da Empresa</h3>
               <span class="badge badge-primary">Governança RH</span>
             </div>
-            <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e banco de horas de toda a organização.</p>
+            <p class="section-desc">Balanço geral de horas trabalhadas, saldo acumulado e banco de horas da organização.</p>
           </div>
         </div>
 
@@ -94,14 +94,14 @@
         </div>
       </div>
 
-      <!-- Cards Executivos do Mês -->
+      <!-- Cards Executivos do Mês (Compactos) -->
       <div class="metrics-summary-grid">
         <div class="card metric-summary-card">
           <div class="m-icon-wrap m-icon-blue">👥</div>
           <div class="m-content">
             <span class="m-label">Colaboradores</span>
             <span class="m-val">{{ teamSummary()?.totalEmployees || employees().length }}</span>
-            <span class="m-sub">Empresa inteira ativa</span>
+            <span class="m-sub">Empresa ativa</span>
           </div>
         </div>
 
@@ -117,11 +117,11 @@
         <div class="card metric-summary-card" [class.border-positive]="teamSummary()?.isPositiveTotalBalanceCompany" [class.border-negative]="!teamSummary()?.isPositiveTotalBalanceCompany">
           <div class="m-icon-wrap m-icon-amber">⚖️</div>
           <div class="m-content">
-            <span class="m-label">Saldo Banco de Horas</span>
+            <span class="m-label">Saldo Banco</span>
             <span class="m-val" [class.text-success]="teamSummary()?.isPositiveTotalBalanceCompany" [class.text-danger]="!teamSummary()?.isPositiveTotalBalanceCompany">
               {{ teamSummary()?.formattedTotalBalanceCompany || '00h 00m' }}
             </span>
-            <span class="m-sub">Dias decorridos até hoje</span>
+            <span class="m-sub">Acumulado até hoje</span>
           </div>
         </div>
 
@@ -132,30 +132,30 @@
             <span class="m-val" [class.text-danger]="(teamSummary()?.totalIrregularitiesCompany || 0) > 0">
               {{ teamSummary()?.totalIrregularitiesCompany || 0 }}
             </span>
-            <span class="m-sub">Batidas ímpares / pendências</span>
+            <span class="m-sub">Batidas ímpares</span>
           </div>
         </div>
       </div>
 
-      <!-- Tabela Consolidada de Colaboradores -->
+      <!-- Tabela Consolidada de Colaboradores (Sem estouro de scroll) -->
       @if (isLoadingSummary()) {
         <div class="loading-state">
           <div class="loading-spinner"></div>
           <p>Calculando fechamento mensal da equipe...</p>
         </div>
       } @else {
-        <div class="table-container">
-          <table>
+        <div class="table-container team-table-container">
+          <table class="team-table">
             <thead>
               <tr>
-                <th>Colaborador</th>
-                <th>Departamento & Local</th>
-                <th>Dias Ativos</th>
-                <th>Horas Trabalhadas</th>
-                <th>Falta p/ Meta (160h)</th>
-                <th>Banco de Horas</th>
-                <th>Status / Alertas</th>
-                <th class="no-print">Ações</th>
+                <th class="th-colab">Colaborador</th>
+                <th class="th-dept">Departamento</th>
+                <th class="th-days">Dias</th>
+                <th class="th-worked">Trabalhado</th>
+                <th class="th-target">Meta (160h)</th>
+                <th class="th-balance">Banco Horas</th>
+                <th class="th-status">Status</th>
+                <th class="th-actions no-print">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -166,38 +166,38 @@
                       <div class="colab-avatar">
                         {{ getInitials(item.name) }}
                       </div>
-                      <div>
-                        <strong class="colab-name">{{ item.name }}</strong>
-                        <div class="sub-email">{{ item.email }}</div>
+                      <div class="colab-details">
+                        <strong class="colab-name" [title]="item.name">{{ item.name }}</strong>
+                        <span class="sub-email" [title]="item.email">{{ item.email }}</span>
                       </div>
                     </div>
                   </td>
                   <td>
-                    <div class="dept-text">{{ item.department }}</div>
+                    <div class="dept-text" [title]="item.department">{{ item.department }}</div>
                     <span class="badge badge-neutral badge-tiny">
                       {{ item.defaultTimezoneId.includes('Sao_Paulo') ? '🇧🇷 Brasil' : '🇵🇹 Europa' }}
                     </span>
                   </td>
-                  <td class="col-mono">{{ item.activeDaysCount }} dias</td>
-                  <td class="col-mono"><strong>{{ item.formattedTotalWorked }}</strong></td>
-                  <td class="col-mono text-muted"><strong>{{ item.formattedRemainingHours || '160h 00m' }}</strong></td>
-                  <td class="col-mono" [class.text-success]="item.isPositiveTotalBalance" [class.text-danger]="!item.isPositiveTotalBalance">
+                  <td class="col-mono text-center">{{ item.activeDaysCount }}d</td>
+                  <td class="col-mono text-right"><strong>{{ item.formattedTotalWorked }}</strong></td>
+                  <td class="col-mono text-right text-muted">{{ item.formattedRemainingHours || '160h 00m' }}</td>
+                  <td class="col-mono text-right" [class.text-success]="item.isPositiveTotalBalance" [class.text-danger]="!item.isPositiveTotalBalance">
                     <strong>{{ item.formattedTotalBalance }}</strong>
                   </td>
-                  <td>
+                  <td class="text-center">
                     @if (item.irregularitiesCount > 0) {
-                      <span class="badge badge-warning" title="Possui batidas incompletas neste mês">
-                        ⚠️ {{ item.irregularitiesCount }} inconsistência(s)
+                      <span class="badge badge-warning badge-status" title="Possui batidas incompletas neste mês">
+                        ⚠️ {{ item.irregularitiesCount }} pend.
                       </span>
                     } @else {
-                      <span class="badge badge-success">
+                      <span class="badge badge-success badge-status">
                         ✓ Regular
                       </span>
                     }
                   </td>
-                  <td class="no-print">
+                  <td class="text-center no-print">
                     <button (click)="viewEmployeeById(item.userId)" class="btn btn-secondary btn-xs btn-view-sheet" title="Visualizar espelho detalhado do colaborador">
-                      👁️ Ver Espelho
+                      <span>👁️ Espelho</span>
                     </button>
                   </td>
                 </tr>
@@ -208,7 +208,7 @@
       }
     </div>
   } @else {
-    <!-- Banner de Governança para Gestor (o controle de banco de horas fica com o RH) -->
+    <!-- Banner de Governança para Gestor -->
     <div class="card manager-governance-card no-print">
       <div class="gov-content">
         <span class="gov-icon">🔒</span>
@@ -224,7 +224,7 @@
 
   <!-- SEÇÃO 2: SOLICITAÇÕES DE AJUSTE PENDENTES -->
   <div class="card section-card no-print">
-    <div class="section-header">
+    <div class="section-header-compact">
       <div class="title-with-badge">
         <div class="section-icon-badge">
           <span class="sec-icon">⏳</span>
@@ -259,7 +259,7 @@
               <th>Batida Solicitada</th>
               <th>Horário / Fuso</th>
               <th>Justificativa Apresentada</th>
-              <th>Ação</th>
+              <th class="th-center">Ação</th>
             </tr>
           </thead>
           <tbody>
@@ -277,7 +277,7 @@
                     "{{ adj.reason }}"
                   </div>
                 </td>
-                <td>
+                <td class="text-center">
                   <button (click)="openReviewModal(adj)" class="btn btn-primary btn-xs btn-review-action">
                     Avaliar
                   </button>

@@ -1,81 +1,84 @@
-<header class="navbar">
-  <div class="navbar-container">
+<aside class="sidebar">
+  <div class="sidebar-container">
     
-    <!-- Seção da Marca / Logo -->
-    <div class="brand-section">
-      <a routerLink="/" class="brand-logo">
-        <div class="logo-badge">
-          <span class="logo-symbol">⚔️</span>
+    <!-- Topo da Sidebar: Marca e Identidade -->
+    <div class="sidebar-brand">
+      <a routerLink="/ponto" class="brand-link">
+        <div class="brand-crest">
+          <span class="crest-symbol">⚔️</span>
         </div>
-        <div class="brand-text">
+        <div class="brand-info">
           <div class="brand-title-wrap">
             <span class="brand-title">D&D</span>
-            <span class="brand-tag">GROUP</span>
+            <span class="brand-badge">GROUP</span>
           </div>
-          <span class="brand-subtitle">Jornada Global & Compliance</span>
+          <span class="brand-sub">Jornada & Compliance</span>
         </div>
       </a>
-      
-      <div class="timezone-chip" title="Fuso horário detectado pelo navegador">
+
+      <!-- Chip do Fuso Horário Local -->
+      <div class="sidebar-tz-pill" [title]="'Fuso do navegador: ' + timezoneInfo()">
         <span class="pulse-dot"></span>
         <span class="tz-text">{{ timezoneInfo() }}</span>
       </div>
     </div>
 
-    @if (authService.isAuthenticated()) {
-      <!-- Navegação Principal -->
-      <nav class="nav-links">
-        <a routerLink="/ponto" routerLinkActive="active" class="nav-link">
-          <span class="nav-icon">⏱️</span>
-          <span>Bater Ponto</span>
-        </a>
-        <a routerLink="/espelho" routerLinkActive="active" class="nav-link">
-          <span class="nav-icon">📅</span>
-          <span>Espelho Mensal</span>
-        </a>
-        <a routerLink="/ajustes" routerLinkActive="active" class="nav-link">
-          <span class="nav-icon">📝</span>
-          <span>Ajustes & Justificativas</span>
-        </a>
-        @if (authService.isManagerOrHR()) {
-          <a routerLink="/gestao" routerLinkActive="active" class="nav-link nav-link-special">
-            <span class="nav-icon">👥</span>
-            <span>Gestão da Equipe</span>
-            <span class="badge-role-tag">Liderança</span>
-          </a>
-        }
-      </nav>
+    <!-- Navegação Principal -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">MENU PRINCIPAL</div>
+      
+      <a routerLink="/ponto" routerLinkActive="active" class="nav-item">
+        <span class="item-icon">⏱️</span>
+        <span class="item-text">Bater Ponto</span>
+      </a>
 
-      <!-- Seção do Usuário e Horário -->
-      <div class="user-section">
-        <div class="clock-display">
-          <span class="clock-label">Horário Local</span>
-          <div class="clock-digits-wrap">
-            <span class="clock-digits">{{ currentTime() }}</span>
-          </div>
+      <a routerLink="/espelho" routerLinkActive="active" class="nav-item">
+        <span class="item-icon">📅</span>
+        <span class="item-text">Espelho Mensal</span>
+      </a>
+
+      <a routerLink="/ajustes" routerLinkActive="active" class="nav-item">
+        <span class="item-icon">📝</span>
+        <span class="item-text">Ajustes & Ocorrências</span>
+      </a>
+
+      @if (authService.isManagerOrHR()) {
+        <div class="nav-section-label nav-section-divider">GOVERNANÇA & RH</div>
+        <a routerLink="/gestao" routerLinkActive="active" class="nav-item nav-item-special">
+          <span class="item-icon">👥</span>
+          <span class="item-text">Gestão da Equipe</span>
+          <span class="badge-tag">Líder</span>
+        </a>
+      }
+    </nav>
+
+    <!-- Relógio Digital da Sidebar -->
+    <div class="sidebar-clock-widget">
+      <span class="clock-widget-label">HORÁRIO LOCAL</span>
+      <span class="clock-widget-time">{{ currentTime() }}</span>
+    </div>
+
+    <!-- Rodapé: Perfil do Usuário e Logout -->
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" [title]="authService.currentUser()?.name">
+          {{ getUserInitials() }}
         </div>
-
-        <div class="user-profile">
-          <div class="user-avatar" title="{{ authService.currentUser()?.name }}">
-            {{ getUserInitials() }}
-          </div>
-          <div class="user-details">
-            <span class="user-name">{{ authService.currentUser()?.name }}</span>
-            <span class="badge badge-neutral user-role">
-              {{ getRoleLabel(authService.currentUser()?.role) }}
-            </span>
-          </div>
+        <div class="user-meta">
+          <span class="user-name">{{ authService.currentUser()?.name }}</span>
+          <span class="user-role-label">{{ getRoleLabel(authService.currentUser()?.role) }}</span>
         </div>
-
-        <button (click)="authService.logout()" class="btn-logout" title="Encerrar sessão com segurança">
-          <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
-          <span class="logout-text">Sair</span>
-        </button>
       </div>
-    }
+
+      <button (click)="authService.logout()" class="btn-sidebar-logout" title="Encerrar sessão com segurança">
+        <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Sair</span>
+      </button>
+    </div>
+
   </div>
-</header>
+</aside>

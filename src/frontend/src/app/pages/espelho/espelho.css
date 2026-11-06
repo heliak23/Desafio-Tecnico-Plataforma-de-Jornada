@@ -1,39 +1,40 @@
 .espelho-container {
-  padding-top: 1.5rem;
-  padding-bottom: 2.5rem;
+  padding: 0.75rem 1.25rem 1rem 1.25rem;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
-/* Header & Filtros */
+/* Header & Filtros Compactos */
 .espelho-header {
-  margin-bottom: 1.5rem;
-  padding: 1.5rem 1.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  border-radius: var(--radius-xl);
+  gap: 0.65rem;
+  border-radius: var(--radius-md);
 }
 
 .title-with-icon {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .header-icon {
-  font-size: 1.75rem;
+  font-size: 1.35rem;
   line-height: 1;
 }
 
 .header-titles h2 {
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--slate-900);
 }
 
 .subtitle {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--slate-500);
-  margin-top: 0.15rem;
+  margin-top: 0.05rem;
 }
 
 .subtitle strong {
@@ -45,26 +46,26 @@
   align-items: flex-end;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
   border-top: 1px solid var(--slate-100);
-  padding-top: 1.25rem;
+  padding-top: 0.65rem;
 }
 
 .filters-bar {
   display: flex;
   align-items: flex-end;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .filter-item {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.2rem;
 }
 
 .filter-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--slate-500);
@@ -72,40 +73,40 @@
 }
 
 .filter-select {
-  padding: 0.45rem 0.85rem;
-  font-size: 0.82rem;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  height: 38px;
-  min-width: 130px;
+  height: 32px;
+  min-width: 110px;
 }
 
 .timezone-filter .filter-select {
-  min-width: 250px;
+  min-width: 220px;
 }
 
 .btn-print {
-  height: 38px;
-  font-size: 0.82rem;
+  height: 32px;
+  font-size: 0.78rem;
   box-shadow: var(--shadow-xs);
 }
 
 .print-icon {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
-/* Summary Cards */
+/* Summary Cards Compactos */
 .summary-cards-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 1.75rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .summary-card {
-  padding: 1.35rem 1.5rem;
+  padding: 0.65rem 1rem;
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-md);
   transition: all var(--transition-fast);
 }
 
@@ -113,11 +114,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.2rem;
 }
 
 .summary-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--slate-400);
@@ -125,25 +126,25 @@
 }
 
 .sum-icon {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .summary-val {
   font-family: var(--font-mono);
-  font-size: 1.85rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: var(--slate-900);
-  margin: 0.2rem 0;
+  margin: 0.1rem 0;
   letter-spacing: -0.03em;
 }
 
 .summary-sub {
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   color: var(--slate-500);
 }
 
 .positive-card {
-  border-left: 5px solid var(--success);
+  border-left: 4px solid var(--success);
 }
 
 .positive-card .summary-val {
@@ -151,18 +152,35 @@
 }
 
 .negative-card {
-  border-left: 5px solid var(--danger);
+  border-left: 4px solid var(--danger);
 }
 
 .negative-card .summary-val {
   color: var(--danger);
 }
 
-/* Tabela */
+/* Tabela com Scroll Interno e Header Fixo */
 .table-card {
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-md);
   padding: 0;
   border: 1px solid var(--border-subtle);
+  max-height: calc(100vh - 300px);
+  min-height: 260px;
+  overflow-y: auto;
+}
+
+.table-card table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-card thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--slate-50);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .col-date {
@@ -220,9 +238,9 @@
 }
 
 .punch-tag-3 {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #3730a3;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e40af;
 }
 
 .punch-tag-4 {

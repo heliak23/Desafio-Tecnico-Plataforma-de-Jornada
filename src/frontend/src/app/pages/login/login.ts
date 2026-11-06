@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
-interface DemoAccount {
+export interface DemoAccount {
   role: string;
   email: string;
   password: string;
@@ -60,6 +60,8 @@ const DEFAULT_DEMO_ACCOUNTS: DemoAccount[] = [
 export class LoginComponent implements OnInit {
   email = '';
   password = '';
+  activeTab = signal<'credentials' | 'demo' | 'reset'>('credentials');
+
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
   isLoading = signal(false);
@@ -88,6 +90,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  setTab(tab: 'credentials' | 'demo' | 'reset'): void {
+    this.activeTab.set(tab);
+    this.errorMessage.set(null);
+  }
+
   onSubmit(): void {
     if (!this.email || !this.password) {
       this.errorMessage.set('Por favor, preencha o e-mail e a senha.');
@@ -106,7 +113,7 @@ export class LoginComponent implements OnInit {
         this.isLoading.set(false);
         if (err.status === 0) {
           this.errorMessage.set(
-            '⚠️ Servidor Backend não encontrado em http://localhost:5000. Certifique-se de que o backend (.NET 8) foi iniciado no terminal com ./run-backend.sh!'
+            'Servidor Backend não encontrado em http://localhost:5000. Certifique-se de que o backend (.NET 8) foi iniciado no terminal com ./run-backend.bat ou dotnet run!'
           );
         } else {
           this.errorMessage.set(err.error?.message || 'Falha ao autenticar. Verifique suas credenciais.');

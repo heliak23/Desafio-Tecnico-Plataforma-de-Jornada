@@ -40,12 +40,21 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// 3. Configuração de CORS (para o Frontend Angular)
+// 3. Configuração de CORS (para o Frontend Angular em qualquer porta local)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularClient", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+        policy.SetIsOriginAllowed(origin =>
+              {
+                  if (string.IsNullOrWhiteSpace(origin)) return false;
+                  if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                  {
+                      return uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
+                          || uri.Host.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase);
+                  }
+                  return false;
+              })
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
