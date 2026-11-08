@@ -21,7 +21,7 @@
    * Separação estrita em camadas: `Domain`, `Application`, `Infrastructure`, `Api` e `Tests`.
    * Regras de cálculo de jornada e banco de horas isoladas e testadas com **100% de aprovação em testes unitários automatizados**.
 
-4. **Frontend Moderno em Angular (v18/19):**
+4. **Frontend Moderno em Angular (v21):**
    * Standalone Components, Signals reativos para controle de estado, interceptors HTTP para injeção de JWT.
    * Design System corporativo e responsivo (Desktop e Mobile).
    * **Seletor de Perfis Demo com 1-Click:** botão na tela de login para o avaliador testar instantaneamente cada papel da empresa sem precisar digitar credenciais.
@@ -35,15 +35,21 @@
    * **Balanço Consolidado da Empresa:** Painel de fechamento do mês para RH e gestores com total de horas trabalhadas, saldo geral de banco de horas e total de inconsistências.
    * **Exportação Oficial em PDF:** Layout A4 de impressão (`@media print`) tanto do **Espelho Individual de Ponto** quanto do **Relatório Consolidado de Fechamento da Equipe**, acompanhado de cabeçalho da *Dungeons & Dragons Group* e campos formais de assinatura do colaborador e visto do RH para homologação trabalhista.
 
+7. **Suporte a Tema Claro / Escuro (Dark & Light Mode) & Acessibilidade:**
+   * Alternância de tema em tempo real com persistência no `LocalStorage` e variáveis semânticas CSS em conformidade com contraste para uso corporativo prolongado.
+
+8. **Mecanismo Anti-Duplicidade e Integridade de Dados:**
+   * Bloqueio contra múltiplos cliques acidentais em intervalo inferior a 30 segundos, prevenindo marcações duplicadas involuntárias.
+
 ---
 
 ## 🛠️ Stack Tecnológica
 
-* **Backend:** C# / .NET 8 (ASP.NET Core Web API, Entity Framework Core 8, FluentValidation, BCrypt.Net)
-* **Frontend:** Angular (Standalone Components, Signals, Reactive Forms, CSS Custom Properties)
+* **Backend:** C# / .NET 8 (ASP.NET Core Web API, Entity Framework Core 8, BCrypt.Net, JWT Bearer)
+* **Frontend:** Angular 21 (Standalone Components, Signals, Reactive Forms, CSS Custom Properties)
 * **Banco de Dados:** PostgreSQL 16 (persiste em UTC com healthcheck e volumes persistentes)
 * **Infraestrutura Local:** Docker & Docker Compose
-* **Testes Automatizados:** xUnit, FluentAssertions, Moq
+* **Testes Automatizados:** xUnit, FluentAssertions (.NET 8) e Vitest (Angular)
 * **Documentação de API:** OpenAPI / Swagger com suporte a Bearer Token
 
 ---
@@ -105,10 +111,18 @@ dotnet run
 * *Nota:* Na primeira execução, a API executa automaticamente as migrações e popula o banco de dados com dados de teste.
 
 #### Para rodar os Testes Automatizados:
-```bash
-cd src/backend
-dotnet test
-```
+
+* **Testes do Backend (.NET 8 — xUnit & FluentAssertions):**
+  ```bash
+  cd src/backend
+  dotnet test
+  ```
+
+* **Testes do Frontend (Angular — Vitest):**
+  ```bash
+  cd src/frontend
+  npm test
+  ```
 
 ---
 
@@ -162,6 +176,15 @@ A aplicação conta com um **seletor rápido** na tela de login, mas caso queira
 
 ---
 
-## 📬 Contato do Desenvolvedor
-Repositório desenvolvido para entrega da avaliação técnica solicitada por:
-* **E-mail:** [lucas.freitas@dreamerstudios.io](mailto:lucas.freitas@dreamerstudios.io)
+## 📬 Desenvolvedor & Contato
+
+Projeto concebido e desenvolvido por **Heliak Jeferson Araujo da Rocha** para a avaliação técnica da **Dungeons & Dragons Group**.
+
+* **Autor:** Heliak Jeferson Araujo da Rocha
+* **E-mail:** [heliakti@outlook.com](mailto:heliakti@outlook.com)
+* **LinkedIn:** [linkedin.com/in/heliak-rocha-69612735a](https://www.linkedin.com/in/heliak-rocha-69612735a/)
+* **Portfólio:** [portfolioheliak.vercel.app](https://portfolioheliak.vercel.app/)
+
+### 🎯 Destinatário da Avaliação
+* **Avaliação solicitada por:** Dreamer Studios / D&D Group
+* **E-mail de entrega:** [lucas.freitas@dreamerstudios.io](mailto:lucas.freitas@dreamerstudios.io)

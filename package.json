@@ -2,11 +2,14 @@
   "name": "dnd-group-jornada",
   "version": "1.0.0",
   "description": "D&D Group — Plataforma de Gestão de Jornada de Trabalho",
+  "author": "Heliak Jeferson Araujo da Rocha <heliakti@outlook.com>",
   "scripts": {
     "start": "npm start --prefix src/frontend",
     "start:frontend": "npm start --prefix src/frontend",
     "start:backend": "dotnet run --project src/backend/DndJornada.Api",
     "build": "npm run build --prefix src/frontend && dotnet build src/backend",
+    "test:backend": "dotnet test src/backend",
+    "test:frontend": "npm test --prefix src/frontend",
     "test": "dotnet test src/backend"
   }
 }

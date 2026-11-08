@@ -17,7 +17,7 @@ Estruturação da solução backend em 4 camadas bem delimitadas com regras de d
 
 2. **`DndJornada.Application`:**
    * Casos de uso e orquestração de regras de negócio.
-   * DTOs e validações (FluentValidation).
+   * DTOs e validações de regras de negócio.
    * Motor de cálculo de jornada e banco de horas (`TimeRecordCalculator`).
    * Interfaces de serviços externos (JWT, hashing de senhas).
 
