@@ -84,8 +84,17 @@ docker compose up -d
 
 ### Passo 2: Executar o Backend (.NET 8 Web API)
 
-Em um terminal, acesse a pasta da API:
+**Opção 1 — Script Rápido (Raiz do Projeto):**
+* **Git Bash / Linux / macOS:**
+  ```bash
+  ./run-backend.sh
+  ```
+* **Windows (CMD / PowerShell):**
+  ```cmd
+  run-backend.bat
+  ```
 
+**Opção 2 — Execução Manual:**
 ```bash
 cd src/backend/DndJornada.Api
 dotnet run
@@ -105,8 +114,17 @@ dotnet test
 
 ### Passo 3: Executar o Frontend (Angular)
 
-Em outro terminal, acesse a pasta do frontend:
+**Opção 1 — Script Rápido (Raiz do Projeto):**
+* **Git Bash / Linux / macOS:**
+  ```bash
+  ./run-frontend.sh
+  ```
+* **Windows (CMD / PowerShell):**
+  ```cmd
+  run-frontend.bat
+  ```
 
+**Opção 2 — Execução Manual:**
 ```bash
 cd src/frontend
 npm install
@@ -114,6 +132,18 @@ npm start
 ```
 
 * Abra no navegador: [http://localhost:4200](http://localhost:4200)
+
+---
+
+### 🔄 Scripts Auxiliares (Raiz do Repositório)
+
+Para conveniência durante a avaliação e desenvolvimento, estão disponíveis scripts prontos na raiz:
+
+| Finalidade | Linux / macOS / Git Bash | Windows (CMD / PowerShell) |
+| :--- | :--- | :--- |
+| **Iniciar Backend** | `./run-backend.sh` | `run-backend.bat` |
+| **Iniciar Frontend** | `./run-frontend.sh` | `run-frontend.bat` |
+| **Resetar Banco de Dados** | `./reset-db.sh` | `reset-db.bat` |
 
 ---
 
