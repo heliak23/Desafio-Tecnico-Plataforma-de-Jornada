@@ -22,7 +22,7 @@
 .page-title-row h2 {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--slate-900);
+  color: var(--text-primary);
 }
 
 .ajustes-grid {
@@ -35,6 +35,8 @@
 .form-card, .history-card {
   border-radius: var(--radius-md);
   padding: 1rem 1.25rem;
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
 }
 
 .card-title-row {
@@ -42,7 +44,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.75rem;
-  border-bottom: 1px solid var(--slate-100);
+  border-bottom: 1px solid var(--border-divider);
   padding-bottom: 0.5rem;
 }
 
@@ -59,7 +61,7 @@
 .card-title-row h3 {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--slate-900);
+  color: var(--text-primary);
 }
 
 .form-content {
@@ -99,9 +101,9 @@
 }
 
 .input-readonly {
-  background-color: var(--slate-50);
-  color: var(--slate-600);
-  border-style: dashed;
+  background-color: var(--input-readonly-bg);
+  color: var(--text-muted);
+  border: 1.5px dashed var(--border-subtle);
 }
 
 .textarea-enhanced {
@@ -130,14 +132,14 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 3rem 1rem;
-  color: var(--slate-500);
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
 .spinner-dot-dark {
   width: 18px;
   height: 18px;
-  border: 2px solid var(--slate-200);
+  border: 2px solid var(--border-subtle);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -157,7 +159,8 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--slate-100);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,13 +174,13 @@
 .empty-state h4 {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--text-primary);
   margin-bottom: 0.15rem;
 }
 
 .empty-state p {
   font-size: 0.75rem;
-  color: var(--slate-500);
+  color: var(--text-muted);
   max-width: 280px;
 }
 
@@ -193,10 +196,10 @@
 }
 
 .adj-item {
-  border: 1.5px solid var(--slate-200);
+  border: 1.5px solid var(--border-card);
   border-radius: var(--radius-md);
   padding: 0.75rem 0.85rem;
-  background-color: var(--white);
+  background-color: var(--surface-card);
   box-shadow: var(--shadow-xs);
   transition: all var(--transition-fast);
   display: flex;
@@ -205,7 +208,7 @@
 }
 
 .adj-item:hover {
-  border-color: var(--slate-300);
+  border-color: var(--border-hover);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
@@ -238,7 +241,7 @@
 
 .adj-date {
   font-weight: 700;
-  color: var(--slate-900);
+  color: var(--text-primary);
   font-size: 0.85rem;
 }
 
@@ -254,12 +257,12 @@
 .adj-time {
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  color: var(--slate-500);
+  color: var(--text-muted);
 }
 
 .adj-reason-box {
-  background: var(--slate-50);
-  border: 1px solid var(--slate-100);
+  background: var(--quote-bg);
+  border: 1px solid var(--quote-border);
   border-radius: var(--radius-md);
   padding: 0.65rem 0.85rem;
   display: flex;
@@ -268,7 +271,7 @@
 }
 
 .quote-mark {
-  color: var(--slate-400);
+  color: var(--text-muted);
   font-size: 1.1rem;
   font-family: Georgia, serif;
   line-height: 1;
@@ -276,17 +279,17 @@
 
 .adj-reason {
   font-size: 0.82rem;
-  color: var(--slate-700);
+  color: var(--text-secondary);
   line-height: 1.4;
   margin: 0;
   flex: 1;
 }
 
 .review-feedback {
-  background-color: #f8fafc;
+  background-color: var(--surface-subtle);
   border-radius: var(--radius-md);
   padding: 0.75rem 0.9rem;
-  border: 1px solid var(--slate-200);
+  border: 1px solid var(--border-card);
   font-size: 0.78rem;
   display: flex;
   flex-direction: column;
@@ -311,11 +314,11 @@
 
 .reviewer-name {
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--text-primary);
 }
 
 .review-text {
-  color: var(--slate-700);
+  color: var(--text-secondary);
   line-height: 1.35;
   margin: 0;
 }

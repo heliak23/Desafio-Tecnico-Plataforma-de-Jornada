@@ -1,0 +1,36 @@
+<div 
+  class="theme-toggle-container" 
+  [class.compact-mode]="compact"
+  role="group" 
+  aria-label="Alternar tema visual">
+  
+  <button 
+    type="button"
+    class="theme-btn" 
+    [class.active]="themeService.currentTheme() === 'light'"
+    (click)="setTheme('light')"
+    (keydown)="onKeyDown($event, 'light')"
+    [attr.aria-pressed]="themeService.currentTheme() === 'light'"
+    title="Ativar Tema Claro (Light Mode)">
+    <span class="theme-icon">☀️</span>
+    @if (!compact) {
+      <span class="theme-label">Claro</span>
+    }
+  </button>
+
+  <button 
+    type="button"
+    class="theme-btn" 
+    [class.active]="themeService.currentTheme() === 'dark'"
+    (click)="setTheme('dark')"
+    (keydown)="onKeyDown($event, 'dark')"
+    [attr.aria-pressed]="themeService.currentTheme() === 'dark'"
+    title="Ativar Tema Escuro (Dark Mode)">
+    <span class="theme-icon">🌙</span>
+    @if (!compact) {
+      <span class="theme-label">Escuro</span>
+    }
+  </button>
+
+</div>
+

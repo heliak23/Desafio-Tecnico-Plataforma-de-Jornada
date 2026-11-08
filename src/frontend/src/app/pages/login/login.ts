@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ThemeToggleComponent } from '../../components/theme-toggle/theme-toggle';
 
 export interface DemoAccount {
   role: string;
@@ -53,7 +54,7 @@ const DEFAULT_DEMO_ACCOUNTS: DemoAccount[] = [
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ThemeToggleComponent],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })

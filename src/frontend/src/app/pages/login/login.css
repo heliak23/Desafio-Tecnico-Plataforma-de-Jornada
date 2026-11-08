@@ -7,6 +7,15 @@
   position: relative;
   overflow: hidden;
   background-color: var(--bg-page);
+  background-image: var(--bg-page-gradient);
+  transition: background-color var(--transition-normal);
+}
+
+.login-top-bar {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  z-index: 20;
 }
 
 /* Ambient glow accents */
@@ -262,8 +271,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: var(--white);
+  background-color: var(--surface-card);
   overflow-y: auto;
+  transition: background-color var(--transition-normal);
 }
 
 .tab-pane-content {
@@ -296,7 +306,7 @@
 .pane-title {
   font-size: 1.45rem;
   font-weight: 800;
-  color: var(--slate-900);
+  color: var(--text-primary);
   letter-spacing: -0.03em;
   margin-bottom: 0.35rem;
   line-height: 1.2;
@@ -304,7 +314,7 @@
 
 .pane-subtitle {
   font-size: 0.85rem;
-  color: var(--slate-500);
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -386,9 +396,9 @@
 .pane-helper-box {
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px dashed var(--slate-200);
+  border-top: 1px dashed var(--border-card);
   font-size: 0.8rem;
-  color: var(--slate-500);
+  color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -419,8 +429,8 @@
 
 .demo-profile-card {
   text-align: left;
-  background: var(--white);
-  border: 1.5px solid var(--slate-200);
+  background: var(--surface-subtle);
+  border: 1.5px solid var(--border-card);
   border-radius: var(--radius-md);
   padding: 0.75rem 0.85rem;
   cursor: pointer;
@@ -448,7 +458,7 @@
 .card-enter-icon {
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--slate-400);
+  color: var(--text-muted);
   transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
@@ -461,7 +471,7 @@
   font-family: var(--font-mono);
   font-size: 0.76rem;
   font-weight: 600;
-  color: var(--slate-800);
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -469,14 +479,14 @@
 
 .profile-notes {
   font-size: 0.7rem;
-  color: var(--slate-500);
+  color: var(--text-secondary);
   line-height: 1.25;
 }
 
 /* ABA 3: ZERAR BANCO */
 .reset-governance-box {
-  background: var(--slate-50);
-  border: 1px solid var(--slate-200);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   display: flex;
@@ -498,13 +508,13 @@
 
 .gov-point strong {
   font-size: 0.85rem;
-  color: var(--slate-900);
+  color: var(--text-primary);
   display: block;
 }
 
 .gov-point p {
   font-size: 0.78rem;
-  color: var(--slate-500);
+  color: var(--text-secondary);
   margin-top: 0.15rem;
 }
 
